@@ -1,25 +1,30 @@
 
 import { BrandData } from "@/components/BrandTracker";
+import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 
-// This function will be connected to Supabase after integration
 export const saveBrandData = async (data: BrandData): Promise<boolean> => {
   try {
-    // Store in localStorage temporarily until Supabase is connected
-    const existingData = localStorage.getItem("brand_submissions");
-    const submissions = existingData ? JSON.parse(existingData) : [];
-    
-    // Add timestamp and ID
-    const submissionWithMeta = {
-      ...data,
-      id: `brand-${Date.now()}`,
-      submittedAt: new Date().toISOString(),
-    };
-    
-    submissions.push(submissionWithMeta);
-    localStorage.setItem("brand_submissions", JSON.stringify(submissions));
-    
-    console.log("Brand data saved:", submissionWithMeta);
+    const { error } = await supabase
+      .from('brand_submissions')
+      .insert([{
+        brand_name: data.name,
+        industry: data.industry,
+        keywords: data.keywords,
+        email: data.email,
+        competitors: data.competitors || [],
+        description: data.description || '',
+        website: data.website || '',
+        submitted_at: new Date().toISOString()
+      }]);
+
+    if (error) {
+      console.error("Error saving to Supabase:", error);
+      toast.error("Failed to save brand information");
+      return false;
+    }
+
+    console.log("Brand data saved to Supabase successfully");
     return true;
   } catch (error) {
     console.error("Error saving brand data:", error);
@@ -27,7 +32,30 @@ export const saveBrandData = async (data: BrandData): Promise<boolean> => {
   }
 };
 
-export const getBrandSubmissions = (): BrandData[] => {
-  const existingData = localStorage.getItem("brand_submissions");
-  return existingData ? JSON.parse(existingData) : [];
+export const getBrandSubmissions = async (): Promise<BrandData[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('brand_submissions')
+      .select('*')
+      .order('submitted_at', { ascending: false });
+
+    if (error) {
+      console.error("Error fetching from Supabase:", error);
+      return [];
+    }
+
+    return data.map(submission => ({
+      name: submission.brand_name,
+      industry: submission.industry,
+      keywords: submission.keywords,
+      email: submission.email,
+      competitors: submission.competitors,
+      description: submission.description,
+      website: submission.website,
+      lastUpdated: submission.submitted_at
+    }));
+  } catch (error) {
+    console.error("Error fetching brand submissions:", error);
+    return [];
+  }
 };
