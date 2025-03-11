@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { TrendingDown, WandSparkles, PhoneCall, Info, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "react-router-dom";
 
 interface OptimizationUpsellsProps {
   visibilityScore: number;
@@ -13,17 +14,10 @@ interface OptimizationUpsellsProps {
 export const OptimizationUpsells = ({ visibilityScore }: OptimizationUpsellsProps) => {
   const { toast } = useToast();
   
-  const handleOptimizationClick = () => {
-    toast({
-      title: "Coming Soon",
-      description: "The AI Brand Optimization page will be available soon!",
-    });
-  };
-  
   const handleToolkitPurchase = () => {
     toast({
-      title: "Coming Soon",
-      description: "The AI Optimization Toolkit will be available for purchase soon!",
+      title: "Redirecting",
+      description: "Taking you to the AI Optimization page",
     });
   };
   
@@ -51,7 +45,7 @@ export const OptimizationUpsells = ({ visibilityScore }: OptimizationUpsellsProp
               Your AI search ranking needs improvement
             </p>
           </div>
-          <Button onClick={handleOptimizationClick} className="w-full">
+          <Button component={Link} to="/optimize" className="w-full">
             Optimize My Brand for AI Search
           </Button>
         </CardContent>
@@ -87,7 +81,13 @@ export const OptimizationUpsells = ({ visibilityScore }: OptimizationUpsellsProp
             <Badge variant="secondary">$99</Badge>
             <span className="text-sm text-muted-foreground">One-time purchase</span>
           </div>
-          <Button onClick={handleToolkitPurchase} variant="outline" className="w-full">
+          <Button 
+            component={Link} 
+            to="/optimize" 
+            onClick={handleToolkitPurchase} 
+            variant="outline" 
+            className="w-full"
+          >
             Get AI Optimization Toolkit
           </Button>
         </CardContent>
@@ -115,7 +115,13 @@ export const OptimizationUpsells = ({ visibilityScore }: OptimizationUpsellsProp
             <Badge variant="secondary">$499</Badge>
             <span className="text-sm text-muted-foreground">60-min consultation</span>
           </div>
-          <Button onClick={handleBookCall} variant="default" className="w-full">
+          <Button 
+            component={Link} 
+            to="/optimize" 
+            onClick={handleBookCall} 
+            variant="default" 
+            className="w-full"
+          >
             Book My AI Strategy Call
           </Button>
         </CardContent>
