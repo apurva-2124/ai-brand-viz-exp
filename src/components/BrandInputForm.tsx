@@ -35,6 +35,8 @@ export const BrandInputForm = ({ onSubmit }: BrandInputFormProps) => {
   const [industry, setIndustry] = useState("");
   const [keyword, setKeyword] = useState("");
   const [keywords, setKeywords] = useState<string[]>([]);
+  const [competitor, setCompetitor] = useState("");
+  const [competitors, setCompetitors] = useState<string[]>([]);
 
   const handleAddKeyword = () => {
     if (keyword.trim() && !keywords.includes(keyword.trim())) {
@@ -47,6 +49,17 @@ export const BrandInputForm = ({ onSubmit }: BrandInputFormProps) => {
     setKeywords(keywords.filter(k => k !== keywordToRemove));
   };
 
+  const handleAddCompetitor = () => {
+    if (competitor.trim() && !competitors.includes(competitor.trim())) {
+      setCompetitors([...competitors, competitor.trim()]);
+      setCompetitor("");
+    }
+  };
+
+  const handleRemoveCompetitor = (competitorToRemove: string) => {
+    setCompetitors(competitors.filter(c => c !== competitorToRemove));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -54,7 +67,8 @@ export const BrandInputForm = ({ onSubmit }: BrandInputFormProps) => {
       onSubmit({
         name: brandName.trim(),
         industry,
-        keywords
+        keywords,
+        competitors
       });
     }
   };
@@ -119,6 +133,47 @@ export const BrandInputForm = ({ onSubmit }: BrandInputFormProps) => {
                     <button
                       type="button"
                       onClick={() => handleRemoveKeyword(kw)}
+                      className="ml-2 text-muted-foreground hover:text-foreground"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        
+        <div className="space-y-2">
+          <Label>Competitor Brands</Label>
+          <div className="flex space-x-2">
+            <Input
+              value={competitor}
+              onChange={(e) => setCompetitor(e.target.value)}
+              placeholder="Add a competitor"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleAddCompetitor();
+                }
+              }}
+            />
+            <Button type="button" onClick={handleAddCompetitor}>Add</Button>
+          </div>
+          
+          {competitors.length > 0 && (
+            <div className="mt-3">
+              <p className="text-sm mb-2">Added competitors:</p>
+              <div className="flex flex-wrap gap-2">
+                {competitors.map((comp) => (
+                  <div 
+                    key={comp} 
+                    className="bg-secondary text-secondary-foreground rounded-full px-3 py-1 text-sm flex items-center"
+                  >
+                    {comp}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveCompetitor(comp)}
                       className="ml-2 text-muted-foreground hover:text-foreground"
                     >
                       <X size={14} />

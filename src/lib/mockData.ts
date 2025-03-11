@@ -33,54 +33,57 @@ export const generateMockData = (brandData: BrandData) => {
 
 // Generate competitor data
 export const generateMockCompetitorData = (brandData: BrandData) => {
-  // Generate random competitor names based on industry
-  let competitorNames: string[] = [];
+  // Generate random competitor names based on industry if no user-provided competitors
+  let competitorNames: string[] = brandData.competitors || [];
   
-  switch (brandData.industry) {
-    case "Technology":
-      competitorNames = ["TechGiant", "InnovateCorp", "DigiSolutions", "ByteWave", "CloudNexus"];
-      break;
-    case "Retail & E-Commerce":
-      competitorNames = ["ShopEasy", "RetailPrime", "MegaStore", "QuickBuy", "ShopNow"];
-      break;
-    case "Healthcare & Pharma":
-      competitorNames = ["HealthPlus", "MediCare", "WellnessGroup", "VitalCare", "LifeHealth"];
-      break;
-    case "Finance & Insurance":
-      competitorNames = ["MoneyWise", "CapitalGroup", "InvestSmart", "WealthManage", "FinanceFirst"];
-      break;
-    case "Education & E-Learning":
-      competitorNames = ["EduLearn", "SchoolConnect", "KnowledgeHub", "SkillsAcademy", "LearningPath"];
-      break;
-    case "Entertainment & Media":
-      competitorNames = ["MediaMax", "EntertainNow", "StreamCentral", "ContentKing", "ViewersChoice"];
-      break;
-    case "Food & Beverage":
-      competitorNames = ["FoodDelight", "TastyBites", "FlavorFusion", "CulinaryMasters", "GourmetCorner"];
-      break;
-    case "Travel & Hospitality":
-      competitorNames = ["TravelEase", "JourneyMasters", "StayComfort", "ExploreMore", "VacationPro"];
-      break;
-    case "Automotive & Mobility":
-      competitorNames = ["DriveInnovate", "AutoTech", "MobilityPlus", "RideRevolution", "SpeedSolutions"];
-      break;
-    case "B2B & Enterprise Services":
-      competitorNames = ["EnterpriseHub", "B2BSolutions", "BusinessConnect", "CorpServices", "ProPartners"];
-      break;
-    case "Consumer Goods & CPG":
-      competitorNames = ["ConsumerChoice", "ProductPrime", "GoodsGalore", "EssentialsPlus", "PremiumProducts"];
-      break;
-    case "Energy & Sustainability":
-      competitorNames = ["GreenEnergy", "SustainPower", "EcoSolutions", "RenewableInc", "CleanTech"];
-      break;
-    case "Real Estate & PropTech":
-      competitorNames = ["PropertyPro", "RealtyTech", "HomeHub", "EstateInnovate", "SpaceConnect"];
-      break;
-    case "Legal & Compliance":
-      competitorNames = ["LegalEase", "CompliancePro", "LawPartners", "RegulatoryEdge", "LegalTech"];
-      break;
-    default:
-      competitorNames = ["Competitor A", "Competitor B", "Competitor C", "Competitor D", "Competitor E"];
+  // If no user-provided competitors, generate some based on industry
+  if (competitorNames.length === 0) {
+    switch (brandData.industry) {
+      case "Technology":
+        competitorNames = ["TechGiant", "InnovateCorp", "DigiSolutions", "ByteWave", "CloudNexus"];
+        break;
+      case "Retail & E-Commerce":
+        competitorNames = ["ShopEasy", "RetailPrime", "MegaStore", "QuickBuy", "ShopNow"];
+        break;
+      case "Healthcare & Pharma":
+        competitorNames = ["HealthPlus", "MediCare", "WellnessGroup", "VitalCare", "LifeHealth"];
+        break;
+      case "Finance & Insurance":
+        competitorNames = ["MoneyWise", "CapitalGroup", "InvestSmart", "WealthManage", "FinanceFirst"];
+        break;
+      case "Education & E-Learning":
+        competitorNames = ["EduLearn", "SchoolConnect", "KnowledgeHub", "SkillsAcademy", "LearningPath"];
+        break;
+      case "Entertainment & Media":
+        competitorNames = ["MediaMax", "EntertainNow", "StreamCentral", "ContentKing", "ViewersChoice"];
+        break;
+      case "Food & Beverage":
+        competitorNames = ["FoodDelight", "TastyBites", "FlavorFusion", "CulinaryMasters", "GourmetCorner"];
+        break;
+      case "Travel & Hospitality":
+        competitorNames = ["TravelEase", "JourneyMasters", "StayComfort", "ExploreMore", "VacationPro"];
+        break;
+      case "Automotive & Mobility":
+        competitorNames = ["DriveInnovate", "AutoTech", "MobilityPlus", "RideRevolution", "SpeedSolutions"];
+        break;
+      case "B2B & Enterprise Services":
+        competitorNames = ["EnterpriseHub", "B2BSolutions", "BusinessConnect", "CorpServices", "ProPartners"];
+        break;
+      case "Consumer Goods & CPG":
+        competitorNames = ["ConsumerChoice", "ProductPrime", "GoodsGalore", "EssentialsPlus", "PremiumProducts"];
+        break;
+      case "Energy & Sustainability":
+        competitorNames = ["GreenEnergy", "SustainPower", "EcoSolutions", "RenewableInc", "CleanTech"];
+        break;
+      case "Real Estate & PropTech":
+        competitorNames = ["PropertyPro", "RealtyTech", "HomeHub", "EstateInnovate", "SpaceConnect"];
+        break;
+      case "Legal & Compliance":
+        competitorNames = ["LegalEase", "CompliancePro", "LawPartners", "RegulatoryEdge", "LegalTech"];
+        break;
+      default:
+        competitorNames = ["Competitor A", "Competitor B", "Competitor C", "Competitor D", "Competitor E"];
+    }
   }
   
   // Generate random scores for competitors

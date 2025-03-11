@@ -15,6 +15,7 @@ export interface BrandData {
   name: string;
   industry: string;
   keywords: string[];
+  competitors?: string[];
   lastUpdated?: string;
 }
 
