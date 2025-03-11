@@ -45,9 +45,11 @@ export const OptimizationUpsells = ({ visibilityScore }: OptimizationUpsellsProp
               Your AI search ranking needs improvement
             </p>
           </div>
-          <Button component={Link} to="/optimize" className="w-full">
-            Optimize My Brand for AI Search
-          </Button>
+          <Link to="/optimize" className="w-full">
+            <Button className="w-full">
+              Optimize My Brand for AI Search
+            </Button>
+          </Link>
         </CardContent>
       </Card>
 
@@ -81,15 +83,15 @@ export const OptimizationUpsells = ({ visibilityScore }: OptimizationUpsellsProp
             <Badge variant="secondary">$99</Badge>
             <span className="text-sm text-muted-foreground">One-time purchase</span>
           </div>
-          <Button 
-            component={Link} 
-            to="/optimize" 
-            onClick={handleToolkitPurchase} 
-            variant="outline" 
-            className="w-full"
-          >
-            Get AI Optimization Toolkit
-          </Button>
+          <Link to="/optimize" className="w-full">
+            <Button 
+              onClick={handleToolkitPurchase} 
+              variant="outline" 
+              className="w-full"
+            >
+              Get AI Optimization Toolkit
+            </Button>
+          </Link>
         </CardContent>
       </Card>
 
@@ -115,15 +117,15 @@ export const OptimizationUpsells = ({ visibilityScore }: OptimizationUpsellsProp
             <Badge variant="secondary">$499</Badge>
             <span className="text-sm text-muted-foreground">60-min consultation</span>
           </div>
-          <Button 
-            component={Link} 
-            to="/optimize" 
-            onClick={handleBookCall} 
-            variant="default" 
-            className="w-full"
-          >
-            Book My AI Strategy Call
-          </Button>
+          <Link to="/optimize" className="w-full">
+            <Button 
+              onClick={handleBookCall} 
+              variant="default" 
+              className="w-full"
+            >
+              Book My AI Strategy Call
+            </Button>
+          </Link>
         </CardContent>
       </Card>
     </div>
