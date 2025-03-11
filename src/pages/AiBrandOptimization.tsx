@@ -57,18 +57,18 @@ const AiBrandOptimization = () => {
         {/* Key Offerings */}
         <section id="offerings" className="py-20">
           <Container>
-            <h2 className="text-3xl font-bold text-center mb-4">Key Optimization Services</h2>
+            <h2 className="text-3xl font-bold text-center mb-4">Key AI Brand Visibility Optimization Services</h2>
             <p className="text-lg text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
               Choose the right solution to boost your brand's visibility in AI search results
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <Card className="border-2 hover:border-primary/50 transition-all">
+              <Card className="border-2 hover:border-primary/50 transition-all flex flex-col">
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <CardTitle className="flex items-center gap-2">
                       <WandSparkles className="h-5 w-5 text-purple-500" />
-                      AI Content Optimization Toolkit
+                      AI Brand Visibility Optimization Toolkit
                     </CardTitle>
                     <Badge variant="secondary">$99</Badge>
                   </div>
@@ -76,7 +76,7 @@ const AiBrandOptimization = () => {
                     Step-by-step guides to structure your content for AI search
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="flex flex-col flex-grow">
                   <ul className="space-y-2 mb-6">
                     <li className="flex items-start gap-2">
                       <span className="text-primary">✓</span>
@@ -95,16 +95,18 @@ const AiBrandOptimization = () => {
                       <span>Self-implementation approach</span>
                     </li>
                   </ul>
-                  <Button 
-                    className="w-full"
-                    onClick={() => handlePurchase("content-toolkit", "AI Content Optimization Toolkit")}
-                  >
-                    Get Started For $99
-                  </Button>
+                  <div className="mt-auto">
+                    <Button 
+                      className="w-full"
+                      onClick={() => handlePurchase("content-toolkit", "AI Brand Visibility Optimization Toolkit")}
+                    >
+                      Get Started For $99
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
 
-              <Card className="border-2 hover:border-primary/50 transition-all">
+              <Card className="border-2 hover:border-primary/50 transition-all flex flex-col">
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <CardTitle className="flex items-center gap-2">
@@ -117,7 +119,7 @@ const AiBrandOptimization = () => {
                     Hands-on guidance to embed structured data
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="flex flex-col flex-grow">
                   <ul className="space-y-2 mb-6">
                     <li className="flex items-start gap-2">
                       <span className="text-primary">✓</span>
@@ -136,16 +138,18 @@ const AiBrandOptimization = () => {
                       <span>2 weeks of implementation support</span>
                     </li>
                   </ul>
-                  <Button 
-                    className="w-full"
-                    onClick={() => handlePurchase("faq-schema", "AI-Optimized FAQ & Schema")}
-                  >
-                    Get Started For $299
-                  </Button>
+                  <div className="mt-auto">
+                    <Button 
+                      className="w-full"
+                      onClick={() => handlePurchase("faq-schema", "AI-Optimized FAQ & Schema")}
+                    >
+                      Get Started For $299
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
 
-              <Card className="border-2 border-primary hover:border-primary/80 transition-all relative overflow-hidden">
+              <Card className="border-2 border-primary hover:border-primary/80 transition-all relative overflow-hidden flex flex-col">
                 <div className="absolute top-0 right-0">
                   <Badge className="rounded-none rounded-bl-lg animate-pulse" variant="destructive">
                     Only 5 spots left!
@@ -163,7 +167,7 @@ const AiBrandOptimization = () => {
                     1:1 Coaching & Custom strategy to rank in AI-driven search
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="flex flex-col flex-grow">
                   <ul className="space-y-2 mb-6">
                     <li className="flex items-start gap-2">
                       <span className="text-primary">✓</span>
@@ -182,13 +186,15 @@ const AiBrandOptimization = () => {
                       <span>4 weeks of implementation support</span>
                     </li>
                   </ul>
-                  <Button 
-                    variant="default" 
-                    className="w-full"
-                    onClick={handleBookConsultation}
-                  >
-                    Book My Strategy Call
-                  </Button>
+                  <div className="mt-auto">
+                    <Button 
+                      variant="default" 
+                      className="w-full"
+                      onClick={handleBookConsultation}
+                    >
+                      Book My Strategy Call
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             </div>

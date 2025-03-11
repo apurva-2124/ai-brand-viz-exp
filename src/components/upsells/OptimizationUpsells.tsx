@@ -30,30 +30,32 @@ export const OptimizationUpsells = ({ visibilityScore }: OptimizationUpsellsProp
   
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-      <Card className="relative overflow-hidden">
+      <Card className="relative overflow-hidden flex flex-col">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingDown className="h-5 w-5 text-red-500" />
-            AI Visibility Report
+            AI Brand Visibility Report
           </CardTitle>
           <CardDescription>Current AI Search Performance</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex flex-col flex-grow">
           <div className="mb-4">
             <div className="text-3xl font-bold mb-2">{visibilityScore}/100</div>
             <p className="text-red-600 font-medium">
               Your AI search ranking needs improvement
             </p>
           </div>
-          <Link to="/optimize" className="w-full">
-            <Button className="w-full">
-              Optimize My Brand for AI Search
-            </Button>
-          </Link>
+          <div className="mt-auto">
+            <Link to="/optimize" className="w-full">
+              <Button className="w-full">
+                Optimize My Brand for AI Search
+              </Button>
+            </Link>
+          </div>
         </CardContent>
       </Card>
 
-      <Card className="relative overflow-hidden">
+      <Card className="relative overflow-hidden flex flex-col">
         <div className="absolute top-2 right-2">
           <TooltipProvider>
             <Tooltip>
@@ -71,11 +73,11 @@ export const OptimizationUpsells = ({ visibilityScore }: OptimizationUpsellsProp
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <WandSparkles className="h-5 w-5 text-purple-500" />
-            AI Optimization Toolkit
+            AI Brand Visibility Optimization Toolkit
           </CardTitle>
           <CardDescription>Enhance Your AI Presence</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex flex-col flex-grow">
           <p className="mb-4 text-muted-foreground">
             Want to rank higher in AI search? Implement AI-optimized content strategies to improve your visibility.
           </p>
@@ -83,19 +85,21 @@ export const OptimizationUpsells = ({ visibilityScore }: OptimizationUpsellsProp
             <Badge variant="secondary">$99</Badge>
             <span className="text-sm text-muted-foreground">One-time purchase</span>
           </div>
-          <Link to="/optimize" className="w-full">
-            <Button 
-              onClick={handleToolkitPurchase} 
-              variant="outline" 
-              className="w-full"
-            >
-              Get AI Optimization Toolkit
-            </Button>
-          </Link>
+          <div className="mt-auto">
+            <Link to="/optimize" className="w-full">
+              <Button 
+                onClick={handleToolkitPurchase} 
+                variant="outline" 
+                className="w-full"
+              >
+                Get AI Brand Visibility Optimization Toolkit
+              </Button>
+            </Link>
+          </div>
         </CardContent>
       </Card>
 
-      <Card className="relative overflow-hidden border-2 border-primary">
+      <Card className="relative overflow-hidden border-2 border-primary flex flex-col">
         <div className="absolute top-2 right-2">
           <Badge variant="destructive" className="animate-pulse">
             <Clock className="h-3 w-3 mr-1" />
@@ -109,7 +113,7 @@ export const OptimizationUpsells = ({ visibilityScore }: OptimizationUpsellsProp
           </CardTitle>
           <CardDescription>Expert Guidance for Your Brand</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex flex-col flex-grow">
           <p className="mb-4 text-muted-foreground">
             Get personalized strategies to dominate AI search results with a dedicated AI visibility expert.
           </p>
@@ -117,15 +121,17 @@ export const OptimizationUpsells = ({ visibilityScore }: OptimizationUpsellsProp
             <Badge variant="secondary">$499</Badge>
             <span className="text-sm text-muted-foreground">60-min consultation</span>
           </div>
-          <Link to="/optimize" className="w-full">
-            <Button 
-              onClick={handleBookCall} 
-              variant="default" 
-              className="w-full"
-            >
-              Book My AI Strategy Call
-            </Button>
-          </Link>
+          <div className="mt-auto">
+            <Link to="/optimize" className="w-full">
+              <Button 
+                onClick={handleBookCall} 
+                variant="default" 
+                className="w-full"
+              >
+                Book My AI Strategy Call
+              </Button>
+            </Link>
+          </div>
         </CardContent>
       </Card>
     </div>

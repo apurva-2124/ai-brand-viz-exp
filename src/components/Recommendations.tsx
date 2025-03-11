@@ -11,6 +11,7 @@ import { KeywordRecommendationsCard } from "./recommendations/KeywordRecommendat
 import { ContentStrategyCard } from "./recommendations/ContentStrategyCard";
 import { RecommendationsSkeleton } from "./recommendations/RecommendationsSkeleton";
 import { RecommendationData } from "./recommendations/types";
+import { OptimizationUpsells } from "./upsells/OptimizationUpsells";
 
 interface RecommendationsProps {
   brandData: BrandData;
@@ -21,6 +22,9 @@ export const Recommendations = ({ brandData }: RecommendationsProps) => {
   const [recommendations, setRecommendations] = useState<RecommendationData | null>(null);
   const [useMockData, setUseMockData] = useState(false);
   const { toast } = useToast();
+
+  // Calculate a mock visibility score between 30 and 65
+  const visibilityScore = Math.floor(Math.random() * 35) + 30;
 
   const fetchData = async () => {
     setLoading(true);
@@ -93,7 +97,10 @@ export const Recommendations = ({ brandData }: RecommendationsProps) => {
         loading={loading}
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <h2 className="text-xl font-semibold mt-8">AI Brand Visibility Optimization</h2>
+      <OptimizationUpsells visibilityScore={visibilityScore} />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
         <VisibilityRecommendationsCard visibilityTips={recommendations.visibilityTips} />
         <KeywordRecommendationsCard keywordRecommendations={recommendations.keywordRecommendations} />
       </div>
