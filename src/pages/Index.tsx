@@ -48,7 +48,7 @@ const Index = () => {
                 </div>
                 <div className="mt-12 text-center">
                   <Button size="lg" onClick={() => setShowTracker(true)}>
-                    Check Your AI Brand Score
+                    Check Your AI Brand Visibility Score
                   </Button>
                 </div>
               </section>
