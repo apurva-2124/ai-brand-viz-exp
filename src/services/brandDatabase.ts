@@ -7,6 +7,7 @@ export const saveBrandData = async (data: BrandData): Promise<boolean> => {
   try {
     console.log("Attempting to save brand data to Supabase:", data);
     
+    // Restructuring the data to match the exact column names in Supabase
     const { error, data: insertedData } = await supabase
       .from('brand_submissions')
       .insert([{
@@ -54,6 +55,7 @@ export const getBrandSubmissions = async (): Promise<BrandData[]> => {
 
     console.log("Retrieved brand submissions:", data);
     
+    // Map the database column names to our application's data structure
     return data.map(submission => ({
       name: submission.brand_name,
       industry: submission.industry,
@@ -78,6 +80,16 @@ export const testDatabaseConnection = async (): Promise<boolean> => {
     console.log("Testing Supabase connection...");
     // Remove accessing protected supabaseUrl property
     console.log("Using Supabase configuration from environment");
+    
+    // First, check if all required columns exist in the table
+    console.log("Checking table schema...");
+    
+    // List of expected columns based on the table structure shown in the image
+    const requiredColumns = [
+      'id', 'brand_name', 'industry', 'keywords', 'email', 
+      'competitors', 'description', 'website', 'first_name', 
+      'last_name', 'submitted_at'
+    ];
     
     // First, check if we can connect to Supabase at all
     const { error: healthError } = await supabase.from('brand_submissions').select('count(*)');
@@ -109,20 +121,31 @@ export const testDatabaseConnection = async (): Promise<boolean> => {
     }
     
     // Now test a specific query to verify table structure
-    console.log("Checking table structure...");
-    const { error: tableError } = await supabase
-      .from('brand_submissions')
-      .select('brand_name, first_name, last_name')
-      .limit(1);
-      
-    if (tableError) {
-      console.error("Table structure test failed:", tableError);
-      
-      if (tableError.message.includes("column") && tableError.message.includes("does not exist")) {
-        toast.error("Table structure issue: Some columns are missing. Check console for details.");
-      } else {
-        toast.error(`Table structure issue: ${tableError.message}`);
+    console.log("Checking columns...");
+    
+    // Check for specific columns
+    try {
+      // Try to select all the columns we expect to need
+      const queryString = requiredColumns.join(', ');
+      const { error: tableError } = await supabase
+        .from('brand_submissions')
+        .select(queryString)
+        .limit(1);
+        
+      if (tableError) {
+        console.error("Table structure test failed:", tableError);
+        
+        if (tableError.message.includes("column") && tableError.message.includes("does not exist")) {
+          toast.error("Table structure issue: Some columns are missing. Check console for details.");
+          console.error("Missing columns in the brand_submissions table. Required columns:", requiredColumns);
+        } else {
+          toast.error(`Table structure issue: ${tableError.message}`);
+        }
+        return false;
       }
+    } catch (err) {
+      console.error("Error testing table structure:", err);
+      toast.error("Failed to validate table structure. See console for details.");
       return false;
     }
     
