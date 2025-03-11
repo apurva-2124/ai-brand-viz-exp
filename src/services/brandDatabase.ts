@@ -76,7 +76,8 @@ export const getBrandSubmissions = async (): Promise<BrandData[]> => {
 export const testDatabaseConnection = async (): Promise<boolean> => {
   try {
     console.log("Testing Supabase connection...");
-    console.log("Using Supabase URL:", supabase.supabaseUrl);
+    // Remove accessing protected supabaseUrl property
+    console.log("Using Supabase configuration from environment");
     
     // First, check if we can connect to Supabase at all
     const { error: healthError } = await supabase.from('brand_submissions').select('count(*)');
