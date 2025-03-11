@@ -15,6 +15,8 @@ export const saveBrandData = async (data: BrandData): Promise<boolean> => {
         competitors: data.competitors || [],
         description: data.description || '',
         website: data.website || '',
+        first_name: data.firstName,
+        last_name: data.lastName,
         submitted_at: new Date().toISOString()
       }]);
 

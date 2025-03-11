@@ -8,31 +8,27 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { BrandData } from "@/components/BrandTracker";
 import { X, Loader2 } from "lucide-react";
 
+interface BrandData {
+  name: string;
+  industry: string;
+  description?: string;
+  website?: string;
+  email: string;
+  keywords: string[];
+  competitors?: string[];
+  firstName: string;
+  lastName: string;
+}
+
 interface BrandInputFormProps {
   onSubmit: (data: BrandData) => void;
   isSubmitting?: boolean;
 }
 
-const INDUSTRIES = [
-  "Technology",
-  "Retail & E-Commerce",
-  "Healthcare & Pharma",
-  "Finance & Insurance",
-  "Education & E-Learning",
-  "Entertainment & Media",
-  "Food & Beverage",
-  "Travel & Hospitality",
-  "Automotive & Mobility",
-  "B2B & Enterprise Services",
-  "Consumer Goods & CPG",
-  "Energy & Sustainability",
-  "Real Estate & PropTech",
-  "Legal & Compliance",
-  "Other"
-];
-
 export const BrandInputForm = ({ onSubmit, isSubmitting = false }: BrandInputFormProps) => {
   const [brandName, setBrandName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [industry, setIndustry] = useState("");
   const [description, setDescription] = useState("");
   const [website, setWebsite] = useState("");
@@ -84,7 +80,7 @@ export const BrandInputForm = ({ onSubmit, isSubmitting = false }: BrandInputFor
     
     const isEmailValid = validateEmail(email);
     
-    if (brandName.trim() && industry && keywords.length > 0 && isEmailValid) {
+    if (brandName.trim() && industry && keywords.length > 0 && isEmailValid && firstName.trim() && lastName.trim()) {
       onSubmit({
         name: brandName.trim(),
         industry,
@@ -92,7 +88,9 @@ export const BrandInputForm = ({ onSubmit, isSubmitting = false }: BrandInputFor
         website,
         email,
         keywords,
-        competitors
+        competitors,
+        firstName: firstName.trim(),
+        lastName: lastName.trim()
       });
     }
   };
@@ -102,15 +100,27 @@ export const BrandInputForm = ({ onSubmit, isSubmitting = false }: BrandInputFor
       <h2 className="text-2xl font-bold mb-6 text-center">Enter Your Brand Information</h2>
       
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="brandName">Brand Name</Label>
-          <Input
-            id="brandName"
-            value={brandName}
-            onChange={(e) => setBrandName(e.target.value)}
-            placeholder="Enter your brand name"
-            required
-          />
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="firstName">First Name</Label>
+            <Input
+              id="firstName"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="John"
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="lastName">Last Name</Label>
+            <Input
+              id="lastName"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Doe"
+              required
+            />
+          </div>
         </div>
         
         <div className="space-y-2">
