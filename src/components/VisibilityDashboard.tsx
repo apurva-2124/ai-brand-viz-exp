@@ -48,12 +48,14 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
     try {
       const openAIKey = localStorage.getItem("openai_api_key");
       const anthropicKey = localStorage.getItem("anthropic_api_key");
+      const geminiKey = localStorage.getItem("gemini_api_key");
       
       const shouldUseMockData = 
         useMockData || 
         (provider === "openai" && !openAIKey) || 
         (provider === "anthropic" && !anthropicKey) ||
-        (provider === "both" && (!openAIKey || !anthropicKey));
+        (provider === "gemini" && !geminiKey) ||
+        (provider === "all" && (!openAIKey || !anthropicKey || !geminiKey));
       
       let data;
       
@@ -61,7 +63,7 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
         data = generateMockData(brandData);
         toast({
           title: "Using mock data",
-          description: provider !== "both" 
+          description: provider !== "all" 
             ? `No API key found for ${provider}. Using simulated data instead.` 
             : "Missing API keys. Using simulated data instead.",
         });
@@ -208,11 +210,18 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
                 Anthropic
               </Button>
               <Button 
-                variant={provider === "both" ? "secondary" : "outline"} 
+                variant={provider === "gemini" ? "secondary" : "outline"} 
                 size="sm"
-                onClick={() => setProvider("both")}
+                onClick={() => setProvider("gemini")}
               >
-                Both
+                Gemini
+              </Button>
+              <Button 
+                variant={provider === "all" ? "secondary" : "outline"} 
+                size="sm"
+                onClick={() => setProvider("all")}
+              >
+                All
               </Button>
             </div>
           )}
