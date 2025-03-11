@@ -9,8 +9,8 @@ import { Recommendations } from "@/components/Recommendations";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ApiSettings } from "@/components/ApiSettings";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import { saveBrandData } from "@/services/brandDatabase";
+import { ArrowLeft, Database } from "lucide-react";
+import { saveBrandData, testDatabaseConnection } from "@/services/brandDatabase";
 import { toast } from "sonner";
 
 export interface BrandData {
@@ -30,6 +30,7 @@ export const BrandTracker = () => {
   const [brandData, setBrandData] = useState<BrandData | null>(null);
   const [hasApiKeys, setHasApiKeys] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isTestingDb, setIsTestingDb] = useState(false);
   
   useEffect(() => {
     const openAIKey = localStorage.getItem("openai_api_key");
@@ -61,6 +62,15 @@ export const BrandTracker = () => {
       setIsSubmitting(false);
     }
   };
+  
+  const handleTestConnection = async () => {
+    setIsTestingDb(true);
+    try {
+      await testDatabaseConnection();
+    } finally {
+      setIsTestingDb(false);
+    }
+  };
 
   const ApiKeyPrompt = () => (
     <Card className="mb-6">
@@ -82,7 +92,7 @@ export const BrandTracker = () => {
 
   return (
     <Container className="py-8">
-      <div className="mb-6">
+      <div className="mb-6 flex justify-between items-center">
         <Button 
           variant="ghost" 
           size="sm" 
@@ -91,6 +101,17 @@ export const BrandTracker = () => {
         >
           <ArrowLeft className="h-4 w-4" />
           Start Over
+        </Button>
+        
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleTestConnection}
+          disabled={isTestingDb}
+          className="flex items-center gap-1"
+        >
+          <Database className="h-4 w-4" />
+          {isTestingDb ? "Testing..." : "Test DB Connection"}
         </Button>
       </div>
       
@@ -107,6 +128,9 @@ export const BrandTracker = () => {
               <p className="text-muted-foreground">Industry: {brandData.industry}</p>
               <p className="text-sm text-muted-foreground">
                 Last updated: {new Date(brandData.lastUpdated || "").toLocaleString()}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Submitted by: {brandData.firstName} {brandData.lastName}
               </p>
             </div>
             {!hasApiKeys && (
