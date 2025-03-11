@@ -20,14 +20,16 @@ export const saveBrandData = async (data: BrandData): Promise<boolean> => {
 
     if (error) {
       console.error("Error saving to Supabase:", error);
-      toast.error("Failed to save brand information");
+      toast.error(`Failed to save brand information: ${error.message}`);
       return false;
     }
 
     console.log("Brand data saved to Supabase successfully");
+    toast.success("Brand information saved successfully!");
     return true;
   } catch (error) {
     console.error("Error saving brand data:", error);
+    toast.error("Failed to connect to database. Please try again later.");
     return false;
   }
 };
