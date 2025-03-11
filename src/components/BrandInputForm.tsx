@@ -14,12 +14,19 @@ interface BrandInputFormProps {
 
 const INDUSTRIES = [
   "Technology",
-  "Retail",
-  "Healthcare",
-  "Finance",
-  "Education",
-  "Entertainment",
+  "Retail & E-Commerce",
+  "Healthcare & Pharma",
+  "Finance & Insurance",
+  "Education & E-Learning",
+  "Entertainment & Media",
   "Food & Beverage",
+  "Travel & Hospitality",
+  "Automotive & Mobility",
+  "B2B & Enterprise Services",
+  "Consumer Goods & CPG",
+  "Energy & Sustainability",
+  "Real Estate & PropTech",
+  "Legal & Compliance",
   "Other"
 ];
 
