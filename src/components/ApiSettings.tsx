@@ -5,9 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
-import { Settings, AlertTriangle, Zap, Globe, BarChart } from "lucide-react";
+import { Settings, AlertTriangle, Zap, Globe, BarChart, Lock } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Link } from "react-router-dom";
 
 export const ApiSettings = () => {
   const [openAIKey, setOpenAIKey] = useState("");
@@ -129,14 +130,33 @@ export const ApiSettings = () => {
           </TabsContent>
           
           <TabsContent value="marketing" className="space-y-4 py-4">
-            <Alert variant="default" className="mb-4">
+            <Card className="mb-4 border-2 border-primary/20">
+              <CardContent className="pt-6">
+                <div className="text-center space-y-4">
+                  <Lock className="h-10 w-10 text-primary mx-auto" />
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Marketing Tool Integrations</h3>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Unlock marketing tool integrations with our AI Brand Visibility Optimization Toolkit or higher plans
+                    </p>
+                    <Link to="/optimize" className="inline-block">
+                      <Button className="w-full">
+                        Upgrade to Access Marketing Tools
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Alert variant="default" className="mb-4 opacity-50">
               <AlertTriangle className="h-4 w-4" />
               <AlertDescription className="text-sm">
                 Marketing tool integrations are in beta. Some features may be limited.
               </AlertDescription>
             </Alert>
             
-            <div className="space-y-4">
+            <div className="space-y-4 opacity-50 pointer-events-none">
               <div className="space-y-2">
                 <label className="text-sm font-medium flex items-center gap-2">
                   <Zap className="h-4 w-4 text-yellow-500" />
@@ -147,6 +167,7 @@ export const ApiSettings = () => {
                   placeholder="Enter Google Ads API key"
                   value={googleAdsKey}
                   onChange={(e) => setGoogleAdsKey(e.target.value)}
+                  disabled
                 />
                 <p className="text-xs text-muted-foreground ml-6">
                   Track how AI-driven responses impact your paid search performance.
@@ -163,6 +184,7 @@ export const ApiSettings = () => {
                   placeholder="Enter SEMrush API key"
                   value={semrushKey}
                   onChange={(e) => setSemrushKey(e.target.value)}
+                  disabled
                 />
                 <p className="text-xs text-muted-foreground ml-6">
                   Compare AI search rankings with traditional SEO data.
@@ -179,6 +201,7 @@ export const ApiSettings = () => {
                   placeholder="Enter Ahrefs API key"
                   value={ahrefsKey}
                   onChange={(e) => setAhrefsKey(e.target.value)}
+                  disabled
                 />
                 <p className="text-xs text-muted-foreground ml-6">
                   Analyze backlinks that influence AI-generated citations.

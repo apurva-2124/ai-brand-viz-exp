@@ -5,11 +5,12 @@ import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { WandSparkles, Code, PhoneCall, TrendingUp, Rocket, Gem } from "lucide-react";
+import { WandSparkles, Code, PhoneCall, TrendingUp, Rocket, Gem, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { OptimizationCaseStudy } from "@/components/optimization/OptimizationCaseStudy";
 import { Testimonials } from "@/components/optimization/Testimonials";
 import { CheckoutForm } from "@/components/optimization/CheckoutForm";
+import { Link } from "react-router-dom";
 
 const AiBrandOptimization = () => {
   const { toast } = useToast();
@@ -40,6 +41,12 @@ const AiBrandOptimization = () => {
         {/* Hero Section */}
         <section className="py-20 bg-gradient-to-b from-primary/10 to-background">
           <Container>
+            <div className="flex items-center mb-8">
+              <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+                <ArrowLeft className="h-4 w-4" />
+                <span>Back to Home</span>
+              </Link>
+            </div>
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-4xl md:text-5xl font-bold mb-4 text-balance">
                 Optimize Your Brand for AI Search – Be Found, Not Forgotten
@@ -66,13 +73,15 @@ const AiBrandOptimization = () => {
               <Card className="border-2 hover:border-primary/50 transition-all flex flex-col">
                 <CardHeader>
                   <div className="flex justify-between items-start">
-                    <CardTitle className="flex items-center gap-2">
-                      <WandSparkles className="h-5 w-5 text-purple-500" />
-                      AI Brand Visibility Optimization Toolkit
+                    <CardTitle className="flex items-center gap-2 w-full">
+                      <div className="flex items-center gap-2 w-full justify-center">
+                        <WandSparkles className="h-5 w-5 text-purple-500" />
+                        <span className="text-center">AI Brand Visibility Optimization Toolkit</span>
+                      </div>
                     </CardTitle>
                     <Badge variant="secondary">$99</Badge>
                   </div>
-                  <CardDescription>
+                  <CardDescription className="text-center">
                     Step-by-step guides to structure your content for AI search
                   </CardDescription>
                 </CardHeader>
@@ -109,13 +118,15 @@ const AiBrandOptimization = () => {
               <Card className="border-2 hover:border-primary/50 transition-all flex flex-col">
                 <CardHeader>
                   <div className="flex justify-between items-start">
-                    <CardTitle className="flex items-center gap-2">
-                      <Code className="h-5 w-5 text-blue-500" />
-                      AI-Optimized FAQ & Schema
+                    <CardTitle className="flex items-center gap-2 w-full">
+                      <div className="flex items-center gap-2 w-full justify-center">
+                        <Code className="h-5 w-5 text-blue-500" />
+                        <span className="text-center">AI-Optimized FAQ & Schema</span>
+                      </div>
                     </CardTitle>
                     <Badge variant="secondary">$299</Badge>
                   </div>
-                  <CardDescription>
+                  <CardDescription className="text-center">
                     Hands-on guidance to embed structured data
                   </CardDescription>
                 </CardHeader>
@@ -157,13 +168,15 @@ const AiBrandOptimization = () => {
                 </div>
                 <CardHeader>
                   <div className="flex justify-between items-start">
-                    <CardTitle className="flex items-center gap-2">
-                      <PhoneCall className="h-5 w-5 text-green-500" />
-                      AI Search Visibility Accelerator
+                    <CardTitle className="flex items-center gap-2 w-full">
+                      <div className="flex items-center gap-2 w-full justify-center">
+                        <PhoneCall className="h-5 w-5 text-green-500" />
+                        <span className="text-center">AI Search Visibility Accelerator</span>
+                      </div>
                     </CardTitle>
                     <Badge variant="secondary">$499+</Badge>
                   </div>
-                  <CardDescription>
+                  <CardDescription className="text-center">
                     1:1 Coaching & Custom strategy to rank in AI-driven search
                   </CardDescription>
                 </CardHeader>
