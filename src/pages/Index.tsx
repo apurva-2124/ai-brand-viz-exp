@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Container } from "@/components/Container";
-import { Navbar } from "@/components/Navbar";
+import Navbar from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { BrandTracker } from "@/components/BrandTracker";
 import { useState } from "react";
