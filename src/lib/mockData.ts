@@ -73,3 +73,128 @@ function generateMockResponse(keyword: string, brandName: string, industry: stri
   
   return responses[Math.floor(Math.random() * responses.length)];
 }
+
+// Generate mock competitor data for the Competitor Analysis component
+export function generateMockCompetitorData(brandData: BrandData) {
+  // Use provided competitors if available, otherwise generate mock competitors
+  const competitors = brandData.competitors && brandData.competitors.length > 0 
+    ? brandData.competitors.map(name => ({
+        name,
+        score: Math.floor(Math.random() * 50) + 50 // Random score between 50-100
+      }))
+    : generateMockCompetitors(brandData.industry, 4);
+  
+  // Sort competitors by score in descending order
+  competitors.sort((a, b) => b.score - a.score);
+  
+  // Generate competitive keywords (where competitors score higher)
+  const competitiveKeywords = brandData.keywords
+    .slice(0, Math.min(3, brandData.keywords.length))
+    .map(keyword => ({
+      keyword,
+      yourScore: Math.floor(Math.random() * 40) + 30, // Score between 30-70
+      competitorScore: Math.floor(Math.random() * 30) + 70 // Score between 70-100
+    }));
+  
+  // Generate opportunity keywords (where your brand scores higher)
+  const opportunityKeywords = brandData.keywords
+    .slice(Math.min(3, brandData.keywords.length))
+    .map(keyword => ({
+      keyword,
+      yourScore: Math.floor(Math.random() * 30) + 70, // Score between 70-100
+      competitorScore: Math.floor(Math.random() * 40) + 30 // Score between 30-70
+    }));
+  
+  return {
+    competitors,
+    competitiveKeywords,
+    opportunityKeywords
+  };
+}
+
+// Generate mock recommendations based on brand data
+export function generateMockRecommendations(brandData: BrandData) {
+  // Generate visibility optimization tips
+  const visibilityTips = [
+    `Ensure your website has structured data with clear mentions of "${brandData.name}" alongside key terms like ${brandData.keywords.slice(0, 2).join(', ')}.`,
+    
+    `Create comprehensive FAQ pages that answer common questions about ${brandData.industry} products/services that include your brand name.`,
+    
+    `Develop case studies showcasing real-world applications of ${brandData.name} in the ${brandData.industry} sector.`,
+    
+    `Establish industry partnerships and cross-promotions to increase brand mentions across trusted domain networks.`
+  ];
+  
+  // Generate keyword recommendations
+  const keywordRecommendations = brandData.keywords.slice(0, 3).map(keyword => {
+    const reasons = [
+      `High search volume with relatively low competition in AI results.`,
+      `Strongly aligned with your brand positioning in "${brandData.industry}".`,
+      `Shows positive sentiment in AI search results.`,
+      `Opportunity to differentiate from competitors.`
+    ];
+    
+    return {
+      keyword,
+      reason: reasons[Math.floor(Math.random() * reasons.length)]
+    };
+  });
+  
+  // Generate content strategy recommendations
+  const contentStrategy = [
+    {
+      title: "Expert Commentary Content",
+      description: `Publish thought leadership content about "${brandData.keywords[0]}" that positions ${brandData.name} as an authority in ${brandData.industry}.`,
+      example: `"The Future of ${brandData.keywords[0]} in ${brandData.industry}: Insights from ${brandData.name}'s Research Team"`
+    },
+    {
+      title: "Comparison Content",
+      description: `Create detailed comparison guides that objectively show how ${brandData.name} performs against alternatives for key use cases.`,
+      example: `"${brandData.name} vs. Competitors: Which ${brandData.industry} Solution Is Right For Your Needs?"`
+    },
+    {
+      title: "Problem-Solution Content",
+      description: `Develop content addressing specific pain points in the ${brandData.industry} that ${brandData.name} solves.`,
+      example: `"How ${brandData.name} Solves the Top 5 Challenges in ${brandData.industry} Today"`
+    }
+  ];
+  
+  return {
+    visibilityTips,
+    keywordRecommendations,
+    contentStrategy
+  };
+}
+
+// Helper function to generate mock competitors based on industry
+function generateMockCompetitors(industry: string, count: number = 3) {
+  const industryCompetitors: Record<string, string[]> = {
+    "Technology": ["TechCorp", "InnovateTech", "NextGen Solutions", "ByteWave", "QuantumSoft"],
+    "Retail & E-Commerce": ["ShopNow", "RetailGiant", "MegaCart", "BuyQuick", "TrendMart"],
+    "Healthcare & Pharma": ["MediCare Plus", "HealthFirst", "VitalRx", "WellnessCorp", "CarePoint"],
+    "Finance & Insurance": ["SecureBank", "WealthGuard", "CapitalOne", "InsureTrust", "FinanceHub"],
+    "Education & E-Learning": ["EduLearn", "KnowledgeHub", "SmartClass", "LearningTree", "EduMasters"],
+    "Entertainment & Media": ["MediaMax", "EntertainNow", "StreamHub", "ContentKing", "ViewWave"],
+    "Food & Beverage": ["TastyBites", "FreshFoods", "GourmetGroup", "NutriFoods", "FlavorFest"],
+    "Travel & Hospitality": ["TravelEase", "GlobalStay", "JourneyMasters", "VacationPro", "StayWell"],
+    "Automotive & Mobility": ["AutoTech", "DriveInnovate", "MobilityNow", "RideNext", "AutoFuture"],
+    "B2B & Enterprise Services": ["EnterpriseHub", "B2BSolutions", "CorpServe", "BusinessPro", "EnterpriseTech"],
+    "Consumer Goods & CPG": ["ConsumerChoice", "GoodsDaily", "ProductPrime", "LifeGoods", "HomeEssentials"],
+    "Energy & Sustainability": ["GreenEnergy", "SustainPower", "EcoSource", "CleanTech", "RenewCorp"],
+    "Real Estate & PropTech": ["PropertyPro", "RealtyTech", "HomeHub", "SpaceSmart", "EstateInnovate"],
+    "Legal & Compliance": ["LegalEdge", "CompliancePro", "LawPartners", "RegulatePro", "LegalTech"],
+    "Other": ["MarketLeader", "IndustryPro", "TopProvider", "PrimeServices", "EliteOptions"]
+  };
+
+  // Get competitors for the specified industry or fall back to "Other"
+  const availableCompetitors = industryCompetitors[industry] || industryCompetitors["Other"];
+  
+  // Shuffle array to get random competitors
+  const shuffled = [...availableCompetitors].sort(() => 0.5 - Math.random());
+  
+  // Take the first few based on count
+  return shuffled.slice(0, count).map(name => ({
+    name,
+    score: Math.floor(Math.random() * 50) + 50 // Random score between 50-100
+  }));
+}
