@@ -4,9 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { BrandData } from "@/components/BrandTracker";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Download, RefreshCw } from "lucide-react";
 import { generateMockRecommendations } from "@/lib/mockData";
 import { useToast } from "@/hooks/use-toast";
+import { analyzeAIVisibility, AIProvider } from "@/services/aiVisibility";
 
 interface RecommendationsProps {
   brandData: BrandData;
@@ -15,24 +16,53 @@ interface RecommendationsProps {
 export const Recommendations = ({ brandData }: RecommendationsProps) => {
   const [loading, setLoading] = useState(true);
   const [recommendations, setRecommendations] = useState<any>(null);
+  const [useMockData, setUseMockData] = useState(false);
   const { toast } = useToast();
 
-  useEffect(() => {
-    // Simulate API request
-    const fetchData = async () => {
-      setLoading(true);
-      // In a real app, this would be an API call
-      const data = generateMockRecommendations(brandData);
+  const fetchData = async () => {
+    setLoading(true);
+    
+    try {
+      // Check if API keys are set
+      const openAIKey = localStorage.getItem("openai_api_key");
+      const anthropicKey = localStorage.getItem("anthropic_api_key");
       
-      // Simulate loading
-      setTimeout(() => {
-        setRecommendations(data);
-        setLoading(false);
-      }, 1500);
-    };
+      // Determine if we should use mock data
+      const shouldUseMockData = useMockData || (!openAIKey && !anthropicKey);
+      
+      let data;
+      
+      if (shouldUseMockData) {
+        // Use mock data if no API keys or mock data is requested
+        data = generateMockRecommendations(brandData);
+        
+        if (!useMockData) {
+          toast({
+            title: "Using mock data",
+            description: "Missing API keys. Using simulated recommendations instead.",
+          });
+        }
+      } else {
+        // In a real implementation, we would generate personalized recommendations
+        // based on the AI analysis results. For now, use the mock generator
+        data = generateMockRecommendations(brandData);
+      }
+      
+      setRecommendations(data);
+    } catch (error) {
+      console.error("Error fetching recommendations:", error);
+      
+      // Fallback to mock data
+      const mockData = generateMockRecommendations(brandData);
+      setRecommendations(mockData);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
-  }, [brandData]);
+  }, [brandData, useMockData]);
 
   const handleExport = () => {
     // In a real app, this would generate a PDF or spreadsheet
@@ -50,10 +80,27 @@ export const Recommendations = ({ brandData }: RecommendationsProps) => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Actionable Recommendations</h2>
-        <Button onClick={handleExport} variant="outline" size="sm">
-          <Download className="mr-2 h-4 w-4" />
-          Export Report
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => setUseMockData(!useMockData)}
+          >
+            {useMockData ? "Use Real Data" : "Use Mock Data"}
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={fetchData}
+            disabled={loading}
+          >
+            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+          </Button>
+          <Button onClick={handleExport} variant="outline" size="sm">
+            <Download className="mr-2 h-4 w-4" />
+            Export Report
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

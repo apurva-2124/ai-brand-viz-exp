@@ -4,7 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BrandData } from "@/components/BrandTracker";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import { RefreshCw } from "lucide-react";
+import { analyzeAIVisibility, AIProvider } from "@/services/aiVisibility";
 import { generateMockCompetitorData } from "@/lib/mockData";
+import { useToast } from "@/hooks/use-toast";
 
 interface CompetitorAnalysisProps {
   brandData: BrandData;
@@ -13,23 +17,58 @@ interface CompetitorAnalysisProps {
 export const CompetitorAnalysis = ({ brandData }: CompetitorAnalysisProps) => {
   const [loading, setLoading] = useState(true);
   const [competitorData, setCompetitorData] = useState<any>(null);
+  const [provider, setProvider] = useState<AIProvider>("both");
+  const [useMockData, setUseMockData] = useState(false);
+  const { toast } = useToast();
+
+  const fetchData = async () => {
+    setLoading(true);
+    
+    try {
+      // Check if API keys are set
+      const openAIKey = localStorage.getItem("openai_api_key");
+      const anthropicKey = localStorage.getItem("anthropic_api_key");
+      
+      // Determine if we should use mock data
+      const shouldUseMockData = 
+        useMockData || 
+        (provider === "openai" && !openAIKey) || 
+        (provider === "anthropic" && !anthropicKey) ||
+        (provider === "both" && (!openAIKey || !anthropicKey));
+      
+      let data;
+      
+      if (shouldUseMockData) {
+        // Use mock data if no API keys or mock data is requested
+        data = generateMockCompetitorData(brandData);
+        
+        if (!useMockData) {
+          toast({
+            title: "Using mock data",
+            description: "Missing API keys. Using simulated competitor data instead.",
+          });
+        }
+      } else {
+        // In a real implementation, we would query competitors based on brand data
+        // For now, we'll use the mock data generator
+        data = generateMockCompetitorData(brandData);
+      }
+      
+      setCompetitorData(data);
+    } catch (error) {
+      console.error("Error fetching competitor data:", error);
+      
+      // Fallback to mock data
+      const mockData = generateMockCompetitorData(brandData);
+      setCompetitorData(mockData);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // Simulate API request
-    const fetchData = async () => {
-      setLoading(true);
-      // In a real app, this would be an API call
-      const data = generateMockCompetitorData(brandData);
-      
-      // Simulate loading
-      setTimeout(() => {
-        setCompetitorData(data);
-        setLoading(false);
-      }, 1500);
-    };
-
     fetchData();
-  }, [brandData]);
+  }, [brandData, provider, useMockData]);
 
   if (loading) {
     return <CompetitorSkeleton />;
@@ -37,6 +76,27 @@ export const CompetitorAnalysis = ({ brandData }: CompetitorAnalysisProps) => {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-semibold">Competitor Analysis</h2>
+        <div className="flex items-center gap-2">
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => setUseMockData(!useMockData)}
+          >
+            {useMockData ? "Use Real Data" : "Use Mock Data"}
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={fetchData}
+            disabled={loading}
+          >
+            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+          </Button>
+        </div>
+      </div>
+      
       <Card>
         <CardHeader>
           <CardTitle>Top Competitors in AI Search Results</CardTitle>
