@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { CircleGauge, Info, ChevronDown, ChevronUp, Zap, Check, AlertTriangle } from "lucide-react";
 import { BrandData } from "@/components/BrandTracker";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface AIReadinessScoreProps {
   brandData: BrandData;
@@ -37,10 +38,16 @@ export const AIReadinessScore = ({ brandData, visibilityScore }: AIReadinessScor
 
   // Get the visibility tier
   const getVisibilityTier = (score: number) => {
-    if (score >= 80) return "High Visibility";
-    if (score >= 50) return "Moderate Visibility";
-    if (score >= 20) return "Low Visibility";
-    return "Emerging Visibility";
+    if (score >= 80) return "High AI Visibility";
+    if (score >= 50) return "Moderate AI Visibility";
+    return "Low AI Visibility";
+  };
+
+  // Get the visibility description
+  const getVisibilityDescription = (score: number) => {
+    if (score >= 80) return "Your brand has strong presence in AI responses";
+    if (score >= 50) return "Your brand appears in AI responses but needs optimization";
+    return "Your brand rarely appears in AI-generated responses";
   };
 
   // Generate recommendations based on scores
@@ -78,81 +85,110 @@ export const AIReadinessScore = ({ brandData, visibilityScore }: AIReadinessScor
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center">
-          <CircleGauge className="h-5 w-5 mr-2" />
-          AI Readiness Score
-        </CardTitle>
-        <CardDescription>
-          How well your brand is optimized for AI search engines
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="flex items-center justify-center my-4">
-          <div className={`text-5xl font-bold ${getScoreColor(readinessScore)}`}>
-            {readinessScore}%
+    <TooltipProvider>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <CircleGauge className="h-5 w-5" />
+            AI Readiness Score
+            <Tooltip>
+              <TooltipTrigger>
+                <Info className="h-4 w-4 text-muted-foreground" />
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                <p>Your score measures how visible your brand is in AI responses across ChatGPT, Gemini, and Perplexity. Based on brand mentions, keyword relevance, and how you compare to competitors.</p>
+              </TooltipContent>
+            </Tooltip>
+          </CardTitle>
+          <CardDescription>
+            How well your brand is optimized for AI search engines
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-center my-4">
+            <div className={`text-5xl font-bold ${getScoreColor(readinessScore)}`}>
+              {readinessScore}%
+            </div>
           </div>
-        </div>
-        
-        <Progress 
-          value={readinessScore} 
-          className={`h-2 mb-6 ${getProgressColor(readinessScore)}`} 
-        />
-        
-        <div className="mb-4 text-center text-sm">
-          <span className="font-medium">{getVisibilityTier(readinessScore)}</span>
-          <p className="text-muted-foreground mt-1">{positiveMessage}</p>
-        </div>
-        
-        <Alert variant="info" className="mb-4">
-          <Info className="h-4 w-4" />
-          <AlertDescription>
-            <span className="font-semibold">{brandData.name}</span> is {readinessScore}% optimized for AI search. 
-            {recommendations.length > 0 && " Here's what's missing:"}
-          </AlertDescription>
-        </Alert>
+          
+          <Progress 
+            value={readinessScore} 
+            className={`h-2 mb-6 ${getProgressColor(readinessScore)}`} 
+          />
+          
+          <div className="mb-4 text-center">
+            <span className="font-medium">{getVisibilityTier(readinessScore)}</span>
+            <p className="text-sm text-muted-foreground mt-1">{getVisibilityDescription(readinessScore)}</p>
+            <p className="text-sm font-medium mt-3">If AI assistants can't find your brand, your customers won't either.</p>
+          </div>
+          
+          <div className="bg-secondary/30 p-4 rounded-md mb-4">
+            <h4 className="text-sm font-medium mb-2">How This Score Is Calculated:</h4>
+            <ul className="text-sm space-y-1 text-muted-foreground">
+              <li className="flex items-center gap-2">
+                <span className="inline-block w-2 h-2 bg-primary rounded-full"></span>
+                AI Visibility: 50% (mentions in AI responses)
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="inline-block w-2 h-2 bg-primary rounded-full"></span>
+                Keyword Quality: 25% (relevance to your industry)
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="inline-block w-2 h-2 bg-primary rounded-full"></span>
+                Profile Completeness: 25% (brand details provided)
+              </li>
+            </ul>
+          </div>
+          
+          <Alert variant="info" className="mb-4">
+            <Info className="h-4 w-4" />
+            <AlertDescription>
+              <span className="font-semibold">{brandData.name}</span> is {readinessScore}% optimized for AI search. 
+              {recommendations.length > 0 && " Here's what's missing:"}
+            </AlertDescription>
+          </Alert>
 
-        {recommendations.length > 0 && (
-          <div className="space-y-4">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => setShowDetails(!showDetails)}
-              className="w-full flex justify-between"
-            >
-              <span>{showDetails ? "Hide Recommendations" : "What You Can Do"}</span>
-              {showDetails ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-            </Button>
-            
-            {showDetails && (
-              <div className="space-y-4">
-                <ul className="space-y-2">
-                  {recommendations.map((rec, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <Zap className="h-4 w-4 text-primary mt-1 flex-shrink-0" />
-                      <span className="text-sm">{rec}</span>
-                    </li>
-                  ))}
-                </ul>
-                
-                <div className="bg-green-50 p-3 rounded border border-green-100">
-                  <div className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm font-medium text-green-800">Quick Win</p>
-                      <p className="text-xs text-green-700">
-                        Create a FAQ page with questions your customers commonly ask about your products or services. 
-                        AI systems frequently pull from well-structured FAQ content.
-                      </p>
+          {recommendations.length > 0 && (
+            <div className="space-y-4">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setShowDetails(!showDetails)}
+                className="w-full flex justify-between"
+              >
+                <span>{showDetails ? "Hide Recommendations" : "What You Can Do"}</span>
+                {showDetails ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              </Button>
+              
+              {showDetails && (
+                <div className="space-y-4">
+                  <ul className="space-y-2">
+                    {recommendations.map((rec, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <Zap className="h-4 w-4 text-primary mt-1 flex-shrink-0" />
+                        <span className="text-sm">{rec}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  <div className="bg-green-50 p-3 rounded border border-green-100">
+                    <div className="flex items-start gap-2">
+                      <Check className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
+                      <div>
+                        <p className="text-sm font-medium text-green-800">Quick Win</p>
+                        <p className="text-xs text-green-700">
+                          Create a FAQ page with questions your customers commonly ask about your products or services. 
+                          AI systems frequently pull from well-structured FAQ content.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+              )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </TooltipProvider>
   );
 };
