@@ -78,21 +78,20 @@ export const getBrandSubmissions = async (): Promise<BrandData[]> => {
 export const testDatabaseConnection = async (): Promise<boolean> => {
   try {
     console.log("Testing Supabase connection...");
-    // Remove accessing protected supabaseUrl property
     console.log("Using Supabase configuration from environment");
     
-    // First, check if all required columns exist in the table
-    console.log("Checking table schema...");
-    
-    // List of expected columns based on the table structure shown in the image
+    // List of expected columns based on the table structure
     const requiredColumns = [
       'id', 'brand_name', 'industry', 'keywords', 'email', 
       'competitors', 'description', 'website', 'first_name', 
       'last_name', 'submitted_at'
     ];
     
-    // First, check if we can connect to Supabase at all
-    const { error: healthError } = await supabase.from('brand_submissions').select('count(*)');
+    // First, check if we can connect to Supabase and the table exists
+    // Fix the count query syntax issue
+    const { error: healthError } = await supabase
+      .from('brand_submissions')
+      .select('id', { count: 'exact', head: true });
     
     if (healthError) {
       console.error("Initial connection test failed:", healthError);
@@ -123,25 +122,35 @@ export const testDatabaseConnection = async (): Promise<boolean> => {
     // Now test a specific query to verify table structure
     console.log("Checking columns...");
     
-    // Check for specific columns
+    // Check for specific columns one by one instead of all at once
     try {
-      // Try to select all the columns we expect to need
-      const queryString = requiredColumns.join(', ');
-      const { error: tableError } = await supabase
+      // Try to select just the id column first to verify table exists
+      const { error: idCheckError } = await supabase
         .from('brand_submissions')
-        .select(queryString)
+        .select('id')
         .limit(1);
         
-      if (tableError) {
-        console.error("Table structure test failed:", tableError);
-        
-        if (tableError.message.includes("column") && tableError.message.includes("does not exist")) {
-          toast.error("Table structure issue: Some columns are missing. Check console for details.");
-          console.error("Missing columns in the brand_submissions table. Required columns:", requiredColumns);
-        } else {
-          toast.error(`Table structure issue: ${tableError.message}`);
-        }
+      if (idCheckError) {
+        console.error("Basic table check failed:", idCheckError);
+        toast.error(`Unable to access table: ${idCheckError.message}`);
         return false;
+      }
+      
+      // Now check each column individually to pinpoint which ones might be missing
+      for (const column of requiredColumns) {
+        const queryObj: Record<string, string> = {};
+        queryObj[column] = column;
+        
+        const { error: columnError } = await supabase
+          .from('brand_submissions')
+          .select(column)
+          .limit(1);
+          
+        if (columnError) {
+          console.error(`Column check failed for '${column}':`, columnError);
+          toast.error(`Table is missing column: ${column}`);
+          return false;
+        }
       }
     } catch (err) {
       console.error("Error testing table structure:", err);
