@@ -9,9 +9,10 @@ import { Recommendations } from "@/components/Recommendations";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ApiSettings } from "@/components/ApiSettings";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Database } from "lucide-react";
+import { AlertCircle, ArrowLeft, Database } from "lucide-react";
 import { saveBrandData, testDatabaseConnection } from "@/services/brandDatabase";
 import { toast } from "sonner";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export interface BrandData {
   name: string;
@@ -31,6 +32,7 @@ export const BrandTracker = () => {
   const [hasApiKeys, setHasApiKeys] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isTestingDb, setIsTestingDb] = useState(false);
+  const [dbConnectionStatus, setDbConnectionStatus] = useState<"untested" | "success" | "error">("untested");
   
   useEffect(() => {
     const openAIKey = localStorage.getItem("openai_api_key");
@@ -66,7 +68,8 @@ export const BrandTracker = () => {
   const handleTestConnection = async () => {
     setIsTestingDb(true);
     try {
-      await testDatabaseConnection();
+      const result = await testDatabaseConnection();
+      setDbConnectionStatus(result ? "success" : "error");
     } finally {
       setIsTestingDb(false);
     }
@@ -104,7 +107,7 @@ export const BrandTracker = () => {
         </Button>
         
         <Button
-          variant="outline"
+          variant={dbConnectionStatus === "error" ? "destructive" : "outline"}
           size="sm"
           onClick={handleTestConnection}
           disabled={isTestingDb}
@@ -114,6 +117,16 @@ export const BrandTracker = () => {
           {isTestingDb ? "Testing..." : "Test DB Connection"}
         </Button>
       </div>
+      
+      {dbConnectionStatus === "error" && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Database connection failed. Please check the Supabase setup and ensure the brand_submissions
+            table exists with the correct structure. Check the console for more details.
+          </AlertDescription>
+        </Alert>
+      )}
       
       {!brandData ? (
         <>

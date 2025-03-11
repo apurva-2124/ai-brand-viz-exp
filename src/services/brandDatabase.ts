@@ -72,28 +72,65 @@ export const getBrandSubmissions = async (): Promise<BrandData[]> => {
   }
 };
 
-// Test function to verify database connection
+// Enhanced database connection test with detailed logging
 export const testDatabaseConnection = async (): Promise<boolean> => {
   try {
     console.log("Testing Supabase connection...");
+    console.log("Using Supabase URL:", supabase.supabaseUrl);
     
-    const { error } = await supabase
-      .from('brand_submissions')
-      .select('count(*)')
-      .limit(1);
+    // First, check if we can connect to Supabase at all
+    const { error: healthError } = await supabase.from('brand_submissions').select('count(*)');
+    
+    if (healthError) {
+      console.error("Initial connection test failed:", healthError);
       
-    if (error) {
-      console.error("Database connection test failed:", error);
-      toast.error("Database connection test failed. Please check console for details.");
+      // Try to get more specific error information
+      if (healthError.code === "PGRST116") {
+        console.error("Table does not exist. Please make sure you've created the brand_submissions table.");
+        toast.error("The brand_submissions table doesn't exist. Please create it first.");
+        return false;
+      }
+      
+      if (healthError.code === "PGRST301") {
+        console.error("Permission denied. Check your RLS policies.");
+        toast.error("Permission denied. Check your Row Level Security policies in Supabase.");
+        return false;
+      }
+      
+      if (healthError.message.includes("Failed to fetch")) {
+        console.error("Network error. Check your internet connection or Supabase service status.");
+        toast.error("Network error. Check your internet connection or Supabase service status.");
+        return false;
+      }
+      
+      toast.error(`Database connection failed: ${healthError.message}`);
       return false;
     }
     
-    console.log("Database connection test successful!");
+    // Now test a specific query to verify table structure
+    console.log("Checking table structure...");
+    const { error: tableError } = await supabase
+      .from('brand_submissions')
+      .select('brand_name, first_name, last_name')
+      .limit(1);
+      
+    if (tableError) {
+      console.error("Table structure test failed:", tableError);
+      
+      if (tableError.message.includes("column") && tableError.message.includes("does not exist")) {
+        toast.error("Table structure issue: Some columns are missing. Check console for details.");
+      } else {
+        toast.error(`Table structure issue: ${tableError.message}`);
+      }
+      return false;
+    }
+    
+    console.log("Database connection and table structure verified successfully!");
     toast.success("Successfully connected to the Supabase database!");
     return true;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error testing database connection:", error);
-    toast.error("Failed to test database connection. Please try again later.");
+    toast.error(`Connection test failed: ${error?.message || "Unknown error"}`);
     return false;
   }
 };
