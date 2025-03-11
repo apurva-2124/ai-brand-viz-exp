@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BrandData } from "@/components/BrandTracker";
 import { X } from "lucide-react";
@@ -33,6 +34,8 @@ const INDUSTRIES = [
 export const BrandInputForm = ({ onSubmit }: BrandInputFormProps) => {
   const [brandName, setBrandName] = useState("");
   const [industry, setIndustry] = useState("");
+  const [description, setDescription] = useState("");
+  const [website, setWebsite] = useState("");
   const [keyword, setKeyword] = useState("");
   const [keywords, setKeywords] = useState<string[]>([]);
   const [competitor, setCompetitor] = useState("");
@@ -67,6 +70,8 @@ export const BrandInputForm = ({ onSubmit }: BrandInputFormProps) => {
       onSubmit({
         name: brandName.trim(),
         industry,
+        description,
+        website,
         keywords,
         competitors
       });
@@ -101,6 +106,28 @@ export const BrandInputForm = ({ onSubmit }: BrandInputFormProps) => {
               ))}
             </SelectContent>
           </Select>
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="description">Brand Description</Label>
+          <Textarea
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Describe your brand (minimum 100 characters for better AI analysis)"
+            rows={3}
+          />
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="website">Website URL</Label>
+          <Input
+            id="website"
+            type="url"
+            value={website}
+            onChange={(e) => setWebsite(e.target.value)}
+            placeholder="https://yourbrand.com"
+          />
         </div>
         
         <div className="space-y-2">
