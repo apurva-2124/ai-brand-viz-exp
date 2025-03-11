@@ -1,7 +1,7 @@
-
 import { BrandData } from "@/components/BrandTracker";
 import * as openAI from "./openai";
 import * as anthropic from "./anthropic";
+import * as gemini from "./gemini";
 import { 
   QueryType, 
   generateQueriesForKeywords, 
@@ -10,7 +10,8 @@ import {
   generateRecommendation 
 } from "@/utils/queryTransformer";
 
-export type AIProvider = "openai" | "anthropic" | "both";
+export type AIProvider = "openai" | "anthropic" | "gemini" | "all";
+
 export type VisibilityResult = {
   keyword: string;
   query: string;
@@ -34,7 +35,7 @@ export type VisibilityResult = {
 
 export async function analyzeAIVisibility(
   brandData: BrandData,
-  provider: AIProvider = "both",
+  provider: AIProvider = "all",
   queryType: QueryType = "best-in-class"
 ): Promise<{
   results: VisibilityResult[];
@@ -54,14 +55,11 @@ export async function analyzeAIVisibility(
   
   try {
     // Run OpenAI analysis if requested
-    if (provider === "openai" || provider === "both") {
+    if (provider === "openai" || provider === "all") {
       const openAIResults = await openAI.analyzeBrandVisibility(brandData, queries);
       results = results.concat(
         openAIResults.map(result => {
-          // Enhanced scoring
           const visibilityScore = scoreVisibility(result.response, brandData.name);
-          
-          // Competitor analysis
           const competitorAnalysis = analyzeCompetitors(
             result.response, 
             brandData.name, 
@@ -80,14 +78,11 @@ export async function analyzeAIVisibility(
     }
     
     // Run Anthropic analysis if requested
-    if (provider === "anthropic" || provider === "both") {
+    if (provider === "anthropic" || provider === "all") {
       const anthropicResults = await anthropic.analyzeBrandVisibility(brandData, queries);
       results = results.concat(
         anthropicResults.map(result => {
-          // Enhanced scoring
           const visibilityScore = scoreVisibility(result.response, brandData.name);
-          
-          // Competitor analysis
           const competitorAnalysis = analyzeCompetitors(
             result.response, 
             brandData.name, 
@@ -97,6 +92,29 @@ export async function analyzeAIVisibility(
           return { 
             ...result, 
             provider: "Anthropic",
+            visibilityScore,
+            competitorAnalysis,
+            recommendation: generateRecommendation(visibilityScore.level)
+          };
+        })
+      );
+    }
+    
+    // Run Gemini analysis if requested
+    if (provider === "gemini" || provider === "all") {
+      const geminiResults = await gemini.analyzeBrandVisibility(brandData, queries);
+      results = results.concat(
+        geminiResults.map(result => {
+          const visibilityScore = scoreVisibility(result.response, brandData.name);
+          const competitorAnalysis = analyzeCompetitors(
+            result.response, 
+            brandData.name, 
+            brandData.competitors
+          );
+          
+          return { 
+            ...result, 
+            provider: "Gemini",
             visibilityScore,
             competitorAnalysis,
             recommendation: generateRecommendation(visibilityScore.level)
