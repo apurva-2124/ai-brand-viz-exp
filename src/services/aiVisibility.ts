@@ -3,10 +3,12 @@
 import { BrandData } from "@/components/BrandTracker";
 import * as openAI from "./openai";
 import * as anthropic from "./anthropic";
+import { QueryType, generateQueriesForKeywords } from "@/utils/queryTransformer";
 
 export type AIProvider = "openai" | "anthropic" | "both";
 export type VisibilityResult = {
   keyword: string;
+  query: string;
   response: string;
   hasBrandMention: boolean;
   isProminent: boolean;
@@ -15,7 +17,8 @@ export type VisibilityResult = {
 
 export async function analyzeAIVisibility(
   brandData: BrandData,
-  provider: AIProvider = "both"
+  provider: AIProvider = "both",
+  queryType: QueryType = "best-in-class"
 ): Promise<{
   results: VisibilityResult[];
   overallScore: number;
@@ -23,13 +26,17 @@ export async function analyzeAIVisibility(
   vagueMentions: number;
   notFound: number;
   keywordStrength: { keyword: string; score: number }[];
+  queries: Array<{ keyword: string; query: string }>;
 }> {
   let results: VisibilityResult[] = [];
+  
+  // Generate conversational queries for all keywords
+  const queries = generateQueriesForKeywords(brandData, queryType);
   
   try {
     // Run OpenAI analysis if requested
     if (provider === "openai" || provider === "both") {
-      const openAIResults = await openAI.analyzeBrandVisibility(brandData);
+      const openAIResults = await openAI.analyzeBrandVisibility(brandData, queries);
       results = results.concat(
         openAIResults.map(result => ({ ...result, provider: "OpenAI" }))
       );
@@ -37,7 +44,7 @@ export async function analyzeAIVisibility(
     
     // Run Anthropic analysis if requested
     if (provider === "anthropic" || provider === "both") {
-      const anthropicResults = await anthropic.analyzeBrandVisibility(brandData);
+      const anthropicResults = await anthropic.analyzeBrandVisibility(brandData, queries);
       results = results.concat(
         anthropicResults.map(result => ({ ...result, provider: "Anthropic" }))
       );
@@ -91,7 +98,8 @@ export async function analyzeAIVisibility(
       prominentMentions,
       vagueMentions,
       notFound,
-      keywordStrength
+      keywordStrength,
+      queries
     };
   } catch (error) {
     console.error("Error analyzing AI visibility:", error);

@@ -11,7 +11,7 @@ interface OpenAIResponse {
   }[];
 }
 
-export async function queryOpenAI(keyword: string, brand: string): Promise<string> {
+export async function queryOpenAI(keyword: string, query: string, brand: string): Promise<string> {
   try {
     const apiKey = localStorage.getItem('openai_api_key');
     
@@ -34,7 +34,7 @@ export async function queryOpenAI(keyword: string, brand: string): Promise<strin
           },
           {
             role: 'user',
-            content: `Tell me about ${keyword}`
+            content: query
           }
         ],
         temperature: 0.7,
@@ -55,17 +55,21 @@ export async function queryOpenAI(keyword: string, brand: string): Promise<strin
   }
 }
 
-export async function analyzeBrandVisibility(brandData: BrandData): Promise<{
+export async function analyzeBrandVisibility(
+  brandData: BrandData, 
+  queries: Array<{ keyword: string; query: string }>
+): Promise<{
   keyword: string;
+  query: string;
   response: string;
   hasBrandMention: boolean;
   isProminent: boolean;
 }[]> {
   const results = [];
   
-  for (const keyword of brandData.keywords) {
+  for (const { keyword, query } of queries) {
     try {
-      const response = await queryOpenAI(keyword, brandData.name);
+      const response = await queryOpenAI(keyword, query, brandData.name);
       const hasBrandMention = response.toLowerCase().includes(brandData.name.toLowerCase());
       
       // Check if brand appears in the first third of the response for prominence
@@ -74,6 +78,7 @@ export async function analyzeBrandVisibility(brandData: BrandData): Promise<{
       
       results.push({
         keyword,
+        query,
         response,
         hasBrandMention,
         isProminent
@@ -83,6 +88,7 @@ export async function analyzeBrandVisibility(brandData: BrandData): Promise<{
       // Add failed result
       results.push({
         keyword,
+        query,
         response: 'Failed to analyze',
         hasBrandMention: false,
         isProminent: false

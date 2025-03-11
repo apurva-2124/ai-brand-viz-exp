@@ -7,8 +7,6 @@ import { VisibilityDashboard } from "@/components/VisibilityDashboard";
 import { CompetitorAnalysis } from "@/components/CompetitorAnalysis";
 import { Recommendations } from "@/components/Recommendations";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Settings } from "lucide-react";
 import { ApiSettings } from "@/components/ApiSettings";
 
 export interface BrandData {

@@ -1,14 +1,16 @@
 
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, RefreshCw } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BrandData } from "@/components/BrandTracker";
 import { analyzeAIVisibility, AIProvider } from "@/services/aiVisibility";
+import { QueryType } from "@/utils/queryTransformer";
 import { generateMockData } from "@/lib/mockData";
 import { useToast } from "@/hooks/use-toast";
 
@@ -16,11 +18,25 @@ interface VisibilityDashboardProps {
   brandData: BrandData;
 }
 
+const QUERY_TYPES: { value: QueryType; label: string }[] = [
+  { value: "best-in-class", label: "Best-in-Class (Category-Level)" },
+  { value: "feature-specific", label: "Feature-Specific" },
+  { value: "comparison", label: "Comparison Query" },
+  { value: "review-based", label: "Review-Based Query" },
+  { value: "transactional", label: "Transactional Intent" },
+  { value: "ai-summarized", label: "AI Summarized Answer Query" },
+  { value: "localized", label: "Localized Query (Location-Based)" },
+  { value: "ai-assistant", label: "AI Assistant Query (Conversational Search)" },
+  { value: "negative-sentiment", label: "Negative Sentiment Query (Reputation Risk)" },
+  { value: "industry-trend", label: "Industry Trend Query (Thought Leadership)" },
+];
+
 export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [visibilityData, setVisibilityData] = useState<any>(null);
   const [provider, setProvider] = useState<AIProvider>("openai");
+  const [queryType, setQueryType] = useState<QueryType>("best-in-class");
   const [useMockData, setUseMockData] = useState(false);
   const { toast } = useToast();
 
@@ -52,8 +68,8 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
             : "Missing API keys. Using simulated data instead.",
         });
       } else {
-        // Use real API data
-        data = await analyzeAIVisibility(brandData, provider);
+        // Use real API data with the selected query type
+        data = await analyzeAIVisibility(brandData, provider, queryType);
       }
       
       setVisibilityData(data);
@@ -71,7 +87,7 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
 
   useEffect(() => {
     fetchData();
-  }, [brandData, provider, useMockData]);
+  }, [brandData, provider, useMockData, queryType]);
 
   if (loading) {
     return <DashboardSkeleton />;
@@ -89,9 +105,31 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
           <h2 className="text-xl font-semibold">AI Visibility Results</h2>
+          <p className="text-sm text-muted-foreground">
+            See how your brand appears in AI responses
+          </p>
+        </div>
+        
+        <div className="flex flex-wrap items-center gap-2">
+          <Select 
+            value={queryType} 
+            onValueChange={(value) => setQueryType(value as QueryType)}
+          >
+            <SelectTrigger className="w-[220px]">
+              <SelectValue placeholder="Select query type" />
+            </SelectTrigger>
+            <SelectContent>
+              {QUERY_TYPES.map((type) => (
+                <SelectItem key={type.value} value={type.value}>
+                  {type.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          
           {!useMockData && (
             <div className="flex space-x-1">
               <Button 
@@ -117,8 +155,7 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
               </Button>
             </div>
           )}
-        </div>
-        <div className="flex items-center gap-2">
+          
           <Button 
             variant="outline" 
             size="sm"
@@ -143,6 +180,30 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
+      )}
+
+      {/* Query Preview Card */}
+      {visibilityData.queries && (
+        <Card>
+          <CardHeader>
+            <CardTitle>AI Search Queries</CardTitle>
+            <CardDescription>
+              Your keywords transformed into natural language queries that AI systems respond to
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {visibilityData.queries.map((item: { keyword: string; query: string }, index: number) => (
+                <div key={index} className="border rounded-md p-3 bg-secondary/20">
+                  <div className="text-xs text-muted-foreground mb-1">Keyword:</div>
+                  <div className="font-medium mb-2">{item.keyword}</div>
+                  <div className="text-xs text-muted-foreground mb-1">Transformed Query:</div>
+                  <div className="text-sm">{item.query}</div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -251,7 +312,7 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
             <div className="space-y-6">
               {visibilityData.results.slice(0, 5).map((result: any, index: number) => (
                 <div key={index} className="border rounded-lg p-4">
-                  <div className="flex justify-between mb-2">
+                  <div className="flex flex-wrap justify-between mb-2">
                     <div>
                       <span className="font-medium">{result.keyword}</span>
                       <span className="text-xs ml-2 text-muted-foreground">via {result.provider}</span>
@@ -271,6 +332,9 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
                             : "Not Found"}
                       </span>
                     </div>
+                  </div>
+                  <div className="text-sm text-muted-foreground mb-2">
+                    <strong>Query:</strong> {result.query}
                   </div>
                   <div className="bg-secondary/50 p-3 rounded text-sm max-h-40 overflow-y-auto">
                     <p>{result.response}</p>
