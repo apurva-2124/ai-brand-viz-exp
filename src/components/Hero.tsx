@@ -13,14 +13,17 @@ export const Hero = ({ onGetStarted }: HeroProps) => {
       <Container>
         <div className="max-w-3xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
-            Track Your Brand's Visibility in AI Search
+            AI Search Is Replacing Traditional SEO
           </h1>
-          <p className="text-xl text-muted-foreground mb-8">
-            Monitor how your brand appears in AI platforms like ChatGPT and Claude, and get insights to improve your visibility.
+          <p className="text-xl text-muted-foreground mb-4">
+            Google SEO tracks your rankings. Optimly AI tracks your visibility in ChatGPT, Gemini, and Perplexity.
           </p>
-          <div className="flex justify-center gap-4">
-            <Button size="lg" onClick={onGetStarted}>
-              Get Started
+          <p className="text-xl font-medium mb-8 text-primary">
+            If AI can't find you, customers can't either.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Button size="lg" onClick={onGetStarted} className="bg-primary hover:bg-primary/90">
+              Try the AI Visibility Audit
             </Button>
             <Link to="/optimize">
               <Button size="lg" variant="outline">

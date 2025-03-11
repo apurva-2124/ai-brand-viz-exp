@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Container } from "@/components/Container";
@@ -7,6 +8,8 @@ import { BrandTracker } from "@/components/BrandTracker";
 import { useState } from "react";
 import { Zap, Eye, BarChart3 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { ComparisonTable } from "@/components/ComparisonTable";
+import { CtaSection } from "@/components/CtaSection";
 
 const Index = () => {
   const [showTracker, setShowTracker] = useState(false);
@@ -20,6 +23,7 @@ const Index = () => {
             <Hero 
               onGetStarted={() => setShowTracker(true)}
             />
+            <ComparisonTable />
             <Container>
               <section className="py-20">
                 <h2 className="text-3xl font-bold text-center mb-12">How AI Visibility Tracking Works</h2>
@@ -46,20 +50,9 @@ const Index = () => {
                     <p className="text-muted-foreground">Get actionable insights to improve your brand's visibility in AI responses.</p>
                   </Card>
                 </div>
-                <div className="mt-12 text-center space-y-4">
-                  <Button size="lg" onClick={() => setShowTracker(true)}>
-                    Check Your AI Brand Visibility Score
-                  </Button>
-                  <div>
-                    <Link to="/optimize" className="inline-block">
-                      <Button variant="link" className="text-primary">
-                        Learn about our AI Brand Visibility Optimization Services →
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
               </section>
             </Container>
+            <CtaSection onGetStarted={() => setShowTracker(true)} />
           </>
         ) : (
           <BrandTracker />
