@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -13,6 +12,7 @@ import { analyzeAIVisibility, AIProvider } from "@/services/aiVisibility";
 import { QueryType } from "@/utils/queryTransformer";
 import { generateMockData } from "@/lib/mockData";
 import { useToast } from "@/hooks/use-toast";
+import { AIvsTraditionalComparison } from "@/components/AIvsTraditionalComparison";
 
 interface VisibilityDashboardProps {
   brandData: BrandData;
@@ -45,11 +45,9 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
     setError(null);
     
     try {
-      // Check if API keys are set
       const openAIKey = localStorage.getItem("openai_api_key");
       const anthropicKey = localStorage.getItem("anthropic_api_key");
       
-      // Determine if we should use mock data
       const shouldUseMockData = 
         useMockData || 
         (provider === "openai" && !openAIKey) || 
@@ -59,7 +57,6 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
       let data;
       
       if (shouldUseMockData) {
-        // Use mock data if no API keys or mock data is requested
         data = generateMockData(brandData);
         toast({
           title: "Using mock data",
@@ -68,7 +65,6 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
             : "Missing API keys. Using simulated data instead.",
         });
       } else {
-        // Use real API data with the selected query type
         data = await analyzeAIVisibility(brandData, provider, queryType);
       }
       
@@ -77,7 +73,6 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
       console.error("Error fetching visibility data:", error);
       setError("Failed to analyze AI visibility. Please check your API keys and try again.");
       
-      // Fallback to mock data
       const mockData = generateMockData(brandData);
       setVisibilityData(mockData);
     } finally {
@@ -93,10 +88,8 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
     return <DashboardSkeleton />;
   }
 
-  // The overall visibility score (0-100)
   const overallScore = visibilityData.overallScore;
   
-  // Color based on score
   const getScoreColor = (score: number) => {
     if (score >= 70) return "bg-green-500";
     if (score >= 40) return "bg-yellow-500";
@@ -182,7 +175,13 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
         </Alert>
       )}
 
-      {/* Query Preview Card */}
+      {visibilityData && !loading && !error && (
+        <AIvsTraditionalComparison 
+          brandData={brandData} 
+          aiResults={visibilityData} 
+        />
+      )}
+
       {visibilityData.queries && (
         <Card>
           <CardHeader>
