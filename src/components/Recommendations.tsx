@@ -97,15 +97,18 @@ export const Recommendations = ({ brandData }: RecommendationsProps) => {
         loading={loading}
       />
 
-      <h2 className="text-xl font-semibold mt-8">AI Brand Visibility Optimization</h2>
-      <OptimizationUpsells visibilityScore={visibilityScore} />
+      <h2 className="text-xl font-semibold mt-8">Recommended Improvements</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <VisibilityRecommendationsCard visibilityTips={recommendations.visibilityTips} />
         <KeywordRecommendationsCard keywordRecommendations={recommendations.keywordRecommendations} />
       </div>
 
       <ContentStrategyCard contentStrategies={recommendations.contentStrategy} />
+      
+      {/* AI Optimization Upsells moved to the bottom of the page */}
+      <h2 className="text-xl font-semibold mt-12">AI Brand Visibility Optimization</h2>
+      <OptimizationUpsells visibilityScore={visibilityScore} />
     </div>
   );
 };

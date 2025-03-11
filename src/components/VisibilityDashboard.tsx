@@ -14,7 +14,6 @@ import { generateMockData } from "@/lib/mockData";
 import { useToast } from "@/hooks/use-toast";
 import { AIvsTraditionalComparison } from "@/components/AIvsTraditionalComparison";
 import { AIReadinessScore } from "@/components/AIReadinessScore";
-import { OptimizationUpsells } from "@/components/upsells/OptimizationUpsells";
 
 interface VisibilityDashboardProps {
   brandData: BrandData;
@@ -284,7 +283,6 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
             </Alert>
           )}
 
-          {/* Updated metrics grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="md:col-span-2">
               <CardHeader>
@@ -309,9 +307,6 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
               visibilityScore={overallScore} 
             />
           </div>
-
-          {/* Add new Upsells section */}
-          <OptimizationUpsells visibilityScore={overallScore} />
 
           <AIvsTraditionalComparison 
             brandData={brandData} 

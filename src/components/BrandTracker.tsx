@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Container } from "@/components/Container";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -30,7 +29,6 @@ export const BrandTracker = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   useEffect(() => {
-    // Check if API keys are set
     const openAIKey = localStorage.getItem("openai_api_key");
     const anthropicKey = localStorage.getItem("anthropic_api_key");
     setHasApiKeys(!!(openAIKey || anthropicKey));
@@ -40,13 +38,11 @@ export const BrandTracker = () => {
     setIsSubmitting(true);
     
     try {
-      // Add timestamp
       const updatedData = {
         ...data,
         lastUpdated: new Date().toISOString()
       };
       
-      // Save to database
       const saveResult = await saveBrandData(updatedData);
       
       if (saveResult) {
