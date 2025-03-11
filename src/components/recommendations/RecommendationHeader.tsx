@@ -19,7 +19,7 @@ export const RecommendationHeader = ({
 }: RecommendationHeaderProps) => {
   return (
     <div className="flex justify-between items-center">
-      <h2 className="text-xl font-semibold">Actionable Recommendations</h2>
+      <div className="flex-1"></div> {/* Empty div for spacing */}
       <div className="flex items-center gap-2">
         <Button 
           variant="outline" 

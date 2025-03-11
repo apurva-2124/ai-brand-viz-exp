@@ -106,9 +106,14 @@ export const Recommendations = ({ brandData }: RecommendationsProps) => {
 
       <ContentStrategyCard contentStrategies={recommendations.contentStrategy} />
       
-      {/* AI Optimization Upsells moved to the bottom of the page */}
-      <h2 className="text-xl font-semibold mt-12">AI Brand Visibility Optimization</h2>
-      <OptimizationUpsells visibilityScore={visibilityScore} />
+      {/* AI Optimization Upsells section at the bottom */}
+      <div className="mt-16 pb-8">
+        <h2 className="text-3xl font-bold text-center mb-4">Key AI Brand Visibility Optimization Services</h2>
+        <p className="text-lg text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
+          Choose the right solution to boost your brand's visibility in AI search results
+        </p>
+        <OptimizationUpsells visibilityScore={visibilityScore} />
+      </div>
     </div>
   );
 };

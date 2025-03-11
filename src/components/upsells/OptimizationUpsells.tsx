@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { TrendingDown, WandSparkles, PhoneCall, Info, Clock } from "lucide-react";
+import { WandSparkles, Code, PhoneCall, Info, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 
@@ -29,106 +29,138 @@ export const OptimizationUpsells = ({ visibilityScore }: OptimizationUpsellsProp
   };
   
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-      <Card className="relative overflow-hidden flex flex-col">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+      <Card className="border-2 hover:border-primary/50 transition-all flex flex-col">
         <CardHeader>
-          <CardTitle className="flex items-center justify-center gap-2 text-center">
-            <TrendingDown className="h-5 w-5 text-red-500" />
-            AI Brand Visibility Report
-          </CardTitle>
-          <CardDescription className="text-center">Current AI Search Performance</CardDescription>
+          <div className="flex justify-between items-start">
+            <CardTitle className="flex items-center gap-2 w-full">
+              <div className="flex items-center gap-2 w-full justify-center">
+                <WandSparkles className="h-5 w-5 text-purple-500" />
+                <span className="text-center">AI Brand Visibility Optimization Toolkit</span>
+              </div>
+            </CardTitle>
+            <Badge variant="secondary">$99</Badge>
+          </div>
+          <CardDescription className="text-center">
+            Step-by-step guides to structure your content for AI search
+          </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col flex-grow">
-          <div className="mb-4 text-center">
-            <div className="text-3xl font-bold mb-2">{visibilityScore}/100</div>
-            <p className="text-red-600 font-medium">
-              Your AI search ranking needs improvement
-            </p>
-          </div>
+          <ul className="space-y-2 mb-6">
+            <li className="flex items-start gap-2">
+              <span className="text-primary">✓</span>
+              <span>AI-optimized content templates</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-primary">✓</span>
+              <span>Keyword research methodology</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-primary">✓</span>
+              <span>Content structure guidelines</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-primary">✓</span>
+              <span>Self-implementation approach</span>
+            </li>
+          </ul>
           <div className="mt-auto">
             <Link to="/optimize" className="w-full">
               <Button className="w-full">
-                Optimize My Brand for AI Search
+                Get Started For $99
               </Button>
             </Link>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="relative overflow-hidden flex flex-col">
-        <div className="absolute top-2 right-2">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <Info className="h-4 w-4 text-muted-foreground" />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="max-w-xs">
-                  AI-optimized content strategies can significantly improve your brand's visibility in AI search results
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
+      <Card className="border-2 hover:border-primary/50 transition-all flex flex-col">
         <CardHeader>
-          <CardTitle className="flex items-center justify-center gap-2 text-center">
-            <WandSparkles className="h-5 w-5 text-purple-500" />
-            AI Brand Visibility Optimization Toolkit
-          </CardTitle>
-          <CardDescription className="text-center">Enhance Your AI Presence</CardDescription>
+          <div className="flex justify-between items-start">
+            <CardTitle className="flex items-center gap-2 w-full">
+              <div className="flex items-center gap-2 w-full justify-center">
+                <Code className="h-5 w-5 text-blue-500" />
+                <span className="text-center">AI-Optimized FAQ & Schema</span>
+              </div>
+            </CardTitle>
+            <Badge variant="secondary">$299</Badge>
+          </div>
+          <CardDescription className="text-center">
+            Hands-on guidance to embed structured data
+          </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col flex-grow">
-          <p className="mb-4 text-muted-foreground text-center">
-            Want to rank higher in AI search? Implement AI-optimized content strategies to improve your visibility.
-          </p>
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Badge variant="secondary">$99</Badge>
-            <span className="text-sm text-muted-foreground">One-time purchase</span>
-          </div>
+          <ul className="space-y-2 mb-6">
+            <li className="flex items-start gap-2">
+              <span className="text-primary">✓</span>
+              <span>Custom FAQ development</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-primary">✓</span>
+              <span>Schema markup implementation</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-primary">✓</span>
+              <span>Technical implementation guide</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-primary">✓</span>
+              <span>2 weeks of implementation support</span>
+            </li>
+          </ul>
           <div className="mt-auto">
             <Link to="/optimize" className="w-full">
-              <Button 
-                onClick={handleToolkitPurchase} 
-                variant="outline" 
-                className="w-full"
-              >
-                Get AI Brand Visibility Optimization Toolkit
+              <Button className="w-full">
+                Get Started For $299
               </Button>
             </Link>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="relative overflow-hidden border-2 border-primary flex flex-col">
-        <div className="absolute top-2 right-2">
-          <Badge variant="destructive" className="animate-pulse">
-            <Clock className="h-3 w-3 mr-1" />
-            5 spots left
+      <Card className="border-2 border-primary hover:border-primary/80 transition-all relative overflow-hidden flex flex-col">
+        <div className="absolute top-0 right-0">
+          <Badge className="rounded-none rounded-bl-lg animate-pulse" variant="destructive">
+            Only 5 spots left!
           </Badge>
         </div>
         <CardHeader>
-          <CardTitle className="flex items-center justify-center gap-2 text-center">
-            <PhoneCall className="h-5 w-5 text-green-500" />
-            1:1 AI Strategy Call
-          </CardTitle>
-          <CardDescription className="text-center">Expert Guidance for Your Brand</CardDescription>
+          <div className="flex justify-between items-start">
+            <CardTitle className="flex items-center gap-2 w-full">
+              <div className="flex items-center gap-2 w-full justify-center">
+                <PhoneCall className="h-5 w-5 text-green-500" />
+                <span className="text-center">AI Search Visibility Accelerator</span>
+              </div>
+            </CardTitle>
+            <Badge variant="secondary">$499+</Badge>
+          </div>
+          <CardDescription className="text-center">
+            1:1 Coaching & Custom strategy to rank in AI-driven search
+          </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col flex-grow">
-          <p className="mb-4 text-muted-foreground text-center">
-            Get personalized strategies to dominate AI search results with a dedicated AI visibility expert.
-          </p>
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Badge variant="secondary">$499</Badge>
-            <span className="text-sm text-muted-foreground">60-min consultation</span>
-          </div>
+          <ul className="space-y-2 mb-6">
+            <li className="flex items-start gap-2">
+              <span className="text-primary">✓</span>
+              <span>Personalized AI visibility audit</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-primary">✓</span>
+              <span>Custom content strategy</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-primary">✓</span>
+              <span>60-min strategy session</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-primary">✓</span>
+              <span>4 weeks of implementation support</span>
+            </li>
+          </ul>
           <div className="mt-auto">
             <Link to="/optimize" className="w-full">
-              <Button 
-                onClick={handleBookCall} 
-                variant="default" 
-                className="w-full"
-              >
-                Book My AI Strategy Call
+              <Button variant="default" className="w-full">
+                Book My Strategy Call
               </Button>
             </Link>
           </div>
