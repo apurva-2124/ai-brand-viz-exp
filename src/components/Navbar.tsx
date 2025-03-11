@@ -10,7 +10,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="font-bold text-xl">Optimly</span>
-            <span className="text-muted-foreground text-sm">AI Brand Tracker</span>
+            <span className="text-muted-foreground text-sm">AI Brand Visibility Report</span>
           </div>
           <div className="flex items-center gap-2">
             <ApiSettings />
