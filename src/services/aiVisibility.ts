@@ -1,5 +1,4 @@
 
-// Combined AI visibility service
 import { BrandData } from "@/components/BrandTracker";
 import * as openAI from "./openai";
 import * as anthropic from "./anthropic";
@@ -7,7 +6,8 @@ import {
   QueryType, 
   generateQueriesForKeywords, 
   scoreVisibility, 
-  analyzeCompetitors 
+  analyzeCompetitors,
+  generateRecommendation 
 } from "@/utils/queryTransformer";
 
 export type AIProvider = "openai" | "anthropic" | "both";

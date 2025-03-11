@@ -265,7 +265,7 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
           )}
           
           {visibilityData.riskLevel === "medium" && (
-            <Alert variant="warning" className="mb-4 bg-yellow-50 border-yellow-200 text-yellow-800">
+            <Alert variant="default" className="mb-4 bg-yellow-50 border-yellow-200 text-yellow-800">
               <AlertTriangle className="h-4 w-4" />
               <AlertTitle>Visibility Risk Detected</AlertTitle>
               <AlertDescription>
