@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/Container";
+import { Link } from "react-router-dom";
 
 interface HeroProps {
   onGetStarted: () => void;
@@ -17,9 +18,16 @@ export const Hero = ({ onGetStarted }: HeroProps) => {
           <p className="text-xl text-muted-foreground mb-8">
             Monitor how your brand appears in AI platforms like ChatGPT and Claude, and get insights to improve your visibility.
           </p>
-          <Button size="lg" onClick={onGetStarted}>
-            Get Started
-          </Button>
+          <div className="flex justify-center gap-4">
+            <Button size="lg" onClick={onGetStarted}>
+              Get Started
+            </Button>
+            <Link to="/optimize">
+              <Button size="lg" variant="outline">
+                Optimize for AI Search
+              </Button>
+            </Link>
+          </div>
         </div>
       </Container>
     </div>
