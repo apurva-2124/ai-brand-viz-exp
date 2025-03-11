@@ -24,19 +24,22 @@ export const VisibilityRecommendationsCard = ({ visibilityTips }: VisibilityReco
         return {
           bgColor: "bg-red-100",
           textColor: "text-red-800",
-          icon: <Zap className="h-3.5 w-3.5" />
+          icon: <Zap className="h-3.5 w-3.5" />,
+          label: "High impact"
         };
       case "medium":
         return {
           bgColor: "bg-yellow-100",
           textColor: "text-yellow-800",
-          icon: <Lightbulb className="h-3.5 w-3.5" />
+          icon: <Lightbulb className="h-3.5 w-3.5" />,
+          label: "Medium impact"
         };
       case "low":
         return {
           bgColor: "bg-blue-100",
           textColor: "text-blue-800",
-          icon: <ExternalLink className="h-3.5 w-3.5" />
+          icon: <ExternalLink className="h-3.5 w-3.5" />,
+          label: "Supplementary"
         };
     }
   };
@@ -55,7 +58,7 @@ export const VisibilityRecommendationsCard = ({ visibilityTips }: VisibilityReco
       <CardContent>
         <ul className="space-y-4">
           {visibilityTips.map((tip: string, index: number) => {
-            const { bgColor, textColor, icon } = getImpactStyle(index);
+            const { bgColor, textColor, icon, label } = getImpactStyle(index);
             
             return (
               <li key={index} className="flex gap-3">
@@ -64,9 +67,9 @@ export const VisibilityRecommendationsCard = ({ visibilityTips }: VisibilityReco
                 </div>
                 <div>
                   <p>{tip}</p>
-                  {index === 0 && (
-                    <p className="text-xs text-red-600 mt-1 font-medium">High impact — implements quickly for best results</p>
-                  )}
+                  <p className={`text-xs ${index < 2 ? 'text-red-600' : index < 4 ? 'text-yellow-600' : 'text-blue-600'} mt-1 font-medium`}>
+                    {label} {index === 0 && "— implement quickly for best results"}
+                  </p>
                 </div>
               </li>
             );

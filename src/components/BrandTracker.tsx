@@ -8,6 +8,8 @@ import { CompetitorAnalysis } from "@/components/CompetitorAnalysis";
 import { Recommendations } from "@/components/Recommendations";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ApiSettings } from "@/components/ApiSettings";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 export interface BrandData {
   name: string;
@@ -59,6 +61,18 @@ export const BrandTracker = () => {
 
   return (
     <Container className="py-8">
+      <div className="mb-6">
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
+          onClick={() => window.location.reload()}
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Start Over
+        </Button>
+      </div>
+      
       {!brandData ? (
         <>
           {!hasApiKeys && <ApiKeyPrompt />}
