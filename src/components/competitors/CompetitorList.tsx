@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
 interface CompetitorItem {
   name: string;
@@ -12,6 +12,19 @@ interface CompetitorListProps {
 }
 
 export const CompetitorList = ({ competitors }: CompetitorListProps) => {
+  // Format data for the chart
+  const chartData = competitors.map(competitor => ({
+    name: competitor.name,
+    score: competitor.score,
+  }));
+
+  // Generate colors based on scores (higher scores = more concerning competitors)
+  const getBarColor = (score: number) => {
+    if (score >= 75) return "#ef4444"; // red (more concerning)
+    if (score >= 50) return "#eab308"; // yellow
+    return "#22c55e"; // green (less concerning)
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -21,16 +34,31 @@ export const CompetitorList = ({ competitors }: CompetitorListProps) => {
         <p className="mb-4 text-sm text-muted-foreground">
           These competitors are frequently mentioned alongside your brand in AI responses
         </p>
-        <div className="space-y-4">
-          {competitors.map((competitor) => (
-            <div key={competitor.name} className="space-y-2">
-              <div className="flex justify-between">
-                <span className="font-medium">{competitor.name}</span>
-                <span>{competitor.score}/100</span>
-              </div>
-              <Progress value={competitor.score} className="h-2" />
-            </div>
-          ))}
+        
+        <div className="h-64 w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={chartData}
+              layout="vertical"
+              margin={{ top: 5, right: 30, left: 80, bottom: 5 }}
+            >
+              <XAxis type="number" domain={[0, 100]} />
+              <YAxis 
+                type="category" 
+                dataKey="name" 
+                tick={{ fontSize: 12 }}
+                width={80}
+              />
+              <Tooltip
+                formatter={(value) => [`${value}/100`, 'Mention Score']}
+              />
+              <Bar dataKey="score">
+                {chartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={getBarColor(entry.score)} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </CardContent>
     </Card>

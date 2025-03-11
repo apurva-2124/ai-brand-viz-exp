@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Download, RefreshCw } from "lucide-react";
+import { Download, RefreshCw, FileDown } from "lucide-react";
 
 interface RecommendationHeaderProps {
   useMockData: boolean;
@@ -37,7 +37,7 @@ export const RecommendationHeader = ({
           <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
         </Button>
         <Button onClick={handleExport} variant="outline" size="sm">
-          <Download className="mr-2 h-4 w-4" />
+          <FileDown className="mr-2 h-4 w-4" />
           Export Report
         </Button>
       </div>

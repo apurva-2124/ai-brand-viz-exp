@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, RefreshCw } from "lucide-react";
+import { AlertCircle, RefreshCw, FileDown } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -13,6 +13,7 @@ import { QueryType } from "@/utils/queryTransformer";
 import { generateMockData } from "@/lib/mockData";
 import { useToast } from "@/hooks/use-toast";
 import { AIvsTraditionalComparison } from "@/components/AIvsTraditionalComparison";
+import { AIReadinessScore } from "@/components/AIReadinessScore";
 
 interface VisibilityDashboardProps {
   brandData: BrandData;
@@ -78,6 +79,37 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleExportCSV = () => {
+    if (!visibilityData) return;
+    
+    const csvData = [
+      ['Keyword', 'Query', 'Has Brand Mention', 'Is Prominent', 'Provider'],
+      ...visibilityData.results.map((result: any) => [
+        result.keyword,
+        result.query,
+        result.hasBrandMention ? 'Yes' : 'No',
+        result.isProminent ? 'Yes' : 'No',
+        result.provider
+      ])
+    ];
+    
+    const csvContent = csvData.map(row => row.join(',')).join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `${brandData.name}_AI_Visibility_Report.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast({
+      title: "Export successful",
+      description: "Your AI visibility report has been downloaded",
+    });
   };
 
   useEffect(() => {
@@ -164,6 +196,15 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
           >
             <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
           </Button>
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={handleExportCSV}
+            disabled={!visibilityData}
+          >
+            <FileDown className="mr-2 h-4 w-4" />
+            Export CSV
+          </Button>
         </div>
       </div>
 
@@ -176,10 +217,37 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
       )}
 
       {visibilityData && !loading && !error && (
-        <AIvsTraditionalComparison 
-          brandData={brandData} 
-          aiResults={visibilityData} 
-        />
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="md:col-span-2">
+              <CardHeader>
+                <CardTitle>Overall AI Visibility</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center">
+                  <div className="inline-flex items-center justify-center rounded-full w-24 h-24 bg-secondary text-3xl font-bold">
+                    {overallScore}
+                  </div>
+                  <p className="mt-2 text-muted-foreground">out of 100</p>
+                </div>
+                <Progress 
+                  value={overallScore} 
+                  className={`h-2 mt-4 ${getScoreColor(overallScore)}`} 
+                />
+              </CardContent>
+            </Card>
+
+            <AIReadinessScore 
+              brandData={brandData} 
+              visibilityScore={overallScore} 
+            />
+          </div>
+
+          <AIvsTraditionalComparison 
+            brandData={brandData} 
+            aiResults={visibilityData} 
+          />
+        </>
       )}
 
       {visibilityData.queries && (
