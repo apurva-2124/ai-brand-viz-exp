@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -5,25 +6,32 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { BrandData } from "@/components/BrandTracker";
 import { X, Loader2 } from "lucide-react";
 
-interface BrandData {
-  name: string;
-  industry: string;
-  description?: string;
-  website?: string;
-  email: string;
-  keywords: string[];
-  competitors?: string[];
-  firstName: string;
-  lastName: string;
-}
-
+// Define the BrandInputFormProps interface without redeclaring BrandData
 interface BrandInputFormProps {
-  onSubmit: (data: BrandData) => void;
+  onSubmit: (data: any) => void;
   isSubmitting?: boolean;
 }
+
+// Define the industries array
+const INDUSTRIES = [
+  "Technology",
+  "Retail & E-Commerce",
+  "Healthcare & Pharma",
+  "Finance & Insurance",
+  "Education & E-Learning",
+  "Entertainment & Media",
+  "Food & Beverage",
+  "Travel & Hospitality",
+  "Automotive & Mobility",
+  "B2B & Enterprise Services",
+  "Consumer Goods & CPG",
+  "Energy & Sustainability",
+  "Real Estate & PropTech",
+  "Legal & Compliance",
+  "Other"
+];
 
 export const BrandInputForm = ({ onSubmit, isSubmitting = false }: BrandInputFormProps) => {
   const [brandName, setBrandName] = useState("");
@@ -121,6 +129,17 @@ export const BrandInputForm = ({ onSubmit, isSubmitting = false }: BrandInputFor
               required
             />
           </div>
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="brandName">Brand Name</Label>
+          <Input
+            id="brandName"
+            value={brandName}
+            onChange={(e) => setBrandName(e.target.value)}
+            placeholder="Enter your brand name"
+            required
+          />
         </div>
         
         <div className="space-y-2">

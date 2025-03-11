@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Container } from "@/components/Container";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -21,6 +22,8 @@ export interface BrandData {
   description?: string;
   website?: string;
   lastUpdated?: string;
+  firstName: string;
+  lastName: string;
 }
 
 export const BrandTracker = () => {
