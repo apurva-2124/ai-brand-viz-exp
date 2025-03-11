@@ -36,10 +36,12 @@ export const BrandInputForm = ({ onSubmit }: BrandInputFormProps) => {
   const [industry, setIndustry] = useState("");
   const [description, setDescription] = useState("");
   const [website, setWebsite] = useState("");
+  const [email, setEmail] = useState("");
   const [keyword, setKeyword] = useState("");
   const [keywords, setKeywords] = useState<string[]>([]);
   const [competitor, setCompetitor] = useState("");
   const [competitors, setCompetitors] = useState<string[]>([]);
+  const [emailError, setEmailError] = useState("");
 
   const handleAddKeyword = () => {
     if (keyword.trim() && !keywords.includes(keyword.trim())) {
@@ -63,15 +65,32 @@ export const BrandInputForm = ({ onSubmit }: BrandInputFormProps) => {
     setCompetitors(competitors.filter(c => c !== competitorToRemove));
   };
 
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) {
+      setEmailError("Email is required");
+      return false;
+    } else if (!emailRegex.test(email)) {
+      setEmailError("Please enter a valid email address");
+      return false;
+    } else {
+      setEmailError("");
+      return true;
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (brandName.trim() && industry && keywords.length > 0) {
+    const isEmailValid = validateEmail(email);
+    
+    if (brandName.trim() && industry && keywords.length > 0 && isEmailValid) {
       onSubmit({
         name: brandName.trim(),
         industry,
         description,
         website,
+        email,
         keywords,
         competitors
       });
@@ -106,6 +125,23 @@ export const BrandInputForm = ({ onSubmit }: BrandInputFormProps) => {
               ))}
             </SelectContent>
           </Select>
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="email">Business Email <span className="text-muted-foreground text-sm">(for updates on your brand visibility)</span></Label>
+          <Input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (emailError) validateEmail(e.target.value);
+            }}
+            placeholder="your.name@company.com"
+            required
+            className={emailError ? "border-red-500 focus-visible:ring-red-500" : ""}
+          />
+          {emailError && <p className="text-sm text-red-500">{emailError}</p>}
         </div>
         
         <div className="space-y-2">
@@ -215,7 +251,7 @@ export const BrandInputForm = ({ onSubmit }: BrandInputFormProps) => {
         <Button 
           type="submit" 
           className="w-full"
-          disabled={!brandName.trim() || !industry || keywords.length === 0}
+          disabled={!brandName.trim() || !industry || keywords.length === 0 || !email}
         >
           Start Tracking
         </Button>

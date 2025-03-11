@@ -15,6 +15,7 @@ export interface BrandData {
   name: string;
   industry: string;
   keywords: string[];
+  email: string;
   competitors?: string[];
   description?: string;
   website?: string;
