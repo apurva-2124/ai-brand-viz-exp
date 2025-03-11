@@ -91,12 +91,12 @@ export const AIReadinessScore = ({ brandData, visibilityScore }: AIReadinessScor
           <CardTitle className="flex items-center gap-2">
             <CircleGauge className="h-5 w-5" />
             AI Readiness Score
-            <Tooltip>
-              <TooltipTrigger>
-                <Info className="h-4 w-4 text-muted-foreground" />
+            <Tooltip delayDuration={300}>
+              <TooltipTrigger asChild>
+                <Info className="h-4 w-4 text-muted-foreground cursor-help ml-1" />
               </TooltipTrigger>
-              <TooltipContent className="max-w-xs">
-                <p>Your score measures how visible your brand is in AI responses across ChatGPT, Gemini, and Perplexity. Based on brand mentions, keyword relevance, and how you compare to competitors.</p>
+              <TooltipContent className="max-w-xs p-2 bg-white shadow-lg rounded-md border text-sm">
+                <p>Your AI Readiness Score reflects how often AI search models mention and recommend your brand. We analyze AI-generated responses, keyword relevance, and competitor presence to determine your visibility in AI-powered search engines like ChatGPT and Gemini.</p>
               </TooltipContent>
             </Tooltip>
           </CardTitle>
@@ -113,7 +113,7 @@ export const AIReadinessScore = ({ brandData, visibilityScore }: AIReadinessScor
           
           <Progress 
             value={readinessScore} 
-            className={`h-2 mb-6 ${getProgressColor(readinessScore)}`} 
+            className={`h-2.5 mb-6 ${getProgressColor(readinessScore)}`} 
           />
           
           <div className="mb-4 text-center">
