@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, RefreshCw, FileDown } from "lucide-react";
+import { AlertCircle, RefreshCw, FileDown, AlertTriangle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -85,17 +85,42 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
     if (!visibilityData) return;
     
     const csvData = [
-      ['Keyword', 'Query', 'Has Brand Mention', 'Is Prominent', 'Provider'],
-      ...visibilityData.results.map((result: any) => [
-        result.keyword,
-        result.query,
-        result.hasBrandMention ? 'Yes' : 'No',
-        result.isProminent ? 'Yes' : 'No',
-        result.provider
-      ])
+      [
+        'Keyword', 
+        'Query', 
+        'Visibility Level', 
+        'Has Brand Mention', 
+        'Is Prominent',
+        'Competitors Found',
+        'Competitor Outranking',
+        'Risk Level',
+        'Recommendation',
+        'Provider'
+      ]
     ];
     
-    const csvContent = csvData.map(row => row.join(',')).join('\n');
+    visibilityData.results.forEach((result: any) => {
+      csvData.push([
+        result.keyword,
+        result.query,
+        result.visibilityScore?.level || (result.isProminent ? 'high' : result.hasBrandMention ? 'low' : 'not_found'),
+        result.hasBrandMention ? 'Yes' : 'No',
+        result.isProminent ? 'Yes' : 'No',
+        result.competitorAnalysis?.competitorsFound?.join(', ') || 'None',
+        result.competitorAnalysis?.competitorOutranking ? 'Yes' : 'No',
+        result.competitorAnalysis?.riskLevel || 'low',
+        result.recommendation || '',
+        result.provider
+      ]);
+    });
+    
+    const csvContent = csvData.map(row => 
+      row.map(cell => 
+        typeof cell === 'string' && cell.includes(',') 
+          ? `"${cell}"` 
+          : cell
+      ).join(',')
+    ).join('\n');
     
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -126,6 +151,17 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
     if (score >= 70) return "bg-green-500";
     if (score >= 40) return "bg-yellow-500";
     return "bg-red-500";
+  };
+
+  const getVisibilityStatusBadge = (level: string) => {
+    switch(level) {
+      case "high":
+        return <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">✅ High Visibility</span>;
+      case "low":
+        return <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">⚠️ Needs Optimization</span>;
+      default:
+        return <span className="bg-red-100 text-red-800 px-2 py-1 rounded text-xs">❌ Missing from AI Results</span>;
+    }
   };
 
   return (
@@ -218,6 +254,26 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
 
       {visibilityData && !loading && !error && (
         <>
+          {visibilityData.riskLevel === "high" && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>Spend at Risk - Competitive Displacement</AlertTitle>
+              <AlertDescription>
+                Your brand is being outranked by competitors in AI responses. This may lead to decreased visibility and potential revenue loss.
+              </AlertDescription>
+            </Alert>
+          )}
+          
+          {visibilityData.riskLevel === "medium" && (
+            <Alert variant="warning" className="mb-4 bg-yellow-50 border-yellow-200 text-yellow-800">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>Visibility Risk Detected</AlertTitle>
+              <AlertDescription>
+                Your brand has limited visibility in some AI responses, with competitors gaining traction.
+              </AlertDescription>
+            </Alert>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="md:col-span-2">
               <CardHeader>
@@ -250,7 +306,7 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
         </>
       )}
 
-      {visibilityData.queries && (
+      {visibilityData?.queries && (
         <Card>
           <CardHeader>
             <CardTitle>AI Search Queries</CardTitle>
@@ -299,15 +355,24 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
           <CardContent>
             <ul className="space-y-3">
               <li className="flex justify-between">
-                <span>Prominent Mentions:</span>
+                <span className="flex items-center gap-2">
+                  <span className="inline-block w-3 h-3 bg-green-500 rounded-full"></span>
+                  High Visibility:
+                </span>
                 <span className="font-medium">{visibilityData.prominentMentions}</span>
               </li>
               <li className="flex justify-between">
-                <span>Vague Mentions:</span>
+                <span className="flex items-center gap-2">
+                  <span className="inline-block w-3 h-3 bg-yellow-500 rounded-full"></span>
+                  Needs Optimization:
+                </span>
                 <span className="font-medium">{visibilityData.vagueMentions}</span>
               </li>
               <li className="flex justify-between">
-                <span>Not Found:</span>
+                <span className="flex items-center gap-2">
+                  <span className="inline-block w-3 h-3 bg-red-500 rounded-full"></span>
+                  Missing from Results:
+                </span>
                 <span className="font-medium">{visibilityData.notFound}</span>
               </li>
             </ul>
@@ -316,20 +381,47 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
 
         <Card>
           <CardHeader>
-            <CardTitle>Keyword Strength</CardTitle>
+            <CardTitle>Competitor Mentions</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="mb-3 text-sm text-muted-foreground">
-              Top performing keywords for your brand
+              How often competitors appear in AI responses
             </p>
-            <ul className="space-y-2">
-              {visibilityData.keywordStrength.slice(0, 3).map((item: any) => (
-                <li key={item.keyword} className="flex justify-between">
-                  <span>{item.keyword}</span>
-                  <span className="font-medium">{item.score}/10</span>
-                </li>
-              ))}
-            </ul>
+            {Object.keys(visibilityData.competitorsDetected || {}).length > 0 ? (
+              <div className="mt-3">
+                <ResponsiveContainer width="100%" height={120}>
+                  <BarChart 
+                    data={Object.entries(visibilityData.competitorsDetected || {}).map(([name, count]) => ({
+                      name,
+                      count
+                    }))}
+                    layout="vertical"
+                    margin={{ top: 5, right: 5, bottom: 5, left: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                    <XAxis type="number" hide={true} />
+                    <YAxis 
+                      type="category" 
+                      dataKey="name" 
+                      width={100}
+                      tick={{ fontSize: 12 }}
+                    />
+                    <Tooltip />
+                    <Bar 
+                      dataKey="count" 
+                      fill="#8884d8" 
+                      name="Mentions"
+                      label={{ 
+                        position: 'right',
+                        formatter: (value: any) => value
+                      }}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <p className="text-sm italic text-muted-foreground">No competitors detected in responses</p>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -385,24 +477,31 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
                       <span className="text-xs ml-2 text-muted-foreground">via {result.provider}</span>
                     </div>
                     <div>
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
-                        result.isProminent 
-                          ? "bg-green-100 text-green-800" 
-                          : result.hasBrandMention 
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-red-100 text-red-800"
-                      }`}>
-                        {result.isProminent 
-                          ? "Prominent" 
-                          : result.hasBrandMention 
-                            ? "Mentioned" 
-                            : "Not Found"}
-                      </span>
+                      {getVisibilityStatusBadge(result.visibilityScore?.level || 
+                        (result.isProminent ? 'high' : result.hasBrandMention ? 'low' : 'not_found'))}
                     </div>
                   </div>
                   <div className="text-sm text-muted-foreground mb-2">
                     <strong>Query:</strong> {result.query}
                   </div>
+                  
+                  {result.competitorAnalysis?.competitorsFound?.length > 0 && (
+                    <div className="text-sm text-orange-700 mb-2">
+                      <strong>Competitors found:</strong> {result.competitorAnalysis.competitorsFound.join(', ')}
+                      {result.competitorAnalysis.competitorOutranking && (
+                        <span className="ml-2 text-red-600 font-medium">
+                          (Outranking your brand)
+                        </span>
+                      )}
+                    </div>
+                  )}
+                  
+                  {result.recommendation && (
+                    <div className="text-sm text-blue-700 mb-2">
+                      <strong>Recommendation:</strong> {result.recommendation}
+                    </div>
+                  )}
+                  
                   <div className="bg-secondary/50 p-3 rounded text-sm max-h-40 overflow-y-auto">
                     <p>{result.response}</p>
                   </div>
