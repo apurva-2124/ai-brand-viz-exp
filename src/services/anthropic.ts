@@ -17,6 +17,12 @@ export async function queryAnthropic(keyword: string, query: string, brand: stri
       throw new Error("Anthropic API key not found. Please add it in the settings.");
     }
     
+    // Check if API key format is valid (basic check)
+    if (!apiKey.startsWith('sk-ant-')) {
+      throw new Error("Invalid Anthropic API key format. Should start with 'sk-ant-'");
+    }
+    
+    // Updated to use the latest Anthropic API format
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -37,14 +43,19 @@ export async function queryAnthropic(keyword: string, query: string, brand: stri
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error?.message || 'Failed to query Anthropic');
+      const errorData = await response.json().catch(() => ({}));
+      const errorMessage = errorData.error?.message || `HTTP error ${response.status}`;
+      console.error('Anthropic API Error:', { status: response.status, message: errorMessage });
+      throw new Error(errorMessage);
     }
 
     const data: AnthropicResponse = await response.json();
-    return data.content[0].text;
+    return data.content?.[0]?.text || "No response content";
   } catch (error) {
     console.error('Anthropic API Error:', error);
+    if (error instanceof Error) {
+      throw new Error(`Anthropic API Error: ${error.message}`);
+    }
     throw error;
   }
 }
@@ -83,7 +94,7 @@ export async function analyzeBrandVisibility(
       results.push({
         keyword,
         query,
-        response: 'Failed to analyze',
+        response: error instanceof Error ? error.message : 'Failed to analyze',
         hasBrandMention: false,
         isProminent: false
       });

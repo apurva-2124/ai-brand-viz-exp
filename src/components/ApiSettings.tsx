@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Settings } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export const ApiSettings = () => {
   const [openAIKey, setOpenAIKey] = useState("");
@@ -23,6 +24,16 @@ export const ApiSettings = () => {
   }, []);
 
   const saveSettings = () => {
+    // Basic validation
+    if (anthropicKey && !anthropicKey.startsWith('sk-ant-')) {
+      toast({
+        title: "Invalid Anthropic API Key",
+        description: "Anthropic API keys should start with 'sk-ant-'",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     // Save API keys to localStorage
     localStorage.setItem("openai_api_key", openAIKey);
     localStorage.setItem("anthropic_api_key", anthropicKey);
@@ -45,6 +56,9 @@ export const ApiSettings = () => {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>API Settings</DialogTitle>
+          <DialogDescription>
+            Configure your API keys to analyze brand visibility in AI responses.
+          </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-2">
           <div className="space-y-2">
@@ -70,6 +84,12 @@ export const ApiSettings = () => {
             <p className="text-xs text-muted-foreground">
               Get your API key from <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener noreferrer" className="underline">Anthropic</a>
             </p>
+            <Alert variant="info" className="bg-blue-50 border-blue-200">
+              <AlertDescription className="text-xs">
+                Anthropic API keys must start with <code className="bg-blue-100 px-1 py-0.5 rounded">sk-ant-</code> 
+                and be pasted exactly as shown in your Anthropic console.
+              </AlertDescription>
+            </Alert>
           </div>
           <Button className="w-full" onClick={saveSettings}>
             Save Settings
