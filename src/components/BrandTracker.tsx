@@ -10,6 +10,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ApiSettings } from "@/components/ApiSettings";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { saveBrandData } from "@/services/brandDatabase";
+import { toast } from "sonner";
 
 export interface BrandData {
   name: string;
@@ -25,6 +27,7 @@ export interface BrandData {
 export const BrandTracker = () => {
   const [brandData, setBrandData] = useState<BrandData | null>(null);
   const [hasApiKeys, setHasApiKeys] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   useEffect(() => {
     // Check if API keys are set
@@ -33,13 +36,31 @@ export const BrandTracker = () => {
     setHasApiKeys(!!(openAIKey || anthropicKey));
   }, []);
   
-  const handleBrandSubmit = (data: BrandData) => {
-    // Add timestamp
-    const updatedData = {
-      ...data,
-      lastUpdated: new Date().toISOString()
-    };
-    setBrandData(updatedData);
+  const handleBrandSubmit = async (data: BrandData) => {
+    setIsSubmitting(true);
+    
+    try {
+      // Add timestamp
+      const updatedData = {
+        ...data,
+        lastUpdated: new Date().toISOString()
+      };
+      
+      // Save to database
+      const saveResult = await saveBrandData(updatedData);
+      
+      if (saveResult) {
+        setBrandData(updatedData);
+        toast.success("Brand information saved successfully!");
+      } else {
+        toast.error("Failed to save brand information. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error in brand submission:", error);
+      toast.error("An error occurred. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const ApiKeyPrompt = () => (
@@ -77,7 +98,7 @@ export const BrandTracker = () => {
       {!brandData ? (
         <>
           {!hasApiKeys && <ApiKeyPrompt />}
-          <BrandInputForm onSubmit={handleBrandSubmit} />
+          <BrandInputForm onSubmit={handleBrandSubmit} isSubmitting={isSubmitting} />
         </>
       ) : (
         <>

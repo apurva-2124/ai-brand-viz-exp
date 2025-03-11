@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,10 +6,11 @@ import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BrandData } from "@/components/BrandTracker";
-import { X } from "lucide-react";
+import { X, Loader2 } from "lucide-react";
 
 interface BrandInputFormProps {
   onSubmit: (data: BrandData) => void;
+  isSubmitting?: boolean;
 }
 
 const INDUSTRIES = [
@@ -31,7 +31,7 @@ const INDUSTRIES = [
   "Other"
 ];
 
-export const BrandInputForm = ({ onSubmit }: BrandInputFormProps) => {
+export const BrandInputForm = ({ onSubmit, isSubmitting = false }: BrandInputFormProps) => {
   const [brandName, setBrandName] = useState("");
   const [industry, setIndustry] = useState("");
   const [description, setDescription] = useState("");
@@ -99,7 +99,7 @@ export const BrandInputForm = ({ onSubmit }: BrandInputFormProps) => {
 
   return (
     <Card className="p-6 max-w-xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6">Enter Your Brand Information</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">Enter Your Brand Information</h2>
       
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
@@ -251,9 +251,16 @@ export const BrandInputForm = ({ onSubmit }: BrandInputFormProps) => {
         <Button 
           type="submit" 
           className="w-full"
-          disabled={!brandName.trim() || !industry || keywords.length === 0 || !email}
+          disabled={!brandName.trim() || !industry || keywords.length === 0 || !email || isSubmitting}
         >
-          Start Tracking
+          {isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Saving...
+            </>
+          ) : (
+            "Start Tracking"
+          )}
         </Button>
       </form>
     </Card>
