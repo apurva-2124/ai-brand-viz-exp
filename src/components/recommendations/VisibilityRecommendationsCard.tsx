@@ -1,9 +1,11 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Zap, Lightbulb, ExternalLink } from "lucide-react";
 
 interface VisibilityTip {
   tip: string;
   index: number;
+  impact?: "high" | "medium" | "low";
 }
 
 interface VisibilityRecommendationsCardProps {
@@ -11,24 +13,64 @@ interface VisibilityRecommendationsCardProps {
 }
 
 export const VisibilityRecommendationsCard = ({ visibilityTips }: VisibilityRecommendationsCardProps) => {
+  // Map impact levels to more engaging colors and icons
+  const getImpactStyle = (index: number) => {
+    // Determine impact level based on position in the list
+    // First items are typically higher impact
+    const impact = index < 2 ? "high" : index < 4 ? "medium" : "low";
+    
+    switch(impact) {
+      case "high":
+        return {
+          bgColor: "bg-red-100",
+          textColor: "text-red-800",
+          icon: <Zap className="h-3.5 w-3.5" />
+        };
+      case "medium":
+        return {
+          bgColor: "bg-yellow-100",
+          textColor: "text-yellow-800",
+          icon: <Lightbulb className="h-3.5 w-3.5" />
+        };
+      case "low":
+        return {
+          bgColor: "bg-blue-100",
+          textColor: "text-blue-800",
+          icon: <ExternalLink className="h-3.5 w-3.5" />
+        };
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>AI Visibility Optimization</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          <Zap className="h-5 w-5 text-yellow-500" />
+          AI Visibility Optimization
+        </CardTitle>
         <CardDescription>
           Ways to improve your brand's presence in AI search results
         </CardDescription>
       </CardHeader>
       <CardContent>
         <ul className="space-y-4">
-          {visibilityTips.map((tip: string, index: number) => (
-            <li key={index} className="flex gap-3">
-              <div className="bg-primary/10 text-primary rounded-full h-6 w-6 flex items-center justify-center flex-shrink-0">
-                {index + 1}
-              </div>
-              <p>{tip}</p>
-            </li>
-          ))}
+          {visibilityTips.map((tip: string, index: number) => {
+            const { bgColor, textColor, icon } = getImpactStyle(index);
+            
+            return (
+              <li key={index} className="flex gap-3">
+                <div className={`${bgColor} ${textColor} rounded-full h-6 w-6 flex items-center justify-center flex-shrink-0`}>
+                  {icon}
+                </div>
+                <div>
+                  <p>{tip}</p>
+                  {index === 0 && (
+                    <p className="text-xs text-red-600 mt-1 font-medium">High impact — implements quickly for best results</p>
+                  )}
+                </div>
+              </li>
+            );
+          })}
         </ul>
       </CardContent>
     </Card>

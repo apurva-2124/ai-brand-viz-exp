@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { BrandData } from "@/components/BrandTracker";
-import { Info } from "lucide-react";
+import { Info, Check, X, ArrowRight } from "lucide-react";
 
 interface AIvsTraditionalComparisonProps {
   brandData: BrandData;
@@ -135,11 +135,11 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* AI Search Results */}
                 <div className="border rounded-lg p-4">
-                  <h3 className="font-medium mb-3">AI Search Results</h3>
+                  <h3 className="font-medium mb-3 text-primary">AI Search Results</h3>
                   <div className="text-sm mb-2">
                     <span className="text-muted-foreground">Query:</span> {aiResult.query}
                   </div>
-                  <div className="text-sm mb-4">
+                  <div className="text-sm mb-2">
                     <span className="text-muted-foreground">Provider:</span> {aiResult.provider}
                   </div>
                   <div className={`text-sm px-2 py-1 rounded inline-flex mb-4 ${
@@ -155,6 +155,36 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
                         ? "Mentioned" 
                         : "Not Found"}
                   </div>
+                  
+                  <div className="space-y-2 mb-4">
+                    <div className="flex items-start gap-2">
+                      {aiResult.hasBrandMention ? 
+                        <Check className="h-4 w-4 text-green-600 mt-0.5" /> : 
+                        <X className="h-4 w-4 text-red-600 mt-0.5" />
+                      }
+                      <span className="text-sm">
+                        {aiResult.hasBrandMention ? "Brand is mentioned" : "Brand is missing"}
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      {aiResult.isProminent ? 
+                        <Check className="h-4 w-4 text-green-600 mt-0.5" /> : 
+                        <X className="h-4 w-4 text-red-600 mt-0.5" />
+                      }
+                      <span className="text-sm">
+                        {aiResult.isProminent ? "Prominently featured" : "Not prominently featured"}
+                      </span>
+                    </div>
+                    {aiResult.competitorAnalysis?.competitorsFound?.length > 0 && (
+                      <div className="flex items-start gap-2">
+                        <X className="h-4 w-4 text-orange-600 mt-0.5" />
+                        <span className="text-sm">
+                          Competitors mentioned: {aiResult.competitorAnalysis.competitorsFound.join(', ')}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  
                   <div className="bg-secondary/30 p-3 rounded text-sm max-h-80 overflow-y-auto">
                     {aiResult.response}
                   </div>
@@ -162,7 +192,7 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
 
                 {/* Traditional Search Results */}
                 <div className="border rounded-lg p-4">
-                  <h3 className="font-medium mb-3">Traditional Search Results</h3>
+                  <h3 className="font-medium mb-3 text-primary">Traditional Search Results</h3>
                   <div className="text-sm mb-2">
                     <span className="text-muted-foreground">Search Engine:</span> {comparisonData.searchEngine}
                   </div>
@@ -171,6 +201,31 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
                   </div>
                   <div className="text-sm mb-4">
                     <span className="text-muted-foreground">Brand Mentions:</span> {comparisonData.brandMentions} times
+                  </div>
+                  
+                  <div className="space-y-2 mb-4">
+                    <div className="flex items-start gap-2">
+                      {comparisonData.brandMentions > 0 ? 
+                        <Check className="h-4 w-4 text-green-600 mt-0.5" /> : 
+                        <X className="h-4 w-4 text-red-600 mt-0.5" />
+                      }
+                      <span className="text-sm">
+                        {comparisonData.brandMentions > 0 ? 
+                          `Brand appears ${comparisonData.brandMentions} times` : 
+                          "Brand is not mentioned"}
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      {comparisonData.topResults[0].position <= 3 ? 
+                        <Check className="h-4 w-4 text-green-600 mt-0.5" /> : 
+                        <X className="h-4 w-4 text-orange-600 mt-0.5" />
+                      }
+                      <span className="text-sm">
+                        {comparisonData.topResults[0].position <= 3 ? 
+                          "High ranking position" : 
+                          `Lower ranking (position #${comparisonData.topResults[0].position})`}
+                      </span>
+                    </div>
                   </div>
                   
                   <div className="space-y-3 max-h-80 overflow-y-auto">
@@ -187,6 +242,45 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
                       </div>
                     ))}
                   </div>
+                </div>
+              </div>
+              
+              {/* Action Needed Section */}
+              <div className="mt-6 border-t pt-4">
+                <h3 className="font-medium mb-3">Action Needed</h3>
+                <div className="bg-blue-50 border border-blue-100 rounded-md p-4">
+                  <ul className="space-y-2">
+                    {!aiResult.hasBrandMention && (
+                      <li className="flex items-center gap-2">
+                        <ArrowRight className="h-4 w-4 text-blue-600" />
+                        <span>Optimize your content to increase brand mentions in AI responses for "{selectedKeyword}"</span>
+                      </li>
+                    )}
+                    {!aiResult.isProminent && aiResult.hasBrandMention && (
+                      <li className="flex items-center gap-2">
+                        <ArrowRight className="h-4 w-4 text-blue-600" />
+                        <span>Enhance your content with more detailed information about "{selectedKeyword}" to improve prominence</span>
+                      </li>
+                    )}
+                    {aiResult.competitorAnalysis?.competitorsFound?.length > 0 && (
+                      <li className="flex items-center gap-2">
+                        <ArrowRight className="h-4 w-4 text-blue-600" />
+                        <span>Create content that directly addresses why your brand is better than {aiResult.competitorAnalysis.competitorsFound.join(', ')} for "{selectedKeyword}"</span>
+                      </li>
+                    )}
+                    {comparisonData.brandMentions === 0 && (
+                      <li className="flex items-center gap-2">
+                        <ArrowRight className="h-4 w-4 text-blue-600" />
+                        <span>Improve traditional SEO for this keyword to support AI visibility</span>
+                      </li>
+                    )}
+                    {(aiResult.isProminent && comparisonData.brandMentions > 0) && (
+                      <li className="flex items-center gap-2">
+                        <ArrowRight className="h-4 w-4 text-green-600" />
+                        <span>Your brand has good visibility for this keyword - continue monitoring to maintain position</span>
+                      </li>
+                    )}
+                  </ul>
                 </div>
               </div>
             </TabsContent>

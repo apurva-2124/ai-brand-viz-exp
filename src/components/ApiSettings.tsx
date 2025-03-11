@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
-import { Settings, AlertTriangle } from "lucide-react";
+import { Settings, AlertTriangle, Zap, Globe, BarChart } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -138,33 +138,51 @@ export const ApiSettings = () => {
             
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Google Ads API Key</label>
+                <label className="text-sm font-medium flex items-center gap-2">
+                  <Zap className="h-4 w-4 text-yellow-500" />
+                  Google Ads API Key
+                </label>
                 <Input
                   type="password"
                   placeholder="Enter Google Ads API key"
                   value={googleAdsKey}
                   onChange={(e) => setGoogleAdsKey(e.target.value)}
                 />
+                <p className="text-xs text-muted-foreground ml-6">
+                  Track how AI-driven responses impact your paid search performance.
+                </p>
               </div>
               
               <div className="space-y-2">
-                <label className="text-sm font-medium">SEMrush API Key</label>
+                <label className="text-sm font-medium flex items-center gap-2">
+                  <Globe className="h-4 w-4 text-blue-500" />
+                  SEMrush API Key
+                </label>
                 <Input
                   type="password"
                   placeholder="Enter SEMrush API key"
                   value={semrushKey}
                   onChange={(e) => setSemrushKey(e.target.value)}
                 />
+                <p className="text-xs text-muted-foreground ml-6">
+                  Compare AI search rankings with traditional SEO data.
+                </p>
               </div>
               
               <div className="space-y-2">
-                <label className="text-sm font-medium">Ahrefs API Key</label>
+                <label className="text-sm font-medium flex items-center gap-2">
+                  <BarChart className="h-4 w-4 text-green-500" />
+                  Ahrefs API Key
+                </label>
                 <Input
                   type="password"
                   placeholder="Enter Ahrefs API key"
                   value={ahrefsKey}
                   onChange={(e) => setAhrefsKey(e.target.value)}
                 />
+                <p className="text-xs text-muted-foreground ml-6">
+                  Analyze backlinks that influence AI-generated citations.
+                </p>
               </div>
             </div>
           </TabsContent>

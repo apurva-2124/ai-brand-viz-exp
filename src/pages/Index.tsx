@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { BrandTracker } from "@/components/BrandTracker";
 import { useState } from "react";
+import { Zap, Eye, BarChart3 } from "lucide-react";
 
 const Index = () => {
   const [showTracker, setShowTracker] = useState(false);
@@ -24,21 +25,30 @@ const Index = () => {
                 <h2 className="text-3xl font-bold text-center mb-12">How AI Visibility Tracking Works</h2>
                 <div className="grid md:grid-cols-3 gap-8">
                   <Card className="p-6">
-                    <h3 className="text-xl font-semibold mb-3">Input Your Brand</h3>
+                    <h3 className="text-xl font-semibold mb-3 flex items-center gap-2">
+                      <Zap className="h-5 w-5 text-blue-500" />
+                      Input Your Brand
+                    </h3>
                     <p className="text-muted-foreground">Enter your brand name, industry, and key search terms to monitor.</p>
                   </Card>
                   <Card className="p-6">
-                    <h3 className="text-xl font-semibold mb-3">Track AI Responses</h3>
+                    <h3 className="text-xl font-semibold mb-3 flex items-center gap-2">
+                      <Eye className="h-5 w-5 text-purple-500" />
+                      Track AI Responses
+                    </h3>
                     <p className="text-muted-foreground">See how often and prominently your brand appears in AI search results.</p>
                   </Card>
                   <Card className="p-6">
-                    <h3 className="text-xl font-semibold mb-3">Optimize Visibility</h3>
+                    <h3 className="text-xl font-semibold mb-3 flex items-center gap-2">
+                      <BarChart3 className="h-5 w-5 text-green-500" />
+                      Optimize Visibility
+                    </h3>
                     <p className="text-muted-foreground">Get actionable insights to improve your brand's visibility in AI responses.</p>
                   </Card>
                 </div>
                 <div className="mt-12 text-center">
                   <Button size="lg" onClick={() => setShowTracker(true)}>
-                    Start Tracking Now
+                    Check Your AI Brand Score
                   </Button>
                 </div>
               </section>
