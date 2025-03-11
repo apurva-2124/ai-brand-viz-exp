@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,7 +14,6 @@ export const ApiSettings = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Load saved API keys from localStorage
     const savedOpenAIKey = localStorage.getItem("openai_api_key") || "";
     const savedAnthropicKey = localStorage.getItem("anthropic_api_key") || "";
     
@@ -24,7 +22,6 @@ export const ApiSettings = () => {
   }, []);
 
   const saveSettings = () => {
-    // Basic validation
     if (anthropicKey && !anthropicKey.startsWith('sk-ant-')) {
       toast({
         title: "Invalid Anthropic API Key",
@@ -34,7 +31,6 @@ export const ApiSettings = () => {
       return;
     }
     
-    // Save API keys to localStorage
     localStorage.setItem("openai_api_key", openAIKey);
     localStorage.setItem("anthropic_api_key", anthropicKey);
     
@@ -84,7 +80,7 @@ export const ApiSettings = () => {
             <p className="text-xs text-muted-foreground">
               Get your API key from <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener noreferrer" className="underline">Anthropic</a>
             </p>
-            <Alert variant="info" className="bg-blue-50 border-blue-200">
+            <Alert variant="info" className="border-blue-200">
               <AlertDescription className="text-xs">
                 Anthropic API keys must start with <code className="bg-blue-100 px-1 py-0.5 rounded">sk-ant-</code> 
                 and be pasted exactly as shown in your Anthropic console.
