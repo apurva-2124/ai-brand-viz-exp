@@ -11,6 +11,21 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
   // Define source badge
   const getSourceBadge = () => {
     switch(comparisonData.source) {
+      case "serpapi":
+        return (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded ml-2">
+                  Live Data
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="max-w-xs text-xs">Real-time Google search results retrieved via SerpApi.</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        );
       case "wayback_machine":
         return (
           <TooltipProvider>
@@ -31,7 +46,7 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded ml-2">
+                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded ml-2">
                   Common Crawl
                 </span>
               </TooltipTrigger>

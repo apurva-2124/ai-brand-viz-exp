@@ -1,4 +1,3 @@
-
 import { QueryType } from "@/utils/queryTransformer";
 
 // Types for traditional search results
@@ -14,10 +13,73 @@ export interface SearchResult {
 export interface TraditionalSearchResults {
   searchEngine: string;
   query: string;
-  source: "wayback_machine" | "common_crawl" | "mock";
+  source: "wayback_machine" | "common_crawl" | "mock" | "serpapi";
   brandMentions: number;
   retrievalDate?: string;
   topResults: SearchResult[];
+  error?: string;
+}
+
+/**
+ * Gets the SerpApi key from localStorage
+ */
+const getSerpApiKey = (): string | null => {
+  return localStorage.getItem("serpapi_api_key");
+};
+
+/**
+ * Fetches real-time Google search results using SerpApi
+ */
+async function fetchSerpApiResults(query: string, brandName: string): Promise<SearchResult[] | null | "LIMIT_EXCEEDED"> {
+  try {
+    const apiKey = getSerpApiKey();
+    
+    // If no API key, fallback to other methods
+    if (!apiKey) {
+      console.log("No SerpApi key found, falling back to other methods");
+      return null;
+    }
+    
+    // Construct the SerpApi URL
+    const apiUrl = `https://serpapi.com/search.json?q=${encodeURIComponent(query)}&api_key=${apiKey}&hl=en&gl=us`;
+    
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+    
+    // Check if API limit is exceeded
+    if (data.error && (
+      data.error.includes("You have exceeded your searches per month") ||
+      data.error.includes("API key is invalid") ||
+      data.error.includes("API key missing")
+    )) {
+      console.error("SerpApi error:", data.error);
+      return "LIMIT_EXCEEDED";
+    }
+    
+    // If there are no organic results, return null
+    if (!data.organic_results || data.organic_results.length === 0) {
+      return null;
+    }
+    
+    // Process and return the search results
+    return data.organic_results.slice(0, 10).map((result: any, index: number) => {
+      const hasBrandMention = 
+        (result.title && result.title.toLowerCase().includes(brandName.toLowerCase())) ||
+        (result.snippet && result.snippet.toLowerCase().includes(brandName.toLowerCase())) ||
+        (result.link && result.link.toLowerCase().includes(brandName.toLowerCase()));
+      
+      return {
+        rank: index + 1,
+        url: result.link || "",
+        title: result.title || "",
+        description: result.snippet || "",
+        hasBrandMention
+      };
+    });
+  } catch (error) {
+    console.error("Error fetching from SerpApi:", error);
+    return null;
+  }
 }
 
 /**
@@ -136,16 +198,45 @@ function generateMockSearchResults(
 
 /**
  * Main function to get traditional search results
- * Tries Wayback Machine first, then falls back to Common Crawl if needed
+ * Tries SerpApi first, then Wayback Machine, then Common Crawl
  */
 export async function getTraditionalSearchResults(
   query: string,
   brandName: string
 ): Promise<TraditionalSearchResults> {
   try {
-    // First try Wayback Machine
+    // First try SerpApi if API key exists
+    if (getSerpApiKey()) {
+      const serpResults = await fetchSerpApiResults(query, brandName);
+      
+      // Handle API limit exceeded
+      if (serpResults === "LIMIT_EXCEEDED") {
+        return {
+          searchEngine: "Google",
+          query,
+          source: "serpapi",
+          brandMentions: 0,
+          topResults: [],
+          error: "API_LIMIT_EXCEEDED"
+        };
+      }
+      
+      // If we have valid results, return them
+      if (serpResults && serpResults.length > 0) {
+        return {
+          searchEngine: "Google",
+          query,
+          source: "serpapi",
+          brandMentions: serpResults.filter(r => r.hasBrandMention).length,
+          retrievalDate: new Date().toISOString(),
+          topResults: serpResults
+        };
+      }
+    }
+    
+    // Then try Wayback Machine
     let results = await fetchWaybackMachineResults(query);
-    let source: "wayback_machine" | "common_crawl" | "mock" = "wayback_machine";
+    let source: "wayback_machine" | "common_crawl" | "mock" | "serpapi" = "wayback_machine";
     
     // If no Wayback results, try Common Crawl
     if (!results || results.length === 0) {

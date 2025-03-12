@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Shield } from "lucide-react";
+import { Shield, ArrowUpRight } from "lucide-react";
 
 export interface ApiKeyFormProps {
   onClose: () => void;
@@ -14,16 +14,19 @@ export const ApiKeyForm = ({ onClose }: ApiKeyFormProps) => {
   const [openAIKey, setOpenAIKey] = useState("");
   const [anthropicKey, setAnthropicKey] = useState("");
   const [geminiKey, setGeminiKey] = useState("");
+  const [serpApiKey, setSerpApiKey] = useState("");
   const { toast } = useToast();
 
   useEffect(() => {
     const savedOpenAIKey = localStorage.getItem("openai_api_key") || "";
     const savedAnthropicKey = localStorage.getItem("anthropic_api_key") || "";
     const savedGeminiKey = localStorage.getItem("gemini_api_key") || "";
+    const savedSerpApiKey = localStorage.getItem("serpapi_api_key") || "";
     
     setOpenAIKey(savedOpenAIKey);
     setAnthropicKey(savedAnthropicKey);
     setGeminiKey(savedGeminiKey);
+    setSerpApiKey(savedSerpApiKey);
   }, []);
 
   const saveSettings = () => {
@@ -39,6 +42,7 @@ export const ApiKeyForm = ({ onClose }: ApiKeyFormProps) => {
     localStorage.setItem("openai_api_key", openAIKey);
     localStorage.setItem("anthropic_api_key", anthropicKey);
     localStorage.setItem("gemini_api_key", geminiKey);
+    localStorage.setItem("serpapi_api_key", serpApiKey);
     
     toast({
       title: "Settings Saved",
@@ -94,6 +98,30 @@ export const ApiKeyForm = ({ onClose }: ApiKeyFormProps) => {
             value={geminiKey}
             onChange={(e) => setGeminiKey(e.target.value)}
           />
+        </div>
+        
+        <div className="space-y-2">
+          <label className="text-sm font-medium">SerpApi Key (Optional)</label>
+          <Input
+            type="password"
+            placeholder="Enter SerpApi key..."
+            value={serpApiKey}
+            onChange={(e) => setSerpApiKey(e.target.value)}
+          />
+          <div className="flex items-center justify-between">
+            <p className="text-xs text-muted-foreground">
+              For real-time Google search data (100 free searches/month)
+            </p>
+            <a 
+              href="https://serpapi.com/users/sign_up" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-xs text-blue-600 hover:underline flex items-center"
+            >
+              Get a free key
+              <ArrowUpRight className="h-3 w-3 ml-1" />
+            </a>
+          </div>
         </div>
       </div>
       
