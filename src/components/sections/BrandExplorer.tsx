@@ -8,10 +8,11 @@ import { AIResponseAnalysis } from "@/components/visibility/AIResponseAnalysis";
 import { toast } from "sonner";
 import { AIProvider } from "@/services/aiVisibility";
 import { getDefaultBrand, getBrandMapping, brandIndustryKeywordMappings } from "@/lib/brandMappings";
-import { generateQueriesForKeywords, QueryType } from "@/utils/queryTransformer";
+import { generateQueriesForKeywords } from "@/utils/queryTransformer";
 import { analyzeAIVisibility } from "@/services/aiVisibility";
+import { QueryType } from "@/utils/queryTemplates";
 
-// Import our new components
+// Import our components
 import { IndustrySelect } from "@/components/brand-explorer/IndustrySelect";
 import { BrandSelect } from "@/components/brand-explorer/BrandSelect";
 import { AIModelSelect } from "@/components/brand-explorer/AIModelSelect";
@@ -24,7 +25,7 @@ export const BrandExplorer = () => {
   const [selectedBrand, setSelectedBrand] = useState(getDefaultBrand());
   const [selectedKeyword, setSelectedKeyword] = useState<string>(selectedBrand.keywords[0]);
   const [provider, setProvider] = useState<AIProvider>("openai");
-  const [queryType, setQueryType] = useState<QueryType>("best-in-class");
+  const [queryType, setQueryType] = useState<QueryType>("general");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [hasApiKey, setHasApiKey] = useState(false);
   const [aiResults, setAiResults] = useState<any>(null);

@@ -1,19 +1,14 @@
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { QueryType } from "@/utils/queryTransformer";
+import { QueryType } from "@/utils/queryTemplates";
 
 // Define query types for the dropdown
 const QUERY_TYPES: { value: QueryType; label: string }[] = [
-  { value: "best-in-class", label: "Best-in-Class (Category-Level)" },
-  { value: "feature-specific", label: "Feature-Specific" },
+  { value: "general", label: "General Query (Baseline)" },
   { value: "comparison", label: "Comparison Query" },
-  { value: "review-based", label: "Review-Based Query" },
-  { value: "transactional", label: "Transactional Intent" },
-  { value: "ai-summarized", label: "AI Summarized Answer Query" },
-  { value: "localized", label: "Localized Query (Location-Based)" },
-  { value: "ai-assistant", label: "AI Assistant Query (Conversational Search)" },
   { value: "negative-sentiment", label: "Negative Sentiment Query (Reputation Risk)" },
-  { value: "industry-trend", label: "Industry Trend Query (Thought Leadership)" },
+  { value: "review-based", label: "Review-Based Query" },
+  { value: "ai-assistant", label: "AI Assistant Query (Conversational Search)" },
 ];
 
 interface QueryTypeSelectProps {

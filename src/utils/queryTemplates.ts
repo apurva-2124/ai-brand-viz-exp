@@ -1,16 +1,11 @@
 
 // Define the types of queries available for AI visibility analysis
 export type QueryType = 
-  | "best-in-class" 
-  | "feature-specific" 
+  | "general" 
   | "comparison" 
+  | "negative-sentiment" 
   | "review-based" 
-  | "transactional"
-  | "ai-summarized"
-  | "localized"
-  | "ai-assistant"
-  | "negative-sentiment"
-  | "industry-trend";
+  | "ai-assistant";
 
 export interface QueryVariables {
   brand: string;
@@ -28,65 +23,38 @@ export const identifyKeywordIntent = (keyword: string): QueryType => {
     return "comparison";
   }
   
-  if (lowerKeyword.includes('best') || lowerKeyword.includes('top') || lowerKeyword.includes('leading')) {
-    return "best-in-class";
-  }
-  
-  if (lowerKeyword.includes('review') || lowerKeyword.includes('rating')) {
+  if (lowerKeyword.includes('review') || lowerKeyword.includes('rating') || lowerKeyword.includes('what people say')) {
     return "review-based";
   }
   
-  if (lowerKeyword.includes('buy') || lowerKeyword.includes('price') || lowerKeyword.includes('cost')) {
-    return "transactional";
+  if (lowerKeyword.includes('problem') || lowerKeyword.includes('issue') || lowerKeyword.includes('complain')) {
+    return "negative-sentiment";
   }
   
-  if (lowerKeyword.includes('how') || lowerKeyword.includes('what')) {
-    return "ai-summarized";
+  if (lowerKeyword.includes('help') || lowerKeyword.includes('assist') || lowerKeyword.includes('how to')) {
+    return "ai-assistant";
   }
   
-  if (lowerKeyword.includes('near') || lowerKeyword.includes('in ')) {
-    return "localized";
-  }
-  
-  // Default to feature-specific if no other patterns match
-  return "feature-specific";
+  // Default to general query if no other patterns match
+  return "general";
 };
 
 // Object containing templates for different query types
 export const queryTemplates = {
-  "best-in-class": (variables: QueryVariables) => 
-    `What are the best ${variables.keyword} in the ${variables.industry} industry?`,
+  "general": (variables: QueryVariables) => 
+    `Tell me about ${variables.keyword} in the ${variables.industry} sector.`,
   
-  "feature-specific": (variables: QueryVariables) => 
-    `Tell me about important ${variables.keyword} features in the ${variables.industry} sector.`,
-  
-  "comparison": (variables: QueryVariables) => {
-    const competitorsList = variables.competitors?.length 
-      ? variables.competitors.join(', ') 
-      : 'other providers';
-    return `Compare ${variables.brand} with ${competitorsList} on ${variables.keyword}.`;
-  },
-  
-  "review-based": (variables: QueryVariables) => 
-    `What do reviews say about ${variables.keyword} from ${variables.brand}?`,
-  
-  "transactional": (variables: QueryVariables) => 
-    `I'm looking to buy ${variables.keyword} from a ${variables.industry} company. What options should I consider?`,
-  
-  "ai-summarized": (variables: QueryVariables) => 
-    `Explain how ${variables.keyword} works in the ${variables.industry} industry.`,
-  
-  "localized": (variables: QueryVariables) => 
-    `Where can I find ${variables.keyword} services near me?`,
-  
-  "ai-assistant": (variables: QueryVariables) => 
-    `I need help with ${variables.keyword}. Can you suggest some options?`,
+  "comparison": (variables: QueryVariables) => 
+    `How does ${variables.brand} compare to its competitors in the ${variables.industry} sector?`,
   
   "negative-sentiment": (variables: QueryVariables) => 
-    `What are common problems with ${variables.keyword} in ${variables.industry}?`,
+    `What are common problems with ${variables.keyword} from ${variables.brand} in the ${variables.industry} sector?`,
   
-  "industry-trend": (variables: QueryVariables) => 
-    `What are the latest trends for ${variables.keyword} in the ${variables.industry} industry?`
+  "review-based": (variables: QueryVariables) => 
+    `What do customers say about ${variables.brand} and its ${variables.keyword} in the ${variables.industry} sector?`,
+  
+  "ai-assistant": (variables: QueryVariables) => 
+    `If I were looking for ${variables.keyword} from ${variables.brand}, how would you assist me?`
 };
 
 // Template selection function
