@@ -11,6 +11,14 @@ import { getDefaultBrand, getBrandMapping, brandIndustryKeywordMappings } from "
 import { generateQueriesForKeywords } from "@/utils/queryTransformer";
 import { analyzeAIVisibility } from "@/services/aiVisibility";
 import { QueryType } from "@/utils/queryTemplates";
+import { AlertTriangle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger 
+} from "@/components/ui/tooltip";
 
 // Import our components
 import { IndustrySelect } from "@/components/brand-explorer/IndustrySelect";
@@ -108,13 +116,13 @@ export const BrandExplorer = () => {
     ) : [];
 
   return (
-    <Container className="py-16" id="explorer">
-      <div className="max-w-5xl mx-auto space-y-8">
+    <Container className="py-20" id="explorer">
+      <div className="max-w-5xl mx-auto space-y-10">
         <div className="text-center space-y-4">
           <h2 className="text-3xl font-bold">Brand Explorer</h2>
           <p className="text-muted-foreground">
-            Explore how AI perceives your brand compared to traditional search results. 
-            Select a brand, industry, and keyword to analyze its visibility in AI-generated responses.
+            See how AI describes your brand vs. traditional search. Select a brand, 
+            industry, and keyword to compare AI-generated results with Google search rankings.
           </p>
         </div>
 
@@ -148,11 +156,24 @@ export const BrandExplorer = () => {
             setSelectedKeyword={setSelectedKeyword}
           />
 
-          <AnalysisButton 
-            isAnalyzing={isAnalyzing}
-            hasApiKey={hasApiKey}
-            onClick={runAIVisibilityAnalysis}
-          />
+          <div className="mb-6 flex items-center">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex-1">
+                    <AnalysisButton 
+                      isAnalyzing={isAnalyzing}
+                      hasApiKey={hasApiKey}
+                      onClick={runAIVisibilityAnalysis}
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <p>AI-generated responses are pulled directly from public AI models. Results may be inaccurate or biased. This tool does not modify AI outputs.</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
 
           {/* Display Search Queries */}
           {queries.length > 0 && (
@@ -181,6 +202,17 @@ export const BrandExplorer = () => {
             aiResults={aiResults}
           />
         </Card>
+        
+        {/* Primary Disclaimer */}
+        <Alert variant="outline" className="bg-background border-muted-foreground/20 mt-8">
+          <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+          <AlertDescription className="text-muted-foreground text-sm">
+            <strong>Disclaimer:</strong> This is an open-source experiment analyzing AI-generated search results. 
+            I do not represent or endorse any brands listed in this tool. AI-generated responses may change over 
+            time and are not always accurate. This tool is for research purposes only and should not be used for 
+            brand monitoring or SEO decisions.
+          </AlertDescription>
+        </Alert>
       </div>
     </Container>
   );

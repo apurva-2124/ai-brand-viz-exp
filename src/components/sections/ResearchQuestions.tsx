@@ -10,21 +10,21 @@ export const ResearchQuestions = () => {
           <div className="flex gap-4">
             <span className="text-2xl text-primary/50">1</span>
             <p className="text-xl">
-              How do different AI models vary in their interpretation of the same brand?
+              How do AI models construct brand narratives, and where do these interpretations diverge?
             </p>
           </div>
           
           <div className="flex gap-4">
             <span className="text-2xl text-primary/50">2</span>
             <p className="text-xl">
-              What patterns emerge across different industries and AI providers?
+              What factors influence AI-generated brand perceptions across industries and AI models?
             </p>
           </div>
           
           <div className="flex gap-4">
             <span className="text-2xl text-primary/50">3</span>
             <p className="text-xl">
-              How do AI interpretations compare to human brand associations?
+              How do AI-generated brand results compare to traditional search rankings in visibility, sentiment, and accuracy?
             </p>
           </div>
         </div>

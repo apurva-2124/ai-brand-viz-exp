@@ -10,15 +10,14 @@ export const HeroSection = () => {
         </div>
         
         <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
-          How AI-Powered Search is Changing Brand Visibility & Perception
+          How AI Search is Reshaping Brand Discovery & Perception
         </h1>
         
         <p className="text-xl text-muted-foreground">
-          Brand discovery isn't what it used to be. Instead of scrolling through pages of search results, 
-          people are turning to AI-powered assistants that summarize, recommend, and shape brand perceptions 
-          in real time. This experiment explores how different AI models (OpenAI, Anthropic, Google) describe 
-          brands across industries. By comparing their responses, we can see firsthand how AI-driven search 
-          is influencing what people learn about brands—and what gets left out.
+          Traditional search is being replaced by AI assistants that don't just rank web pages—they 
+          generate answers in real time. This experiment explores how AI models (OpenAI, Anthropic, Google) 
+          describe brands differently, influencing what people learn and what gets left out. By comparing 
+          their responses, we can better understand the shift from keyword-based search to AI-driven discovery.
         </p>
         
         <p className="text-base text-muted-foreground">

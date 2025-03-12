@@ -7,8 +7,8 @@ export const ExperimentDesignSection = () => {
     <Container className="py-16">
       <div className="max-w-5xl mx-auto space-y-8">
         <div className="space-y-4 mb-8">
-          <h2 className="text-3xl font-bold">Experiment Design and AI Search Query Logic</h2>
-          <div className="text-muted-foreground">
+          <h2 className="text-3xl font-bold text-left">Experiment Design and AI Search Query Logic</h2>
+          <div className="text-muted-foreground text-left">
             <p>
               Search engines like Google and AI-powered models like ChatGPT interpret queries differently. 
               Traditional search engines rank existing web pages based on SEO and authority, while AI 
@@ -21,7 +21,7 @@ export const ExperimentDesignSection = () => {
           </div>
         </div>
 
-        <Accordion type="single" collapsible className="space-y-4">
+        <Accordion type="single" collapsible className="space-y-4" defaultValue="traditional-vs-ai">
           <AccordionItem value="traditional-vs-ai">
             <AccordionTrigger className="text-xl font-semibold">
               Traditional Search vs. AI Search Queries
@@ -70,9 +70,9 @@ export const ExperimentDesignSection = () => {
                   <AccordionTrigger>General Query (Baseline)</AccordionTrigger>
                   <AccordionContent className="space-y-2 pt-2">
                     <ul className="list-disc pl-6 space-y-2">
-                      <li>Google: Shows ranked informational pages (Wikipedia, news, blogs).</li>
-                      <li>AI: Summarizes general knowledge on the topic.</li>
-                      <li>Example:
+                      <li><strong>Google:</strong> Shows ranked informational pages (Wikipedia, news, blogs).</li>
+                      <li><strong>AI:</strong> Summarizes general knowledge on the topic.</li>
+                      <li><strong>Example:</strong>
                         <ul className="list-disc pl-6 mt-1">
                           <li>Google Search Query: "Short-term rentals hospitality industry"</li>
                           <li>AI Query: "Tell me about short-term rentals in the Travel & Hospitality sector."</li>
@@ -86,9 +86,9 @@ export const ExperimentDesignSection = () => {
                   <AccordionTrigger>Comparison Query</AccordionTrigger>
                   <AccordionContent className="space-y-2 pt-2">
                     <ul className="list-disc pl-6 space-y-2">
-                      <li>Google: Shows articles comparing brands (e.g., "Best travel sites ranked").</li>
-                      <li>AI: Synthesizes key differences into a conversational response.</li>
-                      <li>Example:
+                      <li><strong>Google:</strong> Shows articles comparing brands (e.g., "Best travel sites ranked").</li>
+                      <li><strong>AI:</strong> Synthesizes key differences into a conversational response.</li>
+                      <li><strong>Example:</strong>
                         <ul className="list-disc pl-6 mt-1">
                           <li>Google Search Query: "Airbnb vs. Vrbo"</li>
                           <li>AI Query: "How does Airbnb compare to its competitors in the Travel & Hospitality sector?"</li>
@@ -102,9 +102,9 @@ export const ExperimentDesignSection = () => {
                   <AccordionTrigger>Negative Sentiment Query (Reputation Risk)</AccordionTrigger>
                   <AccordionContent className="space-y-2 pt-2">
                     <ul className="list-disc pl-6 space-y-2">
-                      <li>Google: Often surfaces PR-managed content or forum discussions.</li>
-                      <li>AI: Pulls from public complaints, sentiment trends, and pain points.</li>
-                      <li>Example:
+                      <li><strong>Google:</strong> Often surfaces PR-managed content or forum discussions.</li>
+                      <li><strong>AI:</strong> Pulls from public complaints, sentiment trends, and pain points.</li>
+                      <li><strong>Example:</strong>
                         <ul className="list-disc pl-6 mt-1">
                           <li>Google Search Query: "Airbnb complaints 2024"</li>
                           <li>AI Query: "What are common problems with Airbnb rentals in Travel & Hospitality?"</li>
@@ -118,9 +118,9 @@ export const ExperimentDesignSection = () => {
                   <AccordionTrigger>Review-Based Query</AccordionTrigger>
                   <AccordionContent className="space-y-2 pt-2">
                     <ul className="list-disc pl-6 space-y-2">
-                      <li>Google: Prioritizes review sites (Yelp, Trustpilot, Reddit).</li>
-                      <li>AI: Aggregates opinions from multiple sources into a summary.</li>
-                      <li>Example:
+                      <li><strong>Google:</strong> Prioritizes review sites (Yelp, Trustpilot, Reddit).</li>
+                      <li><strong>AI:</strong> Aggregates opinions from multiple sources into a summary.</li>
+                      <li><strong>Example:</strong>
                         <ul className="list-disc pl-6 mt-1">
                           <li>Google Search Query: "Best beauty products reviews"</li>
                           <li>AI Query: "What do customers say about Sephora and its beauty products in the Consumer Goods sector?"</li>
@@ -134,9 +134,9 @@ export const ExperimentDesignSection = () => {
                   <AccordionTrigger>AI Assistant Query (Conversational Search)</AccordionTrigger>
                   <AccordionContent className="space-y-2 pt-2">
                     <ul className="list-disc pl-6 space-y-2">
-                      <li>Google: Suggests related searches or FAQ pages.</li>
-                      <li>AI: Responds like a virtual assistant, providing recommendations.</li>
-                      <li>Example:
+                      <li><strong>Google:</strong> Suggests related searches or FAQ pages.</li>
+                      <li><strong>AI:</strong> Responds like a virtual assistant, providing recommendations.</li>
+                      <li><strong>Example:</strong>
                         <ul className="list-disc pl-6 mt-1">
                           <li>Google Search Query: "Buy meditation app Calm discount"</li>
                           <li>AI Query: "If I were looking for a meditation app from Calm, how would you assist me?"</li>

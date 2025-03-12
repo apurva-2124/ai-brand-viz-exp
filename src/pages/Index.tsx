@@ -15,10 +15,11 @@ const Index = () => {
         <ResearchQuestions />
         <ExperimentDesignSection />
         <BrandExplorer />
-        <div id="about-experiment">
-          <AboutExperiment />
-        </div>
+        <AboutExperiment />
       </main>
+      <footer className="py-2 bg-muted/30 text-center text-xs text-muted-foreground border-t">
+        AI-generated results are for research purposes only and may not be accurate. This tool does not modify AI responses or represent any brands.
+      </footer>
     </div>
   );
 };

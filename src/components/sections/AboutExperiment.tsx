@@ -5,7 +5,7 @@ import { Github } from "lucide-react";
 
 export const AboutExperiment = () => {
   return (
-    <Container className="py-16">
+    <Container className="py-16" id="about-experiment">
       <div className="max-w-3xl mx-auto space-y-8">
         <h2 className="text-3xl font-bold">About This Experiment</h2>
         
@@ -19,9 +19,9 @@ export const AboutExperiment = () => {
           </p>
           
           <p>
-            At first, I just wanted to tinker—maybe track some AI-generated search results for fun. 
-            But the more I explored, the more I realized this was worth documenting. This project is 
-            my way of studying how AI search shifts consumer perception, one brand at a time.
+            What started as a curiosity—tracking AI-generated search results—quickly turned into a deeper 
+            exploration of how AI search influences brand perception. This project documents how AI-generated 
+            responses differ from traditional search, shaping the way consumers discover brands.
           </p>
         </div>
         
