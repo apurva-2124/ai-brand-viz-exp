@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
@@ -28,7 +27,7 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
   const [error, setError] = useState<string | null>(null);
   const [visibilityData, setVisibilityData] = useState<any>(null);
   const [provider, setProvider] = useState<AIProvider>("openai");
-  const [queryType, setQueryType] = useState<QueryType>("best-in-class");
+  const [queryType, setQueryType] = useState<QueryType>("general");
   const [useMockData, setUseMockData] = useState(false);
   const { toast } = useToast();
 

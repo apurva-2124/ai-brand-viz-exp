@@ -16,7 +16,7 @@ export const SearchBehaviorComparison = ({
   keyword, 
   brandName, 
   competitors,
-  queryType = "best-in-class"
+  queryType = "general"
 }: SearchBehaviorComparisonProps) => {
   const [selectedQueryType, setSelectedQueryType] = useState<QueryType>(queryType);
   

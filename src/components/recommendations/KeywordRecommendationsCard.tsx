@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { identifyKeywordIntent } from "@/utils/queryTemplates";
 import type { QueryType } from "@/utils/queryTemplates";
@@ -18,30 +17,20 @@ interface KeywordRecommendationsCardProps {
 
 // Map query types to user-friendly labels
 const queryTypeLabels: Record<QueryType, string> = {
-  "best-in-class": "Category Leader",
-  "feature-specific": "Feature Focus",
+  "general": "General Information",
   "comparison": "Competitor Comparison",
-  "review-based": "Review Oriented",
-  "transactional": "Purchase Intent",
-  "ai-summarized": "AI Summary",
-  "localized": "Location Based",
-  "ai-assistant": "Conversational",
   "negative-sentiment": "Risk Management",
-  "industry-trend": "Thought Leadership"
+  "review-based": "Review Oriented",
+  "ai-assistant": "Conversational"
 };
 
 // Map query types to badge colors
 const queryTypeBadgeColors: Partial<Record<QueryType, string>> = {
-  "best-in-class": "bg-blue-100 text-blue-800 hover:bg-blue-100",
-  "feature-specific": "bg-green-100 text-green-800 hover:bg-green-100",
+  "general": "bg-blue-100 text-blue-800 hover:bg-blue-100",
   "comparison": "bg-purple-100 text-purple-800 hover:bg-purple-100",
-  "review-based": "bg-yellow-100 text-yellow-800 hover:bg-yellow-100",
-  "transactional": "bg-orange-100 text-orange-800 hover:bg-orange-100",
-  "ai-summarized": "bg-indigo-100 text-indigo-800 hover:bg-indigo-100",
-  "localized": "bg-teal-100 text-teal-800 hover:bg-teal-100",
-  "ai-assistant": "bg-pink-100 text-pink-800 hover:bg-pink-100",
   "negative-sentiment": "bg-red-100 text-red-800 hover:bg-red-100",
-  "industry-trend": "bg-cyan-100 text-cyan-800 hover:bg-cyan-100"
+  "review-based": "bg-yellow-100 text-yellow-800 hover:bg-yellow-100",
+  "ai-assistant": "bg-pink-100 text-pink-800 hover:bg-pink-100"
 };
 
 export const KeywordRecommendationsCard = ({ keywordRecommendations }: KeywordRecommendationsCardProps) => {

@@ -12,7 +12,7 @@ export type { AIProvider, VisibilityResult };
 export async function analyzeAIVisibility(
   brandData: BrandData,
   provider: AIProvider = "all",
-  queryType: QueryType = "feature-specific"
+  queryType: QueryType = "general"
 ): Promise<AIVisibilityAnalysisResult> {
   let results: VisibilityResult[] = [];
   
