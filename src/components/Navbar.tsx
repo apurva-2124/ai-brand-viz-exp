@@ -20,8 +20,9 @@ const Navbar = () => {
             <a href="#explorer" className="text-muted-foreground hover:text-foreground transition-colors">
               Brand Explorer
             </a>
-            <a href="#journey" className="text-muted-foreground hover:text-foreground transition-colors">
+            <a href="https://x.com/ApurvaLuty" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
               Join the Journey
+              <ExternalLink size={14} />
             </a>
           </nav>
           

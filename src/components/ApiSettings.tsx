@@ -15,7 +15,7 @@ export const ApiSettings = () => {
           <Settings className="h-5 w-5" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>API Settings</DialogTitle>
           <DialogDescription>
