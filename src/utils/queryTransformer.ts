@@ -6,11 +6,12 @@ export const generateQueriesForKeywords = (
   keywords: string[],
   brandName: string,
   industry: string,
-  competitors?: string[]
+  competitors?: string[],
+  specificQueryType?: QueryType
 ): { keyword: string; query: string; queryType: QueryType }[] => {
   return keywords.map(keyword => {
-    // Determine the query type based on keyword intent
-    const queryType = identifyKeywordIntent(keyword);
+    // Use the specific query type if provided, otherwise determine based on keyword intent
+    const queryType = specificQueryType || identifyKeywordIntent(keyword);
     
     // Set up variables for template
     const variables: QueryVariables = {

@@ -48,7 +48,7 @@ export const DashboardHeader = ({
       <div>
         <h2 className="text-xl font-semibold">AI Visibility Results</h2>
         <p className="text-sm text-muted-foreground">
-          See how your brand appears in AI responses
+          Compare AI-generated search results vs. traditional search results. Find out whether AI models mention your brand and how they describe it.
         </p>
       </div>
       

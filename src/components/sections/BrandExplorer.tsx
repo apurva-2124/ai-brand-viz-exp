@@ -7,18 +7,33 @@ import { AIProvider } from "@/services/aiVisibility";
 import { AIvsTraditionalComparison } from "@/components/AIvsTraditionalComparison";
 import { brandIndustryKeywordMappings, getBrandsByIndustry, getDefaultBrand, getBrandMapping } from "@/lib/brandMappings";
 import { SearchQueriesCard } from "@/components/visibility/SearchQueriesCard";
-import { generateQueriesForKeywords } from "@/utils/queryTransformer";
+import { generateQueriesForKeywords, QueryType } from "@/utils/queryTransformer";
 import { AIResponseAnalysis } from "@/components/visibility/AIResponseAnalysis";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertTriangle } from "lucide-react";
 import { analyzeAIVisibility } from "@/services/aiVisibility";
 import { toast } from "sonner";
+
+// Define query types for the dropdown
+const QUERY_TYPES: { value: QueryType; label: string }[] = [
+  { value: "best-in-class", label: "Best-in-Class (Category-Level)" },
+  { value: "feature-specific", label: "Feature-Specific" },
+  { value: "comparison", label: "Comparison Query" },
+  { value: "review-based", label: "Review-Based Query" },
+  { value: "transactional", label: "Transactional Intent" },
+  { value: "ai-summarized", label: "AI Summarized Answer Query" },
+  { value: "localized", label: "Localized Query (Location-Based)" },
+  { value: "ai-assistant", label: "AI Assistant Query (Conversational Search)" },
+  { value: "negative-sentiment", label: "Negative Sentiment Query (Reputation Risk)" },
+  { value: "industry-trend", label: "Industry Trend Query (Thought Leadership)" },
+];
 
 export const BrandExplorer = () => {
   const [selectedIndustry, setSelectedIndustry] = useState<string>(getDefaultBrand().industry);
   const [selectedBrand, setSelectedBrand] = useState(getDefaultBrand());
   const [selectedKeyword, setSelectedKeyword] = useState<string>(selectedBrand.keywords[0]);
   const [provider, setProvider] = useState<AIProvider>("openai");
+  const [queryType, setQueryType] = useState<QueryType>("best-in-class");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [hasApiKey, setHasApiKey] = useState(false);
   const [aiResults, setAiResults] = useState<any>(null);
@@ -79,7 +94,7 @@ export const BrandExplorer = () => {
       };
       
       // Run the analysis with real API calls
-      const results = await analyzeAIVisibility(brandData, provider);
+      const results = await analyzeAIVisibility(brandData, provider, queryType);
       setAiResults(results);
       toast.success("AI Visibility analysis completed");
     } catch (error) {
@@ -95,7 +110,9 @@ export const BrandExplorer = () => {
     generateQueriesForKeywords(
       [selectedKeyword], 
       selectedBrand.brand, 
-      selectedBrand.industry
+      selectedBrand.industry,
+      undefined,
+      queryType
     ) : [];
 
   return (
@@ -104,14 +121,15 @@ export const BrandExplorer = () => {
         <div className="text-center space-y-4">
           <h2 className="text-3xl font-bold">Brand Explorer</h2>
           <p className="text-muted-foreground">
-            Select a brand and AI model to see how artificial intelligence interprets brand perception
+            Explore how AI perceives your brand compared to traditional search results. 
+            Select a brand, industry, and keyword to analyze its visibility in AI-generated responses.
           </p>
         </div>
 
         <Card className="p-6">
-          <div className="grid md:grid-cols-3 gap-4 mb-6">
+          <div className="grid md:grid-cols-4 gap-4 mb-6">
             <div>
-              <label className="block text-sm font-medium mb-2">Select Industry</label>
+              <label className="block text-sm font-medium mb-2">Choose an Industry to Explore</label>
               <Select 
                 value={selectedIndustry}
                 onValueChange={setSelectedIndustry}
@@ -130,7 +148,7 @@ export const BrandExplorer = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Select Brand</label>
+              <label className="block text-sm font-medium mb-2">Pick a Brand to Analyze</label>
               <Select 
                 value={selectedBrand.brand}
                 onValueChange={handleBrandChange}
@@ -164,11 +182,32 @@ export const BrandExplorer = () => {
                 </SelectContent>
               </Select>
             </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Select Query Type</label>
+              <Select
+                value={queryType}
+                onValueChange={(value) => setQueryType(value as QueryType)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose query type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {QUERY_TYPES.map((type) => (
+                    <SelectItem key={type.value} value={type.value}>
+                      {type.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           
           {/* Keyword selection row */}
           <div className="mb-6">
-            <label className="block text-sm font-medium mb-2">Select Keyword</label>
+            <label className="block text-sm font-medium mb-2">
+              Pick a Search Keyword (how users find this brand via traditional search engines)
+            </label>
             <div className="flex gap-2 flex-wrap">
               {selectedBrand.keywords.map(keyword => (
                 <Button
@@ -191,11 +230,12 @@ export const BrandExplorer = () => {
               className="w-full"
             >
               {isAnalyzing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {isAnalyzing ? "Analyzing..." : "Run AI Visibility Analysis"}
+              {isAnalyzing ? "Analyzing..." : "Analyze AI Search Results"}
             </Button>
             {!hasApiKey && (
-              <p className="text-sm text-red-500 mt-2">
-                Please add an API key in the settings before running analysis
+              <p className="text-sm text-red-500 mt-2 flex items-center">
+                <AlertTriangle className="h-4 w-4 mr-1" />
+                API Key Required: Add your API key in settings to run an AI analysis and see results.
               </p>
             )}
           </div>

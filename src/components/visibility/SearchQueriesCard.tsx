@@ -14,7 +14,7 @@ export const SearchQueriesCard = ({ queries }: SearchQueriesCardProps) => {
       <CardHeader>
         <CardTitle>AI Search Queries</CardTitle>
         <CardDescription>
-          Your keywords transformed into natural language queries that AI systems respond to
+          How AI understands search: We translate your industry, brand and keyword inputs into a conversational query users might ask an AI model. This helps evaluate how well AI search represents your brand.
         </CardDescription>
       </CardHeader>
       <CardContent>
