@@ -21,6 +21,7 @@ interface AIResponseAnalysisProps {
       riskLevel: string;
     };
     recommendation?: string;
+    queryType?: string;
   }>;
 }
 
@@ -49,6 +50,9 @@ export const AIResponseAnalysis = ({ results }: AIResponseAnalysisProps) => {
                 <div>
                   <span className="font-medium">{result.keyword}</span>
                   <span className="text-xs ml-2 text-muted-foreground">via {result.provider}</span>
+                  {result.queryType && (
+                    <span className="text-xs ml-2 px-2 py-0.5 bg-secondary rounded-full">{result.queryType}</span>
+                  )}
                 </div>
                 <div>
                   {getVisibilityStatusBadge(result.visibilityScore?.level || 

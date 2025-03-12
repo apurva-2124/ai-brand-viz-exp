@@ -13,3 +13,9 @@ export interface SearchResults {
   searchResults: SearchResult[];
   error?: string;
 }
+
+export interface AISearchQuery {
+  keyword: string;
+  query: string;
+  queryType?: string;
+}

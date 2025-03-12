@@ -5,6 +5,7 @@ interface SearchQueriesCardProps {
   queries: Array<{
     keyword: string;
     query: string;
+    queryType?: string;
   }>;
 }
 
@@ -25,6 +26,11 @@ export const SearchQueriesCard = ({ queries }: SearchQueriesCardProps) => {
               <div className="font-medium mb-2">{item.keyword}</div>
               <div className="text-xs text-muted-foreground mb-1">Transformed Query:</div>
               <div className="text-sm">{item.query}</div>
+              {item.queryType && (
+                <div className="mt-2">
+                  <span className="text-xs px-2 py-1 bg-primary/10 rounded-full">{item.queryType}</span>
+                </div>
+              )}
             </div>
           ))}
         </div>

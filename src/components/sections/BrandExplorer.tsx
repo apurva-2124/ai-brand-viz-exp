@@ -82,6 +82,12 @@ export const BrandExplorer = () => {
     setAiResults(null);
     
     try {
+      console.log('Running AI visibility analysis with:');
+      console.log('Brand:', selectedBrand.brand);
+      console.log('Keyword:', selectedKeyword);
+      console.log('Query Type:', queryType);
+      console.log('Provider:', provider);
+      
       // Create brand data object for analysis
       const brandData = {
         name: selectedBrand.brand,
@@ -92,8 +98,21 @@ export const BrandExplorer = () => {
         lastName: ""
       };
       
+      // Generate exact queries that will be used
+      const queriesForAnalysis = generateQueriesForKeywords(
+        [selectedKeyword], 
+        selectedBrand.brand, 
+        selectedBrand.industry,
+        undefined,
+        queryType
+      );
+      
+      console.log('Generated queries for analysis:', queriesForAnalysis);
+      
       // Run the analysis with real API calls
       const results = await analyzeAIVisibility(brandData, provider, queryType);
+      
+      console.log('Analysis results:', results);
       setAiResults(results);
       toast.success("AI Visibility analysis completed");
     } catch (error) {

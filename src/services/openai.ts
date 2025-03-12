@@ -13,6 +13,7 @@ interface OpenAIResponse {
 
 export async function queryOpenAI(keyword: string, query: string, brand: string): Promise<string> {
   try {
+    console.log('Querying OpenAI with:', { keyword, query, brand });
     const apiKey = localStorage.getItem('openai_api_key');
     
     if (!apiKey) {
@@ -57,18 +58,20 @@ export async function queryOpenAI(keyword: string, query: string, brand: string)
 
 export async function analyzeBrandVisibility(
   brandData: BrandData, 
-  queries: Array<{ keyword: string; query: string }>
+  queries: Array<{ keyword: string; query: string; queryType?: string }>
 ): Promise<{
   keyword: string;
   query: string;
   response: string;
   hasBrandMention: boolean;
   isProminent: boolean;
+  queryType?: string;
 }[]> {
   const results = [];
   
-  for (const { keyword, query } of queries) {
+  for (const { keyword, query, queryType } of queries) {
     try {
+      console.log(`Analyzing brand visibility for ${keyword} with query: ${query}`);
       const response = await queryOpenAI(keyword, query, brandData.name);
       const hasBrandMention = response.toLowerCase().includes(brandData.name.toLowerCase());
       
@@ -81,7 +84,8 @@ export async function analyzeBrandVisibility(
         query,
         response,
         hasBrandMention,
-        isProminent
+        isProminent,
+        queryType
       });
     } catch (error) {
       console.error(`Failed to analyze visibility for keyword: ${keyword}`, error);
@@ -91,7 +95,8 @@ export async function analyzeBrandVisibility(
         query,
         response: 'Failed to analyze',
         hasBrandMention: false,
-        isProminent: false
+        isProminent: false,
+        queryType
       });
     }
   }

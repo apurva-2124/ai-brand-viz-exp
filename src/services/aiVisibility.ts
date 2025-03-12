@@ -21,8 +21,12 @@ export async function analyzeAIVisibility(
     brandData.keywords,
     brandData.name,
     brandData.industry,
-    brandData.competitors
+    brandData.competitors,
+    queryType
   );
+  
+  console.log(`Analyzing AI visibility for ${brandData.name} with query type: ${queryType}`);
+  console.log('Generated queries:', queries);
   
   try {
     // Check if we should use mock data (only if no API keys are available)
