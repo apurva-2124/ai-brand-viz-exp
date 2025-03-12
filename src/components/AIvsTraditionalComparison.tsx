@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -7,7 +6,7 @@ import { BrandData } from "@/components/BrandTracker";
 import { ComparisonHeader } from "@/components/comparison/ComparisonHeader";
 import { AIResults } from "@/components/comparison/AIResults";
 import { TraditionalResults } from "@/components/comparison/TraditionalResults";
-import { getTraditionalSearchResults, TraditionalSearchResults } from "@/services/traditionalSearch";
+import { getTraditionalSearchResults, TraditionalSearchResults } from "@/services/traditional-search";
 
 interface AIvsTraditionalComparisonProps {
   brandData: BrandData;
@@ -22,14 +21,12 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
   const [comparisonData, setComparisonData] = useState<TraditionalSearchResults | null>(null);
   const [apiLimitExceeded, setApiLimitExceeded] = useState(false);
 
-  // Update selected keyword when brandData changes
   useEffect(() => {
     if (brandData.keywords.length > 0) {
       setSelectedKeyword(brandData.keywords[0]);
     }
   }, [brandData.keywords]);
 
-  // Find the result for the selected keyword
   const aiResult = aiResults?.results?.find(
     (result: any) => result.keyword === selectedKeyword
   );
@@ -39,13 +36,10 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
     setApiLimitExceeded(false);
     
     try {
-      // Use the same query that was used for AI results
       const query = aiResult?.query || `${selectedKeyword} ${brandData.industry}`;
       
-      // Fetch traditional search results using our service
       const results = await getTraditionalSearchResults(query, brandData.name);
       
-      // Check if API limit is exceeded
       if (results.error === "API_LIMIT_EXCEEDED") {
         setApiLimitExceeded(true);
         setComparisonData(null);

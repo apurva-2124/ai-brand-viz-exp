@@ -1,6 +1,6 @@
 
 import { Check, X, AlertCircle } from "lucide-react";
-import { TraditionalSearchResults } from "@/services/traditionalSearch";
+import { TraditionalSearchResults } from "@/services/traditional-search";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface TraditionalResultsProps {
