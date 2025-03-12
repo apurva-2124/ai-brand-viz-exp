@@ -8,6 +8,7 @@ import { ErrorMessages } from "@/components/comparison/ErrorMessages";
 import { EmptyState } from "@/components/comparison/EmptyState";
 import { ComparisonResults } from "@/components/comparison/ComparisonResults";
 import { getTraditionalSearchResults, TraditionalSearchResults } from "@/services/traditional-search";
+import { toast } from "sonner";
 
 interface AIvsTraditionalComparisonProps {
   brandData: BrandData;
@@ -22,7 +23,7 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
   const [comparisonData, setComparisonData] = useState<TraditionalSearchResults | null>(null);
   const [apiLimitExceeded, setApiLimitExceeded] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [retryWithSimpleQuery, setRetryWithSimpleQuery] = useState(false);
+  const [debugInfo, setDebugInfo] = useState<string | null>(null);
 
   useEffect(() => {
     if (brandData.keywords.length > 0) {
@@ -38,14 +39,16 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
     setIsLoading(true);
     setApiLimitExceeded(false);
     setErrorMessage(null);
-    setRetryWithSimpleQuery(false);
+    setDebugInfo(null);
     
     try {
+      console.log("Starting SerpAPI fetch for keyword:", selectedKeyword);
       console.log("Checking for SerpAPI key:", localStorage.getItem("serpapi_api_key") ? "Present" : "Missing");
       
       if (!localStorage.getItem("serpapi_api_key")) {
         setApiLimitExceeded(true);
         setIsLoading(false);
+        toast.error("SerpAPI key missing. Please add your API key in settings.");
         return;
       }
       
@@ -57,17 +60,25 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
       let results = await getTraditionalSearchResults(query, brandData.name);
       console.log("Traditional search results:", results);
       
-      // If simple query returned no results, try with AI-generated query or more complex format
-      if (results.topResults.length === 0 && !retryWithSimpleQuery) {
-        console.log("No results with simple query, trying with more complex query");
-        setRetryWithSimpleQuery(true);
+      // Verify if results came back empty
+      if (results.topResults.length === 0) {
+        console.log("No results with keyword query, trying with brand name...");
+        setDebugInfo(`No results found for "${query}". Trying with brand name...`);
         
-        // Try to use the AI-generated query or fallback to a format with industry
-        query = aiResult?.query || `${selectedKeyword} ${brandData.industry}`;
-        console.log("Retrying with more complex query:", query);
-        
+        // Try with just the brand name
+        query = brandData.name;
         results = await getTraditionalSearchResults(query, brandData.name);
-        console.log("Traditional search results (complex query):", results);
+        console.log("Brand name search results:", results);
+        
+        // If still empty, try with AI-generated query
+        if (results.topResults.length === 0 && aiResult?.query) {
+          console.log("No results with brand name, trying with AI query...");
+          setDebugInfo(`No results found for "${query}". Trying with AI-generated query...`);
+          
+          query = aiResult.query;
+          results = await getTraditionalSearchResults(query, brandData.name);
+          console.log("AI query search results:", results);
+        }
       }
       
       if (results.error === "API_LIMIT_EXCEEDED") {
@@ -76,10 +87,16 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
         setComparisonData(null);
       } else {
         setComparisonData(results);
+        
+        if (results.topResults.length === 0) {
+          setDebugInfo(`No results found. Tried queries: "${selectedKeyword}", "${brandData.name}", and AI query if available. Check console for details.`);
+        } else {
+          toast.success(`Found ${results.topResults.length} search results`);
+        }
       }
     } catch (error) {
       console.error("Error fetching traditional search results:", error);
-      setErrorMessage("Error fetching search results. Please try again later.");
+      setErrorMessage("Error fetching search results. Please check console for details.");
     } finally {
       setIsLoading(false);
     }
@@ -102,7 +119,14 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
           hasComparisonData={!!comparisonData} 
         />
 
-        {isLoading && <LoadingState retryWithSimpleQuery={retryWithSimpleQuery} />}
+        {isLoading && <LoadingState retryWithSimpleQuery={false} />}
+
+        {debugInfo && !isLoading && (
+          <div className="mb-4 p-2 bg-amber-50 border border-amber-200 rounded text-sm">
+            <p className="font-medium">Debug Info:</p>
+            <p>{debugInfo}</p>
+          </div>
+        )}
 
         <ErrorMessages 
           errorMessage={errorMessage} 

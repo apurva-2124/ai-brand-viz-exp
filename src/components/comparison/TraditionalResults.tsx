@@ -1,8 +1,9 @@
 
-import { Check, X, AlertCircle, Map, Globe, BookOpen, Newspaper } from "lucide-react";
+import { Check, X, AlertCircle, Map, Globe, BookOpen, Newspaper, Info } from "lucide-react";
 import { TraditionalSearchResults } from "@/services/traditional-search";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 interface TraditionalResultsProps {
   comparisonData: TraditionalSearchResults;
@@ -98,16 +99,16 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
           </span>
         </div>
         
-        {comparisonData.topResults[0] && (
+        {comparisonData.topResults.length > 0 && (
           <div className="flex items-start gap-2">
-            {comparisonData.topResults[0].hasBrandMention ? 
+            {comparisonData.topResults[0]?.hasBrandMention ? 
               <Check className="h-4 w-4 text-green-600 mt-0.5" /> : 
               comparisonData.topResults.some(r => r.hasBrandMention) ?
                 <Check className="h-4 w-4 text-yellow-600 mt-0.5" /> :
                 <X className="h-4 w-4 text-red-600 mt-0.5" />
             }
             <span className="text-sm">
-              {comparisonData.topResults[0].hasBrandMention ? 
+              {comparisonData.topResults[0]?.hasBrandMention ? 
                 "Brand appears in top result" : 
                 comparisonData.topResults.some(r => r.hasBrandMention) ?
                   `Brand appears in position #${comparisonData.topResults.findIndex(r => r.hasBrandMention) + 1}` :
@@ -118,20 +119,28 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
       </div>
       
       {comparisonData.topResults.length === 0 && (
-        <div className="text-center py-6 text-muted-foreground">
+        <div className="text-center py-6 border border-amber-200 bg-amber-50 rounded-md my-4">
           <div className="flex justify-center mb-2">
-            <AlertCircle className="h-6 w-6 text-amber-500" />
+            <Info className="h-6 w-6 text-amber-500" />
           </div>
           <p className="font-medium">No traditional search results found</p>
-          <p className="text-xs mt-2">
-            This may happen due to:
-            <ul className="list-disc text-left px-8 mt-1">
-              <li>API rate limits or temporary issues with SerpAPI</li>
-              <li>Query formatting that doesn't return organic results</li>
-              <li>The search query might be too complex or specific</li>
-            </ul>
-            Try using a different keyword or check the console for detailed error messages.
+          <p className="text-sm mt-2 max-w-md mx-auto">
+            We couldn't find results for this query. This may happen due to:
           </p>
+          <ul className="list-disc text-sm text-left px-12 mx-auto max-w-md mt-2">
+            <li>The search query might be too specific or complex</li>
+            <li>SerpAPI might not return results for this particular query format</li>
+            <li>Rate limits or API restrictions</li>
+          </ul>
+          <div className="mt-4">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => window.open(`https://www.google.com/search?q=${encodeURIComponent(comparisonData.query)}`, '_blank')}
+            >
+              Try this search on Google
+            </Button>
+          </div>
         </div>
       )}
       

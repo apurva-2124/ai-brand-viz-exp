@@ -18,9 +18,12 @@ function extractAllResults(data: any, brandName: string): SearchResult[] {
   const allResults: SearchResult[] = [];
   let rank = 1;
   
+  // Direct debug log of the full response
+  console.log("FULL SERPAPI RESPONSE:", JSON.stringify(data, null, 2));
+  
   // Extract organic search results
   if (data.organic_results && data.organic_results.length > 0) {
-    console.log(`Found ${data.organic_results.length} organic results`);
+    console.log(`Found ${data.organic_results.length} organic results`, data.organic_results);
     
     data.organic_results.forEach((result: any) => {
       const hasBrandMention = 
@@ -37,11 +40,13 @@ function extractAllResults(data: any, brandName: string): SearchResult[] {
         resultType: "organic"
       });
     });
+  } else {
+    console.log("No organic_results found in SerpAPI response");
   }
   
   // Extract local results if available
   if (data.local_results && data.local_results.length > 0) {
-    console.log(`Found ${data.local_results.length} local business results`);
+    console.log(`Found ${data.local_results.length} local business results`, data.local_results);
     
     data.local_results.forEach((result: any) => {
       // For local results, create a nice description from available data
@@ -69,7 +74,7 @@ function extractAllResults(data: any, brandName: string): SearchResult[] {
   
   // Extract knowledge graph if available
   if (data.knowledge_graph) {
-    console.log("Found knowledge graph result");
+    console.log("Found knowledge graph result", data.knowledge_graph);
     
     const kg = data.knowledge_graph;
     const title = kg.title || "";
@@ -93,7 +98,7 @@ function extractAllResults(data: any, brandName: string): SearchResult[] {
   
   // Extract top stories if available
   if (data.top_stories && data.top_stories.length > 0) {
-    console.log(`Found ${data.top_stories.length} top stories`);
+    console.log(`Found ${data.top_stories.length} top stories`, data.top_stories);
     
     data.top_stories.forEach((story: any) => {
       const hasBrandMention = 
@@ -111,6 +116,8 @@ function extractAllResults(data: any, brandName: string): SearchResult[] {
       });
     });
   }
+  
+  console.log(`Total results extracted: ${allResults.length}`, allResults);
   
   // Sort the results to ensure most relevant are on top
   return allResults.slice(0, 10); // Limit to top 10 results
@@ -136,11 +143,15 @@ export async function fetchSerpApiResults(query: string, brandName: string): Pro
     const sanitizedQuery = sanitizeQuery(query);
     console.log("Sanitized query:", sanitizedQuery);
     
-    // Create very simple query - only use the main terms
+    // Create simple query - only use the main terms without special formatting
     const simplifiedQuery = sanitizedQuery.split(" ").slice(0, 3).join(" ");
-    console.log("Simplified query (not used yet):", simplifiedQuery);
+    console.log("Simplified query for testing:", simplifiedQuery);
     
-    const encodedQuery = encodeURIComponent(sanitizedQuery);
+    // Use simplified query for better results as recommended in debugging steps
+    const queryToUse = simplifiedQuery || sanitizedQuery;
+    const encodedQuery = encodeURIComponent(queryToUse);
+    
+    // Try with simplified parameters first
     const apiUrl = `https://serpapi.com/search.json?q=${encodedQuery}&api_key=${apiKey}&hl=en&gl=us`;
     console.log("Fetching from SerpAPI with URL (sensitive parts redacted):", 
       apiUrl.replace(apiKey, "API_KEY_REDACTED"));
@@ -156,7 +167,7 @@ export async function fetchSerpApiResults(query: string, brandName: string): Pro
     }
     
     const data = await response.json();
-    console.log("SerpAPI response data keys:", Object.keys(data));
+    console.log("SerpAPI response received with keys:", Object.keys(data));
     
     if (data.error) {
       console.error("SerpApi error:", data.error);
@@ -171,39 +182,36 @@ export async function fetchSerpApiResults(query: string, brandName: string): Pro
     // Extract results from all sections
     const allResults = extractAllResults(data, brandName);
     
+    console.log(`Final results count: ${allResults.length}`);
+    
     if (allResults.length === 0) {
-      console.log("No results found in any section. Retrying with simplified query:", simplifiedQuery);
+      console.log("No results found with query:", queryToUse);
       
-      // If no results with original query, try with simplified query
-      const simplifiedEncodedQuery = encodeURIComponent(simplifiedQuery);
-      const simplifiedApiUrl = `https://serpapi.com/search.json?q=${simplifiedEncodedQuery}&api_key=${apiKey}&hl=en&gl=us`;
-      console.log("Retrying SerpAPI with URL (sensitive parts redacted):", 
-        simplifiedApiUrl.replace(apiKey, "API_KEY_REDACTED"));
-      
-      const simplifiedResponse = await fetch(simplifiedApiUrl);
-      console.log("Simplified query response status:", simplifiedResponse.status);
-      
-      if (!simplifiedResponse.ok) {
-        console.error("Simplified query HTTP error:", simplifiedResponse.status);
+      // If we already tried simplified query, don't retry
+      if (queryToUse === simplifiedQuery) {
+        console.log("Already using simplified query with no results");
         return [];
       }
       
-      const simplifiedData = await simplifiedResponse.json();
-      console.log("Simplified query response data keys:", Object.keys(simplifiedData));
+      // If no results with original query, try with brand name only as a last resort
+      const brandOnlyQuery = encodeURIComponent(brandName);
+      console.log("Trying final fallback with brand name only:", brandName);
       
-      // Extract results from all sections of the simplified query
-      const simplifiedResults = extractAllResults(simplifiedData, brandName);
+      const fallbackApiUrl = `https://serpapi.com/search.json?q=${brandOnlyQuery}&api_key=${apiKey}&hl=en&gl=us`;
+      const fallbackResponse = await fetch(fallbackApiUrl);
       
-      if (simplifiedResults.length === 0) {
-        console.log("No results found even with simplified query");
+      if (!fallbackResponse.ok) {
+        console.error("Fallback query HTTP error:", fallbackResponse.status);
         return [];
       }
       
-      console.log(`Simplified query returned ${simplifiedResults.length} results`);
-      return simplifiedResults;
+      const fallbackData = await fallbackResponse.json();
+      console.log("Fallback response data keys:", Object.keys(fallbackData));
+      
+      const fallbackResults = extractAllResults(fallbackData, brandName);
+      return fallbackResults;
     }
     
-    console.log(`Found a total of ${allResults.length} results from various sections`);
     return allResults;
   } catch (error) {
     console.error("Error fetching from SerpApi:", error);

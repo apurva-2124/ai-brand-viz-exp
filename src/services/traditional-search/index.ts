@@ -10,6 +10,22 @@ export async function getTraditionalSearchResults(
   brandName: string
 ): Promise<TraditionalSearchResults> {
   try {
+    console.log("getTraditionalSearchResults called with:", { query, brandName });
+    
+    // Check for API key first
+    const apiKey = localStorage.getItem("serpapi_api_key");
+    if (!apiKey) {
+      console.log("No SerpApi key found in localStorage");
+      return {
+        searchEngine: "Google",
+        query,
+        source: "serpapi",
+        brandMentions: 0,
+        topResults: [],
+        error: "API_LIMIT_EXCEEDED"
+      };
+    }
+    
     const serpResults = await fetchSerpApiResults(query, brandName);
     
     // Handle API limit exceeded
@@ -24,6 +40,8 @@ export async function getTraditionalSearchResults(
       };
     }
 
+    console.log(`Returning ${serpResults.length} traditional search results`);
+    
     // Return results from SerpApi
     return {
       searchEngine: "Google",
