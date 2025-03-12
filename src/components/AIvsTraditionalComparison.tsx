@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -20,6 +21,7 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
   const [isLoading, setIsLoading] = useState(false);
   const [comparisonData, setComparisonData] = useState<TraditionalSearchResults | null>(null);
   const [apiLimitExceeded, setApiLimitExceeded] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (brandData.keywords.length > 0) {
@@ -34,13 +36,25 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
   const fetchTraditionalResults = async () => {
     setIsLoading(true);
     setApiLimitExceeded(false);
+    setErrorMessage(null);
     
     try {
+      console.log("Checking for SerpAPI key:", localStorage.getItem("serpapi_api_key") ? "Present" : "Missing");
+      
+      if (!localStorage.getItem("serpapi_api_key")) {
+        setApiLimitExceeded(true);
+        setIsLoading(false);
+        return;
+      }
+      
       const query = aiResult?.query || `${selectedKeyword} ${brandData.industry}`;
+      console.log("Fetching traditional results with query:", query);
       
       const results = await getTraditionalSearchResults(query, brandData.name);
+      console.log("Traditional search results:", results);
       
       if (results.error === "API_LIMIT_EXCEEDED") {
+        console.log("API limit exceeded or key missing");
         setApiLimitExceeded(true);
         setComparisonData(null);
       } else {
@@ -48,6 +62,7 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
       }
     } catch (error) {
       console.error("Error fetching traditional search results:", error);
+      setErrorMessage("Error fetching search results. Please try again later.");
     } finally {
       setIsLoading(false);
     }
@@ -74,7 +89,7 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
           </Alert>
         )}
 
-        {aiResult && !comparisonData && !isLoading && !apiLimitExceeded && (
+        {aiResult && !comparisonData && !isLoading && !apiLimitExceeded && !errorMessage && (
           <div className="text-center py-8 text-muted-foreground">
             Select a keyword and click "Compare Results" to see the comparison
           </div>
@@ -87,14 +102,25 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
           </div>
         )}
 
+        {errorMessage && (
+          <Alert variant="destructive" className="my-4">
+            <Ban className="h-4 w-4" />
+            <AlertDescription>
+              {errorMessage}
+            </AlertDescription>
+          </Alert>
+        )}
+
         {apiLimitExceeded && (
           <Alert variant="destructive" className="my-4">
             <Ban className="h-4 w-4" />
             <AlertDescription>
-              <p className="font-medium">SerpApi limit exceeded</p>
+              <p className="font-medium">SerpApi key missing or limit exceeded</p>
               <p className="text-sm mt-1">
-                The free SerpApi limit (100 searches/month) has been reached or the API key is invalid. 
-                Please try again later or add your own SerpApi key in the settings.
+                {!localStorage.getItem("serpapi_api_key") 
+                  ? "No SerpApi key found. Please add your SerpApi key in the settings." 
+                  : "The free SerpApi limit (100 searches/month) has been reached or the API key is invalid."}
+                Please try again later or add a valid SerpApi key in the settings.
               </p>
             </AlertDescription>
           </Alert>

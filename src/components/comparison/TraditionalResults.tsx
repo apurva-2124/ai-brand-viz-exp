@@ -84,9 +84,13 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
         )}
       </div>
       
-      {comparisonData.topResults.length === 0 && !comparisonData.error && (
-        <div className="text-center py-4 text-muted-foreground">
-          ❌ No traditional search results found.
+      {comparisonData.topResults.length === 0 && (
+        <div className="text-center py-6 text-muted-foreground">
+          <div className="flex justify-center mb-2">
+            <X className="h-6 w-6 text-red-500" />
+          </div>
+          <p>No traditional search results found.</p>
+          <p className="text-xs mt-2">This may happen if SerpAPI couldn't find relevant results for your query.</p>
         </div>
       )}
       
