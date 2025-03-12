@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { QueryType, identifyKeywordIntent } from "@/utils/queryTransformer";
+import { QueryType, identifyKeywordIntent } from "@/utils/queryTemplates";
 import { Badge } from "@/components/ui/badge";
 import { Lightbulb } from "lucide-react";
 
