@@ -105,8 +105,36 @@ export const generateRecommendation = (visibilityLevel: string): string => {
   }
 };
 
-// Alias for transformKeywordToQuery
-export const transformKeywordToQuery = generateQueriesForKeywords;
+// Create a wrapper function for transformKeywordToQuery that takes a single keyword
+export const transformKeywordToQuery = (
+  keyword: string,
+  queryType: QueryType,
+  options?: {
+    brand_name: string;
+    competitor_names?: string;
+    searchType?: "traditional" | "voice" | "ai";
+  }
+): string => {
+  // Create dummy variables for template
+  const variables: QueryVariables = {
+    brand: options?.brand_name || "Brand",
+    industry: "industry",
+    keyword,
+    competitors: options?.competitor_names ? [options.competitor_names] : undefined
+  };
+  
+  // Get the base query from the template
+  let query = getQueryTemplate(queryType, variables);
+  
+  // Adjust query based on search type
+  if (options?.searchType === "voice") {
+    query = `Hey, I want to know ${query.toLowerCase()}`;
+  } else if (options?.searchType === "ai") {
+    query = `I'm researching options for ${keyword}. ${query} I want detailed information about features, pricing, and user reviews.`;
+  }
+  
+  return query;
+};
 
 // Re-export types
 export type { QueryType, QueryVariables };

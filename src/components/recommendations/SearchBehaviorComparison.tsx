@@ -2,13 +2,14 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { transformKeywordToQuery, QueryType } from "@/utils/queryTransformer";
+import { transformKeywordToQuery } from "@/utils/queryTransformer";
+import type { QueryType } from "@/utils/queryTransformer";
 
 interface SearchBehaviorComparisonProps {
   keyword: string;
   brandName: string;
   competitors: string[];
-  queryType: QueryType;
+  queryType?: QueryType;
 }
 
 export const SearchBehaviorComparison = ({ 
