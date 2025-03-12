@@ -1,5 +1,6 @@
 
-import type { QueryType, QueryVariables, queryTemplates } from "./queryTemplates";
+import type { QueryType, QueryVariables } from "./queryTemplates";
+import { identifyKeywordIntent, getQueryTemplate } from "./queryTemplates";
 
 export const generateQueriesForKeywords = (
   keywords: string[],
@@ -109,5 +110,3 @@ export const transformKeywordToQuery = generateQueriesForKeywords;
 
 // Re-export types
 export type { QueryType, QueryVariables };
-
-export { identifyKeywordIntent, getQueryTemplate } from "./queryTemplates";
