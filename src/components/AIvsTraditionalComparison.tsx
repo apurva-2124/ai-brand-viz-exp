@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Info, Loader2, Ban } from "lucide-react";
+import { Info, Loader2, Ban, AlertCircle } from "lucide-react";
 import { BrandData } from "@/components/BrandTracker";
 import { ComparisonHeader } from "@/components/comparison/ComparisonHeader";
 import { AIResults } from "@/components/comparison/AIResults";
@@ -49,26 +49,25 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
         return;
       }
       
-      // Try to use the AI-generated query or fall back to a simpler format
-      let query = aiResult?.query || `${selectedKeyword} ${brandData.industry}`;
-      console.log("Fetching traditional results with query:", query);
+      // Try with a simplified query first - just the keyword
+      let query = selectedKeyword;
+      console.log("Fetching traditional results with simple query:", query);
       console.log("Brand name:", brandData.name);
       
       let results = await getTraditionalSearchResults(query, brandData.name);
       console.log("Traditional search results:", results);
       
-      // If no results were found and we haven't already tried with a simple query,
-      // try again with just the keyword
+      // If simple query returned no results, try with AI-generated query or more complex format
       if (results.topResults.length === 0 && !retryWithSimpleQuery) {
-        console.log("No results found, retrying with simpler query");
+        console.log("No results with simple query, trying with more complex query");
         setRetryWithSimpleQuery(true);
         
-        // Use just the keyword as a simpler query
-        query = selectedKeyword;
-        console.log("Retrying with simpler query:", query);
+        // Try to use the AI-generated query or fallback to a format with industry
+        query = aiResult?.query || `${selectedKeyword} ${brandData.industry}`;
+        console.log("Retrying with more complex query:", query);
         
         results = await getTraditionalSearchResults(query, brandData.name);
-        console.log("Traditional search results (retry):", results);
+        console.log("Traditional search results (complex query):", results);
       }
       
       if (results.error === "API_LIMIT_EXCEEDED") {
@@ -118,7 +117,7 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
             <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2" />
             <p className="text-muted-foreground">
               {retryWithSimpleQuery 
-                ? "No results found. Retrying with simpler query..."
+                ? "First attempt didn't return results. Trying with alternate query format..."
                 : "Fetching traditional search results..."}
             </p>
           </div>
@@ -126,7 +125,7 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
 
         {errorMessage && (
           <Alert variant="destructive" className="my-4">
-            <Ban className="h-4 w-4" />
+            <AlertCircle className="h-4 w-4" />
             <AlertDescription>
               {errorMessage}
             </AlertDescription>

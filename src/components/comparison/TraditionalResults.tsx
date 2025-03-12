@@ -87,17 +87,17 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
       {comparisonData.topResults.length === 0 && (
         <div className="text-center py-6 text-muted-foreground">
           <div className="flex justify-center mb-2">
-            <X className="h-6 w-6 text-red-500" />
+            <AlertCircle className="h-6 w-6 text-amber-500" />
           </div>
-          <p>No traditional search results found.</p>
+          <p className="font-medium">No traditional search results found</p>
           <p className="text-xs mt-2">
-            This may happen if:
+            This may happen due to:
             <ul className="list-disc text-left px-8 mt-1">
-              <li>SerpAPI couldn't find relevant results for your query</li>
-              <li>The query was too complex or contained special characters</li>
-              <li>There was an issue with the SerpAPI response format</li>
+              <li>API rate limits or temporary issues with SerpAPI</li>
+              <li>Query formatting that doesn't return organic results</li>
+              <li>The search query might be too complex or specific</li>
             </ul>
-            Try using a simpler, more direct keyword.
+            Try using a different keyword or check the console for detailed error messages.
           </p>
         </div>
       )}
