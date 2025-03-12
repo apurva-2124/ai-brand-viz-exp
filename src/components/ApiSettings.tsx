@@ -2,21 +2,16 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
-import { Settings, AlertTriangle, Zap, Globe, BarChart, Lock } from "lucide-react";
+import { Settings, Info, Shield, ArrowUpRight } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Link } from "react-router-dom";
 
 export const ApiSettings = () => {
   const [openAIKey, setOpenAIKey] = useState("");
   const [anthropicKey, setAnthropicKey] = useState("");
   const [geminiKey, setGeminiKey] = useState("");
-  const [googleAdsKey, setGoogleAdsKey] = useState("");
-  const [semrushKey, setSemrushKey] = useState("");
-  const [ahrefsKey, setAhrefsKey] = useState("");
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
 
@@ -24,16 +19,10 @@ export const ApiSettings = () => {
     const savedOpenAIKey = localStorage.getItem("openai_api_key") || "";
     const savedAnthropicKey = localStorage.getItem("anthropic_api_key") || "";
     const savedGeminiKey = localStorage.getItem("gemini_api_key") || "";
-    const savedGoogleAdsKey = localStorage.getItem("google_ads_api_key") || "";
-    const savedSemrushKey = localStorage.getItem("semrush_api_key") || "";
-    const savedAhrefsKey = localStorage.getItem("ahrefs_api_key") || "";
     
     setOpenAIKey(savedOpenAIKey);
     setAnthropicKey(savedAnthropicKey);
     setGeminiKey(savedGeminiKey);
-    setGoogleAdsKey(savedGoogleAdsKey);
-    setSemrushKey(savedSemrushKey);
-    setAhrefsKey(savedAhrefsKey);
   }, []);
 
   const saveSettings = () => {
@@ -49,9 +38,6 @@ export const ApiSettings = () => {
     localStorage.setItem("openai_api_key", openAIKey);
     localStorage.setItem("anthropic_api_key", anthropicKey);
     localStorage.setItem("gemini_api_key", geminiKey);
-    localStorage.setItem("google_ads_api_key", googleAdsKey);
-    localStorage.setItem("semrush_api_key", semrushKey);
-    localStorage.setItem("ahrefs_api_key", ahrefsKey);
     
     toast({
       title: "Settings Saved",
@@ -72,147 +58,142 @@ export const ApiSettings = () => {
         <DialogHeader>
           <DialogTitle>API Settings</DialogTitle>
           <DialogDescription>
-            Configure your API keys to analyze brand visibility in AI responses and integrate with marketing tools.
+            Configure your API keys to analyze brand visibility in AI responses.
           </DialogDescription>
         </DialogHeader>
-        <Tabs defaultValue="ai" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="ai">AI Models</TabsTrigger>
-            <TabsTrigger value="marketing">Marketing Tools</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="ai" className="space-y-4 py-4">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">OpenAI API Key</label>
-                <Input
-                  type="password"
-                  placeholder="sk-..."
-                  value={openAIKey}
-                  onChange={(e) => setOpenAIKey(e.target.value)}
-                />
-                <p className="text-xs text-muted-foreground">
-                  Get your API key from <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" className="underline">OpenAI</a>
-                </p>
-              </div>
-              
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Anthropic API Key</label>
-                <Input
-                  type="password"
-                  placeholder="sk-ant-..."
-                  value={anthropicKey}
-                  onChange={(e) => setAnthropicKey(e.target.value)}
-                />
-                <p className="text-xs text-muted-foreground">
-                  Get your API key from <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener noreferrer" className="underline">Anthropic</a>
-                </p>
-                <Alert variant="info" className="border-blue-200">
-                  <AlertDescription className="text-xs">
-                    Anthropic API keys must start with <code className="bg-blue-100 px-1 py-0.5 rounded">sk-ant-</code>
-                  </AlertDescription>
-                </Alert>
-              </div>
-              
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Google Gemini API Key</label>
-                <Input
-                  type="password"
-                  placeholder="AI..."
-                  value={geminiKey}
-                  onChange={(e) => setGeminiKey(e.target.value)}
-                />
-                <p className="text-xs text-muted-foreground">
-                  Get your API key from <a href="https://makersuite.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="underline">Google AI Studio</a>
-                </p>
-              </div>
+        
+        <div className="space-y-6">
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <ArrowUpRight className="h-5 w-5 text-primary" />
+              <h3 className="text-lg font-semibold">Getting Started with API Keys</h3>
             </div>
-          </TabsContent>
-          
-          <TabsContent value="marketing" className="space-y-4 py-4">
-            <Card className="mb-4 border-2 border-primary/20">
-              <CardContent className="pt-6">
-                <div className="text-center space-y-4">
-                  <Lock className="h-10 w-10 text-primary mx-auto" />
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Marketing Tool Integrations</h3>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Unlock marketing tool integrations with our AI Brand Visibility Optimization Toolkit or higher plans
-                    </p>
-                    <Link to="/optimize" className="inline-block">
-                      <Button className="w-full">
-                        Upgrade to Access Marketing Tools
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
             
-            <Alert variant="default" className="mb-4 opacity-50">
-              <AlertTriangle className="h-4 w-4" />
-              <AlertDescription className="text-sm">
-                Marketing tool integrations are in beta. Some features may be limited.
+            <p className="text-muted-foreground">
+              This experiment requires AI model API keys to generate responses about brands and industries. Once generated, you can compare these AI descriptions with actual Google search results.
+            </p>
+            
+            <div className="bg-slate-50 p-4 rounded-lg border">
+              <div className="flex items-center gap-2 mb-3">
+                <Info className="h-5 w-5 text-slate-700" />
+                <h4 className="font-medium">What you need:</h4>
+              </div>
+              
+              <ul className="list-disc ml-6 space-y-1">
+                <li>OpenAI API Key (for GPT models)</li>
+                <li>Anthropic API Key (for Claude models)</li>
+                <li>Google AI Studio API Key (for Gemini models)</li>
+              </ul>
+            </div>
+            
+            <h4 className="font-medium">How to get them:</h4>
+            
+            <div className="grid md:grid-cols-3 gap-4">
+              <Card>
+                <CardContent className="pt-6">
+                  <h5 className="font-semibold mb-2">OpenAI</h5>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Create an account and generate an API key from the OpenAI platform.
+                  </p>
+                  <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer">
+                    <Button variant="outline" className="w-full" size="sm">
+                      Get Key
+                      <ArrowUpRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </a>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="pt-6">
+                  <h5 className="font-semibold mb-2">Anthropic</h5>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Sign up for Anthropic's Claude API access and create an API key.
+                  </p>
+                  <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener noreferrer">
+                    <Button variant="outline" className="w-full" size="sm">
+                      Get Key
+                      <ArrowUpRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </a>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="pt-6">
+                  <h5 className="font-semibold mb-2">Google AI Studio</h5>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Create a Google AI Studio account and generate an API key.
+                  </p>
+                  <a href="https://makersuite.google.com/app/apikey" target="_blank" rel="noopener noreferrer">
+                    <Button variant="outline" className="w-full" size="sm">
+                      Get Key
+                      <ArrowUpRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </a>
+                </CardContent>
+              </Card>
+            </div>
+            
+            <Alert className="bg-amber-50 border-amber-200">
+              <Shield className="h-4 w-4 text-amber-600" />
+              <AlertDescription className="text-amber-800">
+                Your API keys are stored only in your browser's local storage and never transmitted to our servers. They're used solely to make API requests directly from your browser.
               </AlertDescription>
             </Alert>
             
-            <div className="space-y-4 opacity-50 pointer-events-none">
-              <div className="space-y-2">
-                <label className="text-sm font-medium flex items-center gap-2">
-                  <Zap className="h-4 w-4 text-yellow-500" />
-                  Google Ads API Key
-                </label>
-                <Input
-                  type="password"
-                  placeholder="Enter Google Ads API key"
-                  value={googleAdsKey}
-                  onChange={(e) => setGoogleAdsKey(e.target.value)}
-                  disabled
-                />
-                <p className="text-xs text-muted-foreground ml-6">
-                  Track how AI-driven responses impact your paid search performance.
-                </p>
+            <div className="bg-slate-50 p-4 rounded-lg border mt-4">
+              <div className="flex items-center gap-2 mb-3">
+                <Info className="h-5 w-5 text-slate-700" />
+                <h4 className="font-medium">Why we need these keys:</h4>
               </div>
               
-              <div className="space-y-2">
-                <label className="text-sm font-medium flex items-center gap-2">
-                  <Globe className="h-4 w-4 text-blue-500" />
-                  SEMrush API Key
-                </label>
-                <Input
-                  type="password"
-                  placeholder="Enter SEMrush API key"
-                  value={semrushKey}
-                  onChange={(e) => setSemrushKey(e.target.value)}
-                  disabled
-                />
-                <p className="text-xs text-muted-foreground ml-6">
-                  Compare AI search rankings with traditional SEO data.
-                </p>
-              </div>
-              
-              <div className="space-y-2">
-                <label className="text-sm font-medium flex items-center gap-2">
-                  <BarChart className="h-4 w-4 text-green-500" />
-                  Ahrefs API Key
-                </label>
-                <Input
-                  type="password"
-                  placeholder="Enter Ahrefs API key"
-                  value={ahrefsKey}
-                  onChange={(e) => setAhrefsKey(e.target.value)}
-                  disabled
-                />
-                <p className="text-xs text-muted-foreground ml-6">
-                  Analyze backlinks that influence AI-generated citations.
-                </p>
-              </div>
+              <p className="text-sm text-muted-foreground">
+                This experiment explores how different AI models describe brands and industries. After generating AI responses, you can easily compare them with web search results by clicking a Google Search button. Since API calls cost money, we require you to use your own API keys rather than sharing a single key across all users.
+              </p>
             </div>
-          </TabsContent>
-        </Tabs>
+          </div>
+          
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Your API Keys</h3>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium">OpenAI API Key</label>
+              <Input
+                type="password"
+                placeholder="sk-..."
+                value={openAIKey}
+                onChange={(e) => setOpenAIKey(e.target.value)}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Anthropic API Key</label>
+              <Input
+                type="password"
+                placeholder="sk-ant-..."
+                value={anthropicKey}
+                onChange={(e) => setAnthropicKey(e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">
+                Anthropic API keys must start with <code className="bg-blue-100 px-1 py-0.5 rounded">sk-ant-</code>
+              </p>
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Google Gemini API Key</label>
+              <Input
+                type="password"
+                placeholder="AI..."
+                value={geminiKey}
+                onChange={(e) => setGeminiKey(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
         
         <Button className="w-full mt-4" onClick={saveSettings}>
-          Save All Settings
+          Save API Keys
         </Button>
       </DialogContent>
     </Dialog>
