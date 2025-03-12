@@ -33,6 +33,15 @@ export const generateQueriesForKeywords = (
 
 // Scoring function to analyze visibility in AI responses
 export const scoreVisibility = (response: string, brandName: string) => {
+  if (!response || !brandName) {
+    return {
+      level: "not_found",
+      label: "Not Found",
+      score: 0,
+      context: null
+    };
+  }
+
   const lowerResponse = response.toLowerCase();
   const lowerBrand = brandName.toLowerCase();
 
@@ -47,9 +56,11 @@ export const scoreVisibility = (response: string, brandName: string) => {
 
   // Check for prominent mentions (brand name near the beginning or with positive context)
   const isProminent = 
-    lowerResponse.indexOf(lowerBrand) < 100 || 
+    lowerResponse.indexOf(lowerBrand) < 200 || 
     lowerResponse.includes(`${lowerBrand} is leading`) ||
-    lowerResponse.includes(`${lowerBrand} is a top`);
+    lowerResponse.includes(`${lowerBrand} is a top`) ||
+    lowerResponse.includes(`best ${lowerBrand}`) ||
+    lowerResponse.includes(`popular ${lowerBrand}`);
 
   if (isProminent) {
     return {
@@ -74,14 +85,27 @@ export const analyzeCompetitors = (
   brandName: string, 
   competitors?: string[]
 ) => {
+  if (!response) {
+    return {
+      competitorsFound: [],
+      competitorOutranking: false,
+      riskLevel: "low"
+    };
+  }
+
   const lowerResponse = response.toLowerCase();
-  const foundCompetitors = competitors?.filter(comp => 
+  const lowerBrand = brandName.toLowerCase();
+  
+  // If no competitors provided, try to detect common competitors
+  const defaultCompetitors = competitors || [];
+  
+  const foundCompetitors = defaultCompetitors.filter(comp => 
     lowerResponse.includes(comp.toLowerCase())
-  ) || [];
+  );
 
   const competitorOutranking = foundCompetitors.some(comp => 
     lowerResponse.indexOf(comp.toLowerCase()) < 
-    lowerResponse.indexOf(brandName.toLowerCase())
+    lowerResponse.indexOf(lowerBrand)
   );
 
   return {

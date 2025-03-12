@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -21,6 +22,14 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
   const [isLoading, setIsLoading] = useState(false);
   const [comparisonData, setComparisonData] = useState<any>(null);
 
+  // Update selected keyword when brandData changes
+  useEffect(() => {
+    if (brandData.keywords.length > 0) {
+      setSelectedKeyword(brandData.keywords[0]);
+    }
+  }, [brandData.keywords]);
+
+  // Find the result for the selected keyword
   const aiResult = aiResults?.results?.find(
     (result: any) => result.keyword === selectedKeyword
   );
@@ -34,13 +43,13 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
         brandMentions: Math.floor(Math.random() * 5) + (aiResult?.isProminent ? 3 : 1),
         topResults: [
           {
-            title: aiResult?.isProminent 
+            title: aiResult?.hasBrandMention 
               ? `${brandData.name} - Leading ${selectedKeyword} in ${brandData.industry}`
               : `Top 10 ${selectedKeyword} Options for ${brandData.industry} Users`,
-            snippet: aiResult?.isProminent
+            snippet: aiResult?.hasBrandMention
               ? `${brandData.name} offers the best ${selectedKeyword} solutions with industry-leading features and support.`
               : `Compare the best ${selectedKeyword} options including ${brandData.name} and alternatives.`,
-            position: aiResult?.isProminent ? 1 : Math.floor(Math.random() * 5) + 2,
+            position: aiResult?.hasBrandMention ? 1 : Math.floor(Math.random() * 5) + 2,
             hasBrandMention: true
           },
           {

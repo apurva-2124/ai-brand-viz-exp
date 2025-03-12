@@ -6,6 +6,13 @@ interface AIResultsProps {
 }
 
 export const AIResults = ({ aiResult }: AIResultsProps) => {
+  // Determine if the brand is mentioned and if it's prominent
+  const hasBrandMention = aiResult.hasBrandMention || 
+                          (aiResult.visibilityScore?.level !== "not_found");
+  
+  const isProminent = aiResult.isProminent || 
+                      (aiResult.visibilityScore?.level === "high");
+
   return (
     <div className="border rounded-lg p-4">
       <h3 className="font-medium mb-3 text-primary">AI Search Results</h3>
@@ -16,36 +23,36 @@ export const AIResults = ({ aiResult }: AIResultsProps) => {
         <span className="text-muted-foreground">Provider:</span> {aiResult.provider}
       </div>
       <div className={`text-sm px-2 py-1 rounded inline-flex mb-4 ${
-        aiResult.isProminent 
+        isProminent 
           ? "bg-green-100 text-green-800" 
-          : aiResult.hasBrandMention 
+          : hasBrandMention 
             ? "bg-yellow-100 text-yellow-800"
             : "bg-red-100 text-red-800"
       }`}>
-        {aiResult.isProminent 
+        {isProminent 
           ? "Prominently Featured" 
-          : aiResult.hasBrandMention 
+          : hasBrandMention 
             ? "Mentioned" 
             : "Not Found"}
       </div>
       
       <div className="space-y-2 mb-4">
         <div className="flex items-start gap-2">
-          {aiResult.hasBrandMention ? 
+          {hasBrandMention ? 
             <Check className="h-4 w-4 text-green-600 mt-0.5" /> : 
             <X className="h-4 w-4 text-red-600 mt-0.5" />
           }
           <span className="text-sm">
-            {aiResult.hasBrandMention ? "Brand is mentioned" : "Brand is missing"}
+            {hasBrandMention ? "Brand is mentioned" : "Brand is missing"}
           </span>
         </div>
         <div className="flex items-start gap-2">
-          {aiResult.isProminent ? 
+          {isProminent ? 
             <Check className="h-4 w-4 text-green-600 mt-0.5" /> : 
             <X className="h-4 w-4 text-red-600 mt-0.5" />
           }
           <span className="text-sm">
-            {aiResult.isProminent ? "Prominently featured" : "Not prominently featured"}
+            {isProminent ? "Prominently featured" : "Not prominently featured"}
           </span>
         </div>
         {aiResult.competitorAnalysis?.competitorsFound?.length > 0 && (
