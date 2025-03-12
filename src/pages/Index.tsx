@@ -13,12 +13,12 @@ const Index = () => {
       <main>
         <HeroSection />
         <ResearchQuestions />
-        <div id="about-experiment">
-          <AboutExperiment />
-          <ExperimentDesignSection />
-        </div>
         <div id="brand-explorer">
           <BrandExplorer />
+        </div>
+        <ExperimentDesignSection />
+        <div id="about-experiment">
+          <AboutExperiment />
         </div>
       </main>
       <footer className="py-2 bg-muted/30 text-center text-xs text-muted-foreground border-t">
