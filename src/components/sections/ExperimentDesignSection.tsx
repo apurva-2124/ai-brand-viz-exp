@@ -6,17 +6,19 @@ export const ExperimentDesignSection = () => {
   return (
     <Container className="py-16">
       <div className="max-w-5xl mx-auto space-y-8">
-        <div className="text-center space-y-4 mb-8">
+        <div className="space-y-4 mb-8">
           <h2 className="text-3xl font-bold">Experiment Design and AI Search Query Logic</h2>
-          <p className="text-muted-foreground">
-            Search engines like Google and AI-powered models like ChatGPT interpret queries differently. 
-            Traditional search engines rank existing web pages based on SEO and authority, while AI 
-            generates synthetic responses by summarizing patterns from vast datasets.
-          </p>
-          <p className="text-muted-foreground">
-            To highlight these differences, we use structured Query Types that transform simple keywords 
-            into more natural, AI-friendly questions.
-          </p>
+          <div className="text-muted-foreground">
+            <p>
+              Search engines like Google and AI-powered models like ChatGPT interpret queries differently. 
+              Traditional search engines rank existing web pages based on SEO and authority, while AI 
+              generates synthetic responses by summarizing patterns from vast datasets.
+            </p>
+            <p className="mt-3">
+              To highlight these differences, we use structured Query Types that transform simple keywords 
+              into more natural, AI-friendly questions.
+            </p>
+          </div>
         </div>
 
         <Accordion type="single" collapsible className="space-y-4">
@@ -157,9 +159,6 @@ export const ExperimentDesignSection = () => {
                 <li>AI-generated results may surface risks, such as negative sentiment or misinterpretations.</li>
                 <li>Understanding how AI transforms search intent helps brands optimize visibility in AI-driven platforms.</li>
               </ul>
-              <p className="mt-4 font-medium">
-                Run an AI Search Analysis to see how your brand appears in AI-generated responses vs. traditional search engines.
-              </p>
             </AccordionContent>
           </AccordionItem>
         </Accordion>

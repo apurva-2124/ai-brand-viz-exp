@@ -15,7 +15,9 @@ const Index = () => {
         <ResearchQuestions />
         <ExperimentDesignSection />
         <BrandExplorer />
-        <AboutExperiment />
+        <div id="about-experiment">
+          <AboutExperiment />
+        </div>
       </main>
     </div>
   );

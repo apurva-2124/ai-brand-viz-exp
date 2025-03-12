@@ -2,13 +2,11 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Info } from "lucide-react";
 import { BrandData } from "@/components/BrandTracker";
 import { ComparisonHeader } from "@/components/comparison/ComparisonHeader";
 import { AIResults } from "@/components/comparison/AIResults";
 import { TraditionalResults } from "@/components/comparison/TraditionalResults";
-import { ActionNeeded } from "@/components/comparison/ActionNeeded";
 
 interface AIvsTraditionalComparisonProps {
   brandData: BrandData;
@@ -106,79 +104,10 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
         )}
 
         {aiResult && comparisonData && (
-          <Tabs defaultValue="side-by-side" className="mt-4">
-            <TabsList className="mb-4">
-              <TabsTrigger value="side-by-side">Side-by-Side View</TabsTrigger>
-              <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="side-by-side">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <AIResults aiResult={aiResult} />
-                <TraditionalResults comparisonData={comparisonData} />
-              </div>
-              
-              <ActionNeeded 
-                aiResult={aiResult}
-                selectedKeyword={selectedKeyword}
-                comparisonData={comparisonData}
-              />
-            </TabsContent>
-
-            <TabsContent value="analytics">
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="border rounded-lg p-4">
-                    <h3 className="font-medium mb-3">Brand Prominence Comparison</h3>
-                    <div className="flex items-center justify-around mt-6 text-center">
-                      <div className="flex flex-col items-center">
-                        <div className="text-xl font-bold mb-2">
-                          {aiResult.isProminent ? "High" : aiResult.hasBrandMention ? "Medium" : "Low"}
-                        </div>
-                        <div className="text-sm text-muted-foreground">AI Search</div>
-                      </div>
-                      <div className="h-12 border-r border-gray-200"></div>
-                      <div className="flex flex-col items-center">
-                        <div className="text-xl font-bold mb-2">
-                          {comparisonData.brandMentions >= 3 ? "High" : comparisonData.brandMentions >= 1 ? "Medium" : "Low"}
-                        </div>
-                        <div className="text-sm text-muted-foreground">Traditional Search</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="border rounded-lg p-4">
-                    <h3 className="font-medium mb-3">Insights</h3>
-                    <ul className="list-disc list-inside space-y-2 text-sm">
-                      <li>
-                        Your brand is {aiResult.isProminent ? "prominently featured" : aiResult.hasBrandMention ? "mentioned" : "not found"} 
-                        in AI responses for this keyword
-                      </li>
-                      <li>
-                        Traditional search results {comparisonData.brandMentions > 0 ? "include" : "don't include"} your brand 
-                        {comparisonData.brandMentions > 0 ? ` with ${comparisonData.brandMentions} mentions` : ""}
-                      </li>
-                      <li>
-                        {aiResult.isProminent && comparisonData.brandMentions >= 3 
-                          ? "Your brand has strong visibility across both search types" 
-                          : !aiResult.hasBrandMention && comparisonData.brandMentions === 0
-                            ? "Your brand needs visibility improvement in both AI and traditional search" 
-                            : "There's a visibility gap between AI and traditional search results"}
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-
-                <Alert variant="info">
-                  <Info className="h-4 w-4" />
-                  <AlertDescription>
-                    Note: Traditional search results are simulated for demonstration purposes. 
-                    For accurate results, consider integrating with actual search APIs.
-                  </AlertDescription>
-                </Alert>
-              </div>
-            </TabsContent>
-          </Tabs>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+            <AIResults aiResult={aiResult} />
+            <TraditionalResults comparisonData={comparisonData} />
+          </div>
         )}
       </CardContent>
     </Card>
