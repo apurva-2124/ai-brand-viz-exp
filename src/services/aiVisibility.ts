@@ -51,7 +51,12 @@ export async function analyzeAIVisibility(
   let results: VisibilityResult[] = [];
   
   // Generate conversational queries for all keywords
-  const queries = generateQueriesForKeywords(brandData, queryType);
+  const queries = generateQueriesForKeywords(
+    brandData.keywords,
+    brandData.name,
+    brandData.industry,
+    brandData.competitors
+  );
   
   try {
     // Run OpenAI analysis if requested

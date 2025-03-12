@@ -1,10 +1,15 @@
-
 import { BrandData } from "@/components/BrandTracker";
 import { generateQueriesForKeywords } from "@/utils/queryTransformer";
 
 // Generate mock AI visibility data for testing
 export function generateMockData(brandData: BrandData) {
-  const queries = generateQueriesForKeywords(brandData);
+  const queries = generateQueriesForKeywords(
+    brandData.keywords,
+    brandData.name,
+    brandData.industry,
+    brandData.competitors
+  );
+  
   const results = [];
   
   // Generate mock results for each query
