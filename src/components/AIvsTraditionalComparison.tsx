@@ -22,6 +22,7 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
   const [comparisonData, setComparisonData] = useState<TraditionalSearchResults | null>(null);
   const [apiLimitExceeded, setApiLimitExceeded] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [retryWithSimpleQuery, setRetryWithSimpleQuery] = useState(false);
 
   useEffect(() => {
     if (brandData.keywords.length > 0) {
@@ -37,6 +38,7 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
     setIsLoading(true);
     setApiLimitExceeded(false);
     setErrorMessage(null);
+    setRetryWithSimpleQuery(false);
     
     try {
       console.log("Checking for SerpAPI key:", localStorage.getItem("serpapi_api_key") ? "Present" : "Missing");
@@ -47,20 +49,32 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
         return;
       }
       
-      const query = aiResult?.query || `${selectedKeyword} ${brandData.industry}`;
+      // Try to use the AI-generated query or fall back to a simpler format
+      let query = aiResult?.query || `${selectedKeyword} ${brandData.industry}`;
       console.log("Fetching traditional results with query:", query);
       console.log("Brand name:", brandData.name);
       
-      const results = await getTraditionalSearchResults(query, brandData.name);
+      let results = await getTraditionalSearchResults(query, brandData.name);
       console.log("Traditional search results:", results);
+      
+      // If no results were found and we haven't already tried with a simple query,
+      // try again with just the keyword
+      if (results.topResults.length === 0 && !retryWithSimpleQuery) {
+        console.log("No results found, retrying with simpler query");
+        setRetryWithSimpleQuery(true);
+        
+        // Use just the keyword as a simpler query
+        query = selectedKeyword;
+        console.log("Retrying with simpler query:", query);
+        
+        results = await getTraditionalSearchResults(query, brandData.name);
+        console.log("Traditional search results (retry):", results);
+      }
       
       if (results.error === "API_LIMIT_EXCEEDED") {
         console.log("API limit exceeded or key missing");
         setApiLimitExceeded(true);
         setComparisonData(null);
-      } else if (results.topResults.length === 0) {
-        console.log("No results found for query");
-        setComparisonData(results);
       } else {
         setComparisonData(results);
       }
@@ -102,7 +116,11 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
         {isLoading && (
           <div className="text-center py-8">
             <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2" />
-            <p className="text-muted-foreground">Fetching traditional search results...</p>
+            <p className="text-muted-foreground">
+              {retryWithSimpleQuery 
+                ? "No results found. Retrying with simpler query..."
+                : "Fetching traditional search results..."}
+            </p>
           </div>
         )}
 

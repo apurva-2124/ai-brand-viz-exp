@@ -2,6 +2,16 @@
 import { SearchResult } from "./types";
 
 /**
+ * Sanitizes the search query by removing special characters and limiting length
+ */
+function sanitizeQuery(query: string): string {
+  // Remove special characters except spaces and basic punctuation
+  const sanitized = query.replace(/[^\w\s.,?!]/gi, "");
+  // Limit length to avoid overly complex queries
+  return sanitized.slice(0, 100);
+}
+
+/**
  * Fetches real-time Google search results using SerpApi
  */
 export async function fetchSerpApiResults(query: string, brandName: string): Promise<SearchResult[] | "LIMIT_EXCEEDED"> {
@@ -9,7 +19,7 @@ export async function fetchSerpApiResults(query: string, brandName: string): Pro
     const apiKey = localStorage.getItem("serpapi_api_key");
     
     console.log("SerpAPI key found:", apiKey ? "Yes" : "No");
-    console.log("Query:", query);
+    console.log("Original query:", query);
     console.log("Brand name:", brandName);
     
     if (!apiKey) {
@@ -17,15 +27,19 @@ export async function fetchSerpApiResults(query: string, brandName: string): Pro
       return "LIMIT_EXCEEDED";
     }
     
-    const encodedQuery = encodeURIComponent(query);
+    // Sanitize the query to improve results
+    const sanitizedQuery = sanitizeQuery(query);
+    console.log("Sanitized query:", sanitizedQuery);
+    
+    const encodedQuery = encodeURIComponent(sanitizedQuery);
     const apiUrl = `https://serpapi.com/search.json?q=${encodedQuery}&api_key=${apiKey}&hl=en&gl=us`;
-    console.log("Fetching from SerpAPI with encoded query:", encodedQuery);
+    console.log("Fetching from SerpAPI with URL:", apiUrl);
     
     const response = await fetch(apiUrl);
-    const data = await response.json();
-    
     console.log("SerpAPI response status:", response.status);
-    console.log("SerpAPI response data sample:", JSON.stringify(data).substring(0, 500));
+    
+    const data = await response.json();
+    console.log("SerpAPI full response:", data);
     
     if (data.error) {
       console.error("SerpApi error:", data.error);
@@ -54,7 +68,7 @@ export async function fetchSerpApiResults(query: string, brandName: string): Pro
       };
     });
     
-    console.log("Mapped results:", mappedResults.length);
+    console.log("Mapped results:", mappedResults);
     return mappedResults;
   } catch (error) {
     console.error("Error fetching from SerpApi:", error);
