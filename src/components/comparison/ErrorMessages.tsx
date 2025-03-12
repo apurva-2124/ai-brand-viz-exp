@@ -8,7 +8,10 @@ interface ErrorMessagesProps {
 }
 
 export const ErrorMessages = ({ errorMessage, apiLimitExceeded }: ErrorMessagesProps) => {
+  // Only show errors if we have specific error messages
   if (!errorMessage && !apiLimitExceeded) return null;
+  
+  console.log("Displaying error messages:", { errorMessage, apiLimitExceeded });
   
   return (
     <>

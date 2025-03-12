@@ -10,6 +10,10 @@ interface TraditionalResultsProps {
 }
 
 export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) => {
+  // Debug logs
+  console.log("TraditionalResults received data:", comparisonData);
+  console.log("Results count:", comparisonData.topResults?.length || 0);
+
   // Define source badge - now only for SerpApi
   const getSourceBadge = () => {
     if (comparisonData.source === "serpapi") {
@@ -99,7 +103,7 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
           </span>
         </div>
         
-        {comparisonData.topResults.length > 0 && (
+        {comparisonData.topResults && comparisonData.topResults.length > 0 && (
           <div className="flex items-start gap-2">
             {comparisonData.topResults[0]?.hasBrandMention ? 
               <Check className="h-4 w-4 text-green-600 mt-0.5" /> : 
@@ -118,7 +122,7 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
         )}
       </div>
       
-      {comparisonData.topResults.length === 0 && (
+      {(!comparisonData.topResults || comparisonData.topResults.length === 0) && (
         <div className="text-center py-6 border border-amber-200 bg-amber-50 rounded-md my-4">
           <div className="flex justify-center mb-2">
             <Info className="h-6 w-6 text-amber-500" />
@@ -141,11 +145,18 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
               Try this search on Google
             </Button>
           </div>
+          
+          {/* Add debug info section */}
+          <div className="mt-6 border-t border-amber-200 pt-4 text-xs text-left px-6">
+            <p className="font-medium">Debug Information:</p>
+            <p>Query: {comparisonData.query}</p>
+            <p>Error: {comparisonData.error || "None"}</p>
+          </div>
         </div>
       )}
       
       <div className="space-y-3 max-h-80 overflow-y-auto">
-        {comparisonData.topResults.map((result, index) => (
+        {comparisonData.topResults && comparisonData.topResults.map((result, index) => (
           <div key={index} className={`p-3 rounded text-sm ${result.hasBrandMention ? 'bg-secondary/30' : 'bg-secondary/10'}`}>
             <div className="font-medium mb-1 flex items-center justify-between">
               <div className="break-words pr-2">

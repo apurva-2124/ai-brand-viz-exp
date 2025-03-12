@@ -41,9 +41,11 @@ export async function getTraditionalSearchResults(
       };
     }
 
-    console.log(`Returning ${serpResults.length} traditional search results`);
+    // Log the results to verify we have them
+    console.log(`getTraditionalSearchResults: Received ${serpResults.length} results from SerpAPI`);
     
-    // Return results from SerpApi
+    // Return results from SerpApi - even if zero results, return an empty array
+    // but don't set an error when the array is empty
     return {
       searchEngine: "Google",
       query,
@@ -61,7 +63,8 @@ export async function getTraditionalSearchResults(
       query,
       source: "serpapi",
       brandMentions: 0,
-      topResults: []
+      topResults: [],
+      error: "FETCH_ERROR"
     };
   }
 }
