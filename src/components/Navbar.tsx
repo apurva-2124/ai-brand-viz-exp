@@ -8,9 +8,19 @@ const Navbar = () => {
     <header className="border-b py-4">
       <Container>
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-xl">Optimly</span>
-            <span className="text-muted-foreground text-sm">AI Brand Visibility Report</span>
+          <div className="flex items-center gap-6">
+            <span className="font-bold text-xl">AI Brand Visibility & Perception Explorer</span>
+            <nav className="hidden md:flex items-center gap-6">
+              <a href="#about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                About the Experiment
+              </a>
+              <a href="#explorer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Brand Explorer
+              </a>
+              <a href="#journey" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Join the Journey
+              </a>
+            </nav>
           </div>
           <div className="flex items-center gap-2">
             <ApiSettings />

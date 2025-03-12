@@ -11,11 +11,11 @@ export const AboutExperiment = () => {
         
         <div className="space-y-4 text-lg text-muted-foreground">
           <p>
-            I've spent years studying how people discover brands—first through SEO, then social 
-            listening, and now AI-powered search. As AI assistants like ChatGPT, Gemini, and Claude 
-            reshape how consumers learn about companies, I got curious: What exactly do these models 
-            say about brands? How do AI-generated results differ across models? And what patterns 
-            emerge over time?
+            As a product marketer and researcher, I've spent years studying how people discover and 
+            perceive brands—first through traditional polling, then social listening, and now AI-powered 
+            search. As AI assistants like ChatGPT, Gemini, and Claude reshape how consumers learn about 
+            companies and their products, I got curious: What exactly do these models say about brands? 
+            How do AI-generated results differ across models? And what patterns emerge over time?
           </p>
           
           <p>
