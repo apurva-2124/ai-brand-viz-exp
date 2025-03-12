@@ -1,5 +1,5 @@
 
-import { Check, X, AlertCircle, Map, Globe, BookOpen, Newspaper, Info } from "lucide-react";
+import { Check, X, Info, Map, Globe, BookOpen, Newspaper, ExternalLink } from "lucide-react";
 import { TraditionalSearchResults } from "@/services/traditional-search";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
@@ -148,7 +148,12 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
         {comparisonData.topResults.map((result, index) => (
           <div key={index} className={`p-3 rounded text-sm ${result.hasBrandMention ? 'bg-secondary/30' : 'bg-secondary/10'}`}>
             <div className="font-medium mb-1 flex items-center justify-between">
-              <div className="break-words pr-2">{result.title}</div>
+              <div className="break-words pr-2">
+                <a href={result.url} target="_blank" rel="noopener noreferrer" className="hover:underline text-blue-600 flex items-center gap-1">
+                  {result.title}
+                  <ExternalLink className="h-3 w-3" />
+                </a>
+              </div>
               {result.hasBrandMention && (
                 <span className="text-xs whitespace-nowrap text-green-600">• Brand Mentioned</span>
               )}

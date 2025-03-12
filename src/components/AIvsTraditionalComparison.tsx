@@ -23,7 +23,6 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
   const [comparisonData, setComparisonData] = useState<TraditionalSearchResults | null>(null);
   const [apiLimitExceeded, setApiLimitExceeded] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [debugInfo, setDebugInfo] = useState<string | null>(null);
 
   useEffect(() => {
     if (brandData.keywords.length > 0) {
@@ -39,11 +38,9 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
     setIsLoading(true);
     setApiLimitExceeded(false);
     setErrorMessage(null);
-    setDebugInfo(null);
     
     try {
       console.log("Starting SerpAPI fetch for keyword:", selectedKeyword);
-      console.log("Checking for SerpAPI key:", localStorage.getItem("serpapi_api_key") ? "Present" : "Missing");
       
       if (!localStorage.getItem("serpapi_api_key")) {
         setApiLimitExceeded(true);
@@ -52,34 +49,13 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
         return;
       }
       
-      // Try with a simplified query first - just the keyword
-      let query = selectedKeyword;
-      console.log("Fetching traditional results with simple query:", query);
-      console.log("Brand name:", brandData.name);
+      // Use the keyword as query
+      const query = selectedKeyword;
+      console.log("Fetching traditional results with query:", query);
       
-      let results = await getTraditionalSearchResults(query, brandData.name);
+      // Client-side fetch of SerpAPI results
+      const results = await getTraditionalSearchResults(query, brandData.name);
       console.log("Traditional search results:", results);
-      
-      // Verify if results came back empty
-      if (results.topResults.length === 0) {
-        console.log("No results with keyword query, trying with brand name...");
-        setDebugInfo(`No results found for "${query}". Trying with brand name...`);
-        
-        // Try with just the brand name
-        query = brandData.name;
-        results = await getTraditionalSearchResults(query, brandData.name);
-        console.log("Brand name search results:", results);
-        
-        // If still empty, try with AI-generated query
-        if (results.topResults.length === 0 && aiResult?.query) {
-          console.log("No results with brand name, trying with AI query...");
-          setDebugInfo(`No results found for "${query}". Trying with AI-generated query...`);
-          
-          query = aiResult.query;
-          results = await getTraditionalSearchResults(query, brandData.name);
-          console.log("AI query search results:", results);
-        }
-      }
       
       if (results.error === "API_LIMIT_EXCEEDED") {
         console.log("API limit exceeded or key missing");
@@ -89,7 +65,7 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
         setComparisonData(results);
         
         if (results.topResults.length === 0) {
-          setDebugInfo(`No results found. Tried queries: "${selectedKeyword}", "${brandData.name}", and AI query if available. Check console for details.`);
+          toast.warning("No search results found. Try a different query.");
         } else {
           toast.success(`Found ${results.topResults.length} search results`);
         }
@@ -120,13 +96,6 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
         />
 
         {isLoading && <LoadingState retryWithSimpleQuery={false} />}
-
-        {debugInfo && !isLoading && (
-          <div className="mb-4 p-2 bg-amber-50 border border-amber-200 rounded text-sm">
-            <p className="font-medium">Debug Info:</p>
-            <p>{debugInfo}</p>
-          </div>
-        )}
 
         <ErrorMessages 
           errorMessage={errorMessage} 

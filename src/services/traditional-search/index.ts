@@ -3,7 +3,7 @@ import { TraditionalSearchResults } from "./types";
 import { fetchSerpApiResults } from "./serpApiService";
 
 /**
- * Main function to get traditional search results using only SerpApi
+ * Main function to get traditional search results using client-side SerpApi
  */
 export async function getTraditionalSearchResults(
   query: string,
@@ -26,6 +26,7 @@ export async function getTraditionalSearchResults(
       };
     }
     
+    // Client-side fetch of SerpAPI results
     const serpResults = await fetchSerpApiResults(query, brandName);
     
     // Handle API limit exceeded
