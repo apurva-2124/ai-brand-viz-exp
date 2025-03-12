@@ -33,6 +33,7 @@ export const BrandTracker = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isTestingDb, setIsTestingDb] = useState(false);
   const [dbConnectionStatus, setDbConnectionStatus] = useState<"untested" | "success" | "error">("untested");
+  const [activeTab, setActiveTab] = useState("dashboard");
   
   useEffect(() => {
     const openAIKey = localStorage.getItem("openai_api_key");
@@ -151,7 +152,7 @@ export const BrandTracker = () => {
             )}
           </div>
           
-          <Tabs defaultValue="dashboard">
+          <Tabs defaultValue="dashboard" value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="mb-6">
               <TabsTrigger value="dashboard">Visibility Dashboard</TabsTrigger>
               <TabsTrigger value="competitors">Competitor Analysis</TabsTrigger>
