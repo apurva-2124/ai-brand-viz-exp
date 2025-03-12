@@ -1,12 +1,12 @@
 
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Info, Loader2, Ban, AlertCircle } from "lucide-react";
 import { BrandData } from "@/components/BrandTracker";
 import { ComparisonHeader } from "@/components/comparison/ComparisonHeader";
-import { AIResults } from "@/components/comparison/AIResults";
-import { TraditionalResults } from "@/components/comparison/TraditionalResults";
+import { LoadingState } from "@/components/comparison/LoadingState";
+import { ErrorMessages } from "@/components/comparison/ErrorMessages";
+import { EmptyState } from "@/components/comparison/EmptyState";
+import { ComparisonResults } from "@/components/comparison/ComparisonResults";
 import { getTraditionalSearchResults, TraditionalSearchResults } from "@/services/traditional-search";
 
 interface AIvsTraditionalComparisonProps {
@@ -97,62 +97,22 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
       />
       
       <CardContent>
-        {!aiResult && (
-          <Alert variant="info">
-            <Info className="h-4 w-4" />
-            <AlertDescription>
-              Please run an AI visibility analysis first to enable comparison.
-            </AlertDescription>
-          </Alert>
-        )}
+        <EmptyState 
+          hasAiResult={!!aiResult} 
+          hasComparisonData={!!comparisonData} 
+        />
 
-        {aiResult && !comparisonData && !isLoading && !apiLimitExceeded && !errorMessage && (
-          <div className="text-center py-8 text-muted-foreground">
-            Select a keyword and click "Compare Results" to see the comparison
-          </div>
-        )}
+        {isLoading && <LoadingState retryWithSimpleQuery={retryWithSimpleQuery} />}
 
-        {isLoading && (
-          <div className="text-center py-8">
-            <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2" />
-            <p className="text-muted-foreground">
-              {retryWithSimpleQuery 
-                ? "First attempt didn't return results. Trying with alternate query format..."
-                : "Fetching traditional search results..."}
-            </p>
-          </div>
-        )}
+        <ErrorMessages 
+          errorMessage={errorMessage} 
+          apiLimitExceeded={apiLimitExceeded} 
+        />
 
-        {errorMessage && (
-          <Alert variant="destructive" className="my-4">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              {errorMessage}
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {apiLimitExceeded && (
-          <Alert variant="destructive" className="my-4">
-            <Ban className="h-4 w-4" />
-            <AlertDescription>
-              <p className="font-medium">SerpApi key missing or limit exceeded</p>
-              <p className="text-sm mt-1">
-                {!localStorage.getItem("serpapi_api_key") 
-                  ? "No SerpApi key found. Please add your SerpApi key in the settings." 
-                  : "The free SerpApi limit (100 searches/month) has been reached or the API key is invalid."}
-                Please try again later or add a valid SerpApi key in the settings.
-              </p>
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {aiResult && comparisonData && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-            <AIResults aiResult={aiResult} />
-            <TraditionalResults comparisonData={comparisonData} />
-          </div>
-        )}
+        <ComparisonResults 
+          aiResult={aiResult} 
+          comparisonData={comparisonData} 
+        />
       </CardContent>
     </Card>
   );
