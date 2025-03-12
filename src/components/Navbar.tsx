@@ -1,56 +1,61 @@
 
-import { Container } from "@/components/Container";
-import { Button } from "@/components/ui/button";
-import { ApiSettings } from "@/components/ApiSettings";
-import { Github } from "lucide-react";
-import { useState, useEffect } from "react";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import Container from './Container';
+import { ApiSettings } from './ApiSettings';
 
 const Navbar = () => {
-  const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
   
-  // Add scroll event listener
-  useEffect(() => {
-    const handleScroll = () => {
-      const isScrolled = window.scrollY > 10;
-      if (isScrolled !== scrolled) {
-        setScrolled(isScrolled);
-      }
-    };
-    
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [scrolled]);
-
   return (
-    <header className={`py-4 sticky top-0 z-50 bg-background transition-all duration-200 ${scrolled ? "border-b shadow-md" : "border-b"}`}>
+    <nav className="w-full shadow-sm border-b py-3">
       <Container>
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="font-bold text-xl leading-tight">AI Brand Visibility &<br className="sm:hidden" /> Perception Explorer</h1>
+        <div className="flex justify-between items-center">
+          <div className="flex items-center space-x-1">
+            <Link to="/" className="flex items-center">
+              <img src="/logo.svg" alt="Logo" className="h-7 w-auto" />
+              <span className="ml-2 text-xl font-semibold">AI Brand Visibility</span>
+            </Link>
+            <div className="hidden sm:flex items-center ml-8 space-x-6">
+              <Link 
+                to="/" 
+                className={`text-sm font-medium transition-colors ${
+                  location.pathname === '/' 
+                    ? 'text-primary' 
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                Home
+              </Link>
+              <Link 
+                to="/optimize" 
+                className={`text-sm font-medium transition-colors ${
+                  location.pathname === '/optimize' 
+                    ? 'text-primary' 
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                Optimization
+              </Link>
+              <Link 
+                to="/search" 
+                className={`text-sm font-medium transition-colors ${
+                  location.pathname === '/search' 
+                    ? 'text-primary' 
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                Search
+              </Link>
+            </div>
           </div>
-          
-          <nav className="hidden md:flex items-center gap-8">
-            <a href="#about-experiment" className="text-muted-foreground hover:text-foreground transition-colors">
-              About the Experiment
-            </a>
-            <a href="#explorer" className="text-muted-foreground hover:text-foreground transition-colors">
-              Brand Explorer
-            </a>
-          </nav>
-          
-          <div className="flex items-center gap-3">
+          <div className="flex items-center">
             <ApiSettings />
-            <Button variant="ghost" size="icon" asChild>
-              <a href="https://github.com/your-repo/optimly" target="_blank" rel="noopener noreferrer">
-                <Github size={20} />
-              </a>
-            </Button>
           </div>
         </div>
       </Container>
-    </header>
+    </nav>
   );
 };
 
