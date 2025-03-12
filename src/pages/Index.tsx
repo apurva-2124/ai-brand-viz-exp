@@ -1,5 +1,5 @@
 
-import { Navbar } from "@/components/Navbar";
+import Navbar from "@/components/Navbar";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { ResearchQuestions } from "@/components/sections/ResearchQuestions";
 import { AboutExperiment } from "@/components/sections/AboutExperiment";

@@ -21,7 +21,21 @@ export function generateMockData(brandData: BrandData) {
       response: generateMockResponse(keyword, brandData.name, brandData.industry),
       hasBrandMention: Math.random() > 0.3, // 70% chance of brand mention
       isProminent: Math.random() > 0.5, // 50% chance of prominent mention
-      provider: "OpenAI"
+      provider: "OpenAI",
+      visibilityScore: {
+        level: Math.random() > 0.7 ? "high" : Math.random() > 0.4 ? "low" : "not_found",
+        label: Math.random() > 0.7 ? "Prominent" : Math.random() > 0.4 ? "Present" : "Not Found",
+        score: Math.floor(Math.random() * 10),
+        context: null
+      },
+      competitorAnalysis: {
+        competitorsFound: Math.random() > 0.5 ? 
+          brandData.competitors?.slice(0, Math.floor(Math.random() * (brandData.competitors?.length || 0) + 1)) || [] : 
+          [],
+        competitorOutranking: Math.random() > 0.6,
+        riskLevel: Math.random() > 0.7 ? "high" : Math.random() > 0.4 ? "medium" : "low"
+      },
+      recommendation: "Optimize content to increase brand visibility"
     });
     
     // Create an Anthropic mock result
@@ -31,7 +45,21 @@ export function generateMockData(brandData: BrandData) {
       response: generateMockResponse(keyword, brandData.name, brandData.industry),
       hasBrandMention: Math.random() > 0.3, // 70% chance of brand mention
       isProminent: Math.random() > 0.5, // 50% chance of prominent mention
-      provider: "Anthropic"
+      provider: "Anthropic",
+      visibilityScore: {
+        level: Math.random() > 0.7 ? "high" : Math.random() > 0.4 ? "low" : "not_found",
+        label: Math.random() > 0.7 ? "Prominent" : Math.random() > 0.4 ? "Present" : "Not Found",
+        score: Math.floor(Math.random() * 10),
+        context: null
+      },
+      competitorAnalysis: {
+        competitorsFound: Math.random() > 0.5 ? 
+          brandData.competitors?.slice(0, Math.floor(Math.random() * (brandData.competitors?.length || 0) + 1)) || [] : 
+          [],
+        competitorOutranking: Math.random() > 0.6,
+        riskLevel: Math.random() > 0.7 ? "high" : Math.random() > 0.4 ? "medium" : "low"
+      },
+      recommendation: "Create more detailed content about your brand features"
     });
   }
   
@@ -51,6 +79,17 @@ export function generateMockData(brandData: BrandData) {
     score: Math.floor(Math.random() * 10) + 1 // Random score between 1-10
   }));
   
+  // Generate mock competitor data
+  const competitorsDetected: Record<string, number> = {};
+  if (brandData.competitors) {
+    brandData.competitors.forEach(comp => {
+      competitorsDetected[comp] = Math.floor(Math.random() * results.length / 2);
+    });
+  }
+  
+  // Determine risk level
+  const riskLevel = Math.random() > 0.7 ? "high" : Math.random() > 0.4 ? "medium" : "low";
+  
   return {
     results,
     overallScore,
@@ -58,7 +97,9 @@ export function generateMockData(brandData: BrandData) {
     vagueMentions,
     notFound,
     keywordStrength,
-    queries
+    queries,
+    riskLevel,
+    competitorsDetected
   };
 }
 
