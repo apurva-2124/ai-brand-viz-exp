@@ -9,6 +9,7 @@ export interface SearchResult {
   description: string;
   hasBrandMention: boolean;
   date?: string;
+  resultType?: "organic" | "local" | "knowledge_graph" | "news" | "other";
 }
 
 /**

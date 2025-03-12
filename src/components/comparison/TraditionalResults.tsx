@@ -1,7 +1,8 @@
 
-import { Check, X, AlertCircle } from "lucide-react";
+import { Check, X, AlertCircle, Map, Globe, BookOpen, Newspaper } from "lucide-react";
 import { TraditionalSearchResults } from "@/services/traditional-search";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
 
 interface TraditionalResultsProps {
   comparisonData: TraditionalSearchResults;
@@ -27,6 +28,38 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
       );
     }
     return null;
+  };
+
+  // Helper function to get the appropriate icon for result type
+  const getResultTypeIcon = (resultType?: string) => {
+    switch(resultType) {
+      case 'local':
+        return <Map className="h-3 w-3" />;
+      case 'organic':
+        return <Globe className="h-3 w-3" />;
+      case 'knowledge_graph':
+        return <BookOpen className="h-3 w-3" />;
+      case 'news':
+        return <Newspaper className="h-3 w-3" />;
+      default:
+        return <Globe className="h-3 w-3" />;
+    }
+  };
+
+  // Helper function to get badge text for result type
+  const getResultTypeLabel = (resultType?: string) => {
+    switch(resultType) {
+      case 'local':
+        return 'Local Business';
+      case 'organic':
+        return 'Website';
+      case 'knowledge_graph':
+        return 'Knowledge Panel';
+      case 'news':
+        return 'News';
+      default:
+        return 'Website';
+    }
   };
 
   return (
@@ -111,7 +144,14 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
                 <span className="text-xs whitespace-nowrap text-green-600">• Brand Mentioned</span>
               )}
             </div>
-            <div className="text-muted-foreground text-xs mb-1">Position: #{result.rank}</div>
+            <div className="text-muted-foreground text-xs mb-1 flex items-center gap-1">
+              <span>Position: #{result.rank}</span>
+              <span className="mx-1">•</span>
+              <Badge variant="outline" className="h-5 px-1 flex items-center gap-1 text-xs">
+                {getResultTypeIcon(result.resultType)}
+                <span>{getResultTypeLabel(result.resultType)}</span>
+              </Badge>
+            </div>
             <div className="text-xs text-blue-600 mb-1 truncate">{result.url}</div>
             <div>{result.description}</div>
           </div>

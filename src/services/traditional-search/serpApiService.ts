@@ -12,6 +12,111 @@ function sanitizeQuery(query: string): string {
 }
 
 /**
+ * Extracts results from different sections of the SerpApi response
+ */
+function extractAllResults(data: any, brandName: string): SearchResult[] {
+  const allResults: SearchResult[] = [];
+  let rank = 1;
+  
+  // Extract organic search results
+  if (data.organic_results && data.organic_results.length > 0) {
+    console.log(`Found ${data.organic_results.length} organic results`);
+    
+    data.organic_results.forEach((result: any) => {
+      const hasBrandMention = 
+        (result.title && result.title.toLowerCase().includes(brandName.toLowerCase())) ||
+        (result.snippet && result.snippet.toLowerCase().includes(brandName.toLowerCase())) ||
+        (result.link && result.link.toLowerCase().includes(brandName.toLowerCase()));
+      
+      allResults.push({
+        rank: rank++,
+        url: result.link || "",
+        title: result.title || "",
+        description: result.snippet || "",
+        hasBrandMention,
+        resultType: "organic"
+      });
+    });
+  }
+  
+  // Extract local results if available
+  if (data.local_results && data.local_results.length > 0) {
+    console.log(`Found ${data.local_results.length} local business results`);
+    
+    data.local_results.forEach((result: any) => {
+      // For local results, create a nice description from available data
+      let description = "";
+      if (result.rating) description += `Rating: ${result.rating} `;
+      if (result.reviews) description += `(${result.reviews} reviews) `;
+      if (result.address) description += `• ${result.address} `;
+      if (result.description) description += `• ${result.description}`;
+      
+      const hasBrandMention = 
+        (result.title && result.title.toLowerCase().includes(brandName.toLowerCase())) ||
+        (result.address && result.address.toLowerCase().includes(brandName.toLowerCase())) ||
+        (result.website && result.website.toLowerCase().includes(brandName.toLowerCase()));
+      
+      allResults.push({
+        rank: rank++,
+        url: result.website || "",
+        title: result.title || "",
+        description: description || "Local business listing",
+        hasBrandMention,
+        resultType: "local"
+      });
+    });
+  }
+  
+  // Extract knowledge graph if available
+  if (data.knowledge_graph) {
+    console.log("Found knowledge graph result");
+    
+    const kg = data.knowledge_graph;
+    const title = kg.title || "";
+    const description = kg.description || "";
+    const url = kg.website || "";
+    
+    const hasBrandMention = 
+      title.toLowerCase().includes(brandName.toLowerCase()) ||
+      description.toLowerCase().includes(brandName.toLowerCase()) ||
+      url.toLowerCase().includes(brandName.toLowerCase());
+    
+    allResults.push({
+      rank: rank++,
+      url: url,
+      title: title,
+      description: description,
+      hasBrandMention,
+      resultType: "knowledge_graph"
+    });
+  }
+  
+  // Extract top stories if available
+  if (data.top_stories && data.top_stories.length > 0) {
+    console.log(`Found ${data.top_stories.length} top stories`);
+    
+    data.top_stories.forEach((story: any) => {
+      const hasBrandMention = 
+        (story.title && story.title.toLowerCase().includes(brandName.toLowerCase())) ||
+        (story.source && story.source.toLowerCase().includes(brandName.toLowerCase())) ||
+        (story.link && story.link.toLowerCase().includes(brandName.toLowerCase()));
+      
+      allResults.push({
+        rank: rank++,
+        url: story.link || "",
+        title: story.title || "",
+        description: `News: ${story.source || ""} - ${story.date || ""}`,
+        hasBrandMention,
+        resultType: "news"
+      });
+    });
+  }
+  
+  // Sort the results to ensure most relevant are on top
+  return allResults.slice(0, 10); // Limit to top 10 results
+}
+
+/**
  * Fetches real-time Google search results using SerpApi
  */
 export async function fetchSerpApiResults(query: string, brandName: string): Promise<SearchResult[] | "LIMIT_EXCEEDED"> {
@@ -58,11 +163,18 @@ export async function fetchSerpApiResults(query: string, brandName: string): Pro
       return "LIMIT_EXCEEDED";
     }
     
-    if (!data.organic_results || data.organic_results.length === 0) {
-      console.log("No organic results found in SerpAPI response");
+    // Log the total estimated results if available
+    if (data.search_information && data.search_information.total_results) {
+      console.log("Total estimated results:", data.search_information.total_results);
+    }
+    
+    // Extract results from all sections
+    const allResults = extractAllResults(data, brandName);
+    
+    if (allResults.length === 0) {
+      console.log("No results found in any section. Retrying with simplified query:", simplifiedQuery);
       
       // If no results with original query, try with simplified query
-      console.log("Retrying with simplified query:", simplifiedQuery);
       const simplifiedEncodedQuery = encodeURIComponent(simplifiedQuery);
       const simplifiedApiUrl = `https://serpapi.com/search.json?q=${simplifiedEncodedQuery}&api_key=${apiKey}&hl=en&gl=us`;
       console.log("Retrying SerpAPI with URL (sensitive parts redacted):", 
@@ -79,51 +191,20 @@ export async function fetchSerpApiResults(query: string, brandName: string): Pro
       const simplifiedData = await simplifiedResponse.json();
       console.log("Simplified query response data keys:", Object.keys(simplifiedData));
       
-      if (!simplifiedData.organic_results || simplifiedData.organic_results.length === 0) {
-        console.log("No organic results found even with simplified query");
+      // Extract results from all sections of the simplified query
+      const simplifiedResults = extractAllResults(simplifiedData, brandName);
+      
+      if (simplifiedResults.length === 0) {
+        console.log("No results found even with simplified query");
         return [];
       }
       
-      console.log(`Simplified query returned ${simplifiedData.organic_results.length} results`);
-      
-      const mappedResults = simplifiedData.organic_results.slice(0, 10).map((result: any, index: number) => {
-        const hasBrandMention = 
-          (result.title && result.title.toLowerCase().includes(brandName.toLowerCase())) ||
-          (result.snippet && result.snippet.toLowerCase().includes(brandName.toLowerCase())) ||
-          (result.link && result.link.toLowerCase().includes(brandName.toLowerCase()));
-        
-        return {
-          rank: index + 1,
-          url: result.link || "",
-          title: result.title || "",
-          description: result.snippet || "",
-          hasBrandMention
-        };
-      });
-      
-      console.log("Mapped results from simplified query:", mappedResults);
-      return mappedResults;
+      console.log(`Simplified query returned ${simplifiedResults.length} results`);
+      return simplifiedResults;
     }
     
-    console.log(`SerpAPI returned ${data.organic_results.length} results`);
-    
-    const mappedResults = data.organic_results.slice(0, 10).map((result: any, index: number) => {
-      const hasBrandMention = 
-        (result.title && result.title.toLowerCase().includes(brandName.toLowerCase())) ||
-        (result.snippet && result.snippet.toLowerCase().includes(brandName.toLowerCase())) ||
-        (result.link && result.link.toLowerCase().includes(brandName.toLowerCase()));
-      
-      return {
-        rank: index + 1,
-        url: result.link || "",
-        title: result.title || "",
-        description: result.snippet || "",
-        hasBrandMention
-      };
-    });
-    
-    console.log("Mapped results:", mappedResults);
-    return mappedResults;
+    console.log(`Found a total of ${allResults.length} results from various sections`);
+    return allResults;
   } catch (error) {
     console.error("Error fetching from SerpApi:", error);
     return [];

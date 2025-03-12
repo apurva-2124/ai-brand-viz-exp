@@ -24,7 +24,8 @@ export const EmptyState = ({ hasAiResult, hasComparisonData }: EmptyStateProps) 
   if (!hasComparisonData) {
     return (
       <div className="text-center py-8 text-muted-foreground">
-        Select a keyword and click "Compare Results" to see the comparison
+        <p>Select a keyword and click "Compare Results" to see the comparison</p>
+        <p className="text-xs mt-2">Ensure you have added a valid SerpAPI key in settings to retrieve search results</p>
       </div>
     );
   }
