@@ -1,10 +1,13 @@
 
 import { BrandData } from "@/components/BrandTracker";
 import { 
-  QueryType, 
-  QueryVariables,
   transformKeywordToQuery,
   identifyKeywordIntent
+} from "./queryTemplates";
+// Import types with the 'type' keyword
+import type { 
+  QueryType, 
+  QueryVariables 
 } from "./queryTemplates";
 
 /**
@@ -162,9 +165,13 @@ export function analyzeCompetitors(response: string, brandName: string, competit
 }
 
 // Re-export types and functions from queryTemplates.ts
+// Use 'export type' for type re-exports
 export { 
-  QueryType, 
-  QueryVariables,
   transformKeywordToQuery,
   identifyKeywordIntent
+} from "./queryTemplates";
+
+export type { 
+  QueryType, 
+  QueryVariables 
 } from "./queryTemplates";
