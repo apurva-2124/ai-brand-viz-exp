@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Container } from "@/components/Container";
@@ -204,7 +203,7 @@ export const BrandExplorer = () => {
         </Card>
         
         {/* Primary Disclaimer */}
-        <Alert variant="outline" className="bg-background border-muted-foreground/20 mt-8">
+        <Alert variant="default" className="bg-background border-muted-foreground/20 mt-8">
           <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           <AlertDescription className="text-muted-foreground text-sm">
             <strong>Disclaimer:</strong> This is an open-source experiment analyzing AI-generated search results. 
