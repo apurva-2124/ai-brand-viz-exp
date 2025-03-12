@@ -49,6 +49,7 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
       
       const query = aiResult?.query || `${selectedKeyword} ${brandData.industry}`;
       console.log("Fetching traditional results with query:", query);
+      console.log("Brand name:", brandData.name);
       
       const results = await getTraditionalSearchResults(query, brandData.name);
       console.log("Traditional search results:", results);
@@ -57,6 +58,9 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
         console.log("API limit exceeded or key missing");
         setApiLimitExceeded(true);
         setComparisonData(null);
+      } else if (results.topResults.length === 0) {
+        console.log("No results found for query");
+        setComparisonData(results);
       } else {
         setComparisonData(results);
       }

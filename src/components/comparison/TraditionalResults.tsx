@@ -90,7 +90,7 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
             <X className="h-6 w-6 text-red-500" />
           </div>
           <p>No traditional search results found.</p>
-          <p className="text-xs mt-2">This may happen if SerpAPI couldn't find relevant results for your query.</p>
+          <p className="text-xs mt-2">This may happen if SerpAPI couldn't find relevant results for your query or if the query was too complex. Try using a simpler, more direct query.</p>
         </div>
       )}
       
