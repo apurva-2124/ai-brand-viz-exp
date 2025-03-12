@@ -1,13 +1,11 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
 import { Container } from './Container';
 import { ApiSettings } from './ApiSettings';
+import { Settings, Github } from 'lucide-react';
 
 const Navbar = () => {
-  const location = useLocation();
-  
   return (
     <nav className="w-full shadow-sm border-b py-3">
       <Container>
@@ -15,43 +13,34 @@ const Navbar = () => {
           <div className="flex items-center space-x-1">
             <Link to="/" className="flex items-center">
               <img src="/logo.svg" alt="Logo" className="h-7 w-auto" />
-              <span className="ml-2 text-xl font-semibold">AI Brand Visibility</span>
+              <span className="ml-2 text-xl font-semibold">AI Brand Visibility & Perception Explorer</span>
             </Link>
-            <div className="hidden sm:flex items-center ml-8 space-x-6">
-              <Link 
-                to="/" 
-                className={`text-sm font-medium transition-colors ${
-                  location.pathname === '/' 
-                    ? 'text-primary' 
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Home
-              </Link>
-              <Link 
-                to="/optimize" 
-                className={`text-sm font-medium transition-colors ${
-                  location.pathname === '/optimize' 
-                    ? 'text-primary' 
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Optimization
-              </Link>
-              <Link 
-                to="/search" 
-                className={`text-sm font-medium transition-colors ${
-                  location.pathname === '/search' 
-                    ? 'text-primary' 
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Search
-              </Link>
-            </div>
           </div>
-          <div className="flex items-center">
-            <ApiSettings />
+          <div className="flex items-center space-x-6">
+            <a 
+              href="#about-experiment" 
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              About the Experiment
+            </a>
+            <a 
+              href="#brand-explorer" 
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Brand Explorer
+            </a>
+            <div className="flex items-center space-x-2">
+              <ApiSettings />
+              <a 
+                href="https://github.com/yourusername/ai-brand-visibility" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="p-2 rounded-full hover:bg-muted transition-colors"
+                aria-label="GitHub Repository"
+              >
+                <Github className="h-5 w-5 text-muted-foreground" />
+              </a>
+            </div>
           </div>
         </div>
       </Container>
