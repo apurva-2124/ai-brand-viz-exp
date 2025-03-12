@@ -7,7 +7,7 @@ import { SearchQueriesCard } from "@/components/visibility/SearchQueriesCard";
 import { AIResponseAnalysis } from "@/components/visibility/AIResponseAnalysis";
 import { toast } from "sonner";
 import { AIProvider } from "@/services/aiVisibility";
-import { getDefaultBrand, getBrandMapping } from "@/lib/brandMappings";
+import { getDefaultBrand, getBrandMapping, brandIndustryKeywordMappings } from "@/lib/brandMappings";
 import { generateQueriesForKeywords, QueryType } from "@/utils/queryTransformer";
 import { analyzeAIVisibility } from "@/services/aiVisibility";
 
