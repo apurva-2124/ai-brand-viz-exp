@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Container } from './Container';
 import { ApiSettings } from './ApiSettings';
-import { Settings, Github } from 'lucide-react';
+import { Github } from 'lucide-react';
 
 const Navbar = () => {
   return (
