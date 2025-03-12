@@ -2,11 +2,12 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Info } from "lucide-react";
+import { Info, Loader2 } from "lucide-react";
 import { BrandData } from "@/components/BrandTracker";
 import { ComparisonHeader } from "@/components/comparison/ComparisonHeader";
 import { AIResults } from "@/components/comparison/AIResults";
 import { TraditionalResults } from "@/components/comparison/TraditionalResults";
+import { getTraditionalSearchResults, TraditionalSearchResults } from "@/services/traditionalSearch";
 
 interface AIvsTraditionalComparisonProps {
   brandData: BrandData;
@@ -18,7 +19,7 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
     brandData.keywords.length > 0 ? brandData.keywords[0] : ""
   );
   const [isLoading, setIsLoading] = useState(false);
-  const [comparisonData, setComparisonData] = useState<any>(null);
+  const [comparisonData, setComparisonData] = useState<TraditionalSearchResults | null>(null);
 
   // Update selected keyword when brandData changes
   useEffect(() => {
@@ -32,42 +33,21 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
     (result: any) => result.keyword === selectedKeyword
   );
 
-  const fetchTraditionalResults = () => {
+  const fetchTraditionalResults = async () => {
     setIsLoading(true);
-    setTimeout(() => {
-      const mockTraditionalResults = {
-        searchEngine: "Google",
-        query: aiResult?.query || `${selectedKeyword} ${brandData.industry}`,
-        brandMentions: Math.floor(Math.random() * 5) + (aiResult?.isProminent ? 3 : 1),
-        topResults: [
-          {
-            title: aiResult?.hasBrandMention 
-              ? `${brandData.name} - Leading ${selectedKeyword} in ${brandData.industry}`
-              : `Top 10 ${selectedKeyword} Options for ${brandData.industry} Users`,
-            snippet: aiResult?.hasBrandMention
-              ? `${brandData.name} offers the best ${selectedKeyword} solutions with industry-leading features and support.`
-              : `Compare the best ${selectedKeyword} options including ${brandData.name} and alternatives.`,
-            position: aiResult?.hasBrandMention ? 1 : Math.floor(Math.random() * 5) + 2,
-            hasBrandMention: true
-          },
-          {
-            title: `${selectedKeyword} - Complete Guide (${new Date().getFullYear()})`,
-            snippet: `Everything you need to know about ${selectedKeyword} in the ${brandData.industry} industry.`,
-            position: 2,
-            hasBrandMention: Math.random() > 0.5
-          },
-          {
-            title: `Best ${selectedKeyword} Solutions Compared`,
-            snippet: `Expert comparison of top ${selectedKeyword} providers in the market.`,
-            position: 3,
-            hasBrandMention: Math.random() > 0.7
-          }
-        ]
-      };
+    
+    try {
+      // Use the same query that was used for AI results
+      const query = aiResult?.query || `${selectedKeyword} ${brandData.industry}`;
       
-      setComparisonData(mockTraditionalResults);
+      // Fetch traditional search results using our new service
+      const results = await getTraditionalSearchResults(query, brandData.name);
+      setComparisonData(results);
+    } catch (error) {
+      console.error("Error fetching traditional search results:", error);
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -98,8 +78,9 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
         )}
 
         {isLoading && (
-          <div className="text-center py-8 animate-pulse">
-            <p className="text-muted-foreground">Fetching traditional search results...</p>
+          <div className="text-center py-8">
+            <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2" />
+            <p className="text-muted-foreground">Fetching historical search results...</p>
           </div>
         )}
 
