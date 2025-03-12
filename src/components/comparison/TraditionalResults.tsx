@@ -8,70 +8,25 @@ interface TraditionalResultsProps {
 }
 
 export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) => {
-  // Define source badge
+  // Define source badge - now only for SerpApi
   const getSourceBadge = () => {
-    switch(comparisonData.source) {
-      case "serpapi":
-        return (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded ml-2">
-                  Live Data
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="max-w-xs text-xs">Real-time Google search results retrieved via SerpApi.</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        );
-      case "wayback_machine":
-        return (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded ml-2">
-                  Wayback Archive
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="max-w-xs text-xs">Data retrieved from Internet Archive's Wayback Machine snapshot of Google search results.</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        );
-      case "common_crawl":
-        return (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded ml-2">
-                  Common Crawl
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="max-w-xs text-xs">Data approximated from Common Crawl web index based on relevance and domain authority.</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        );
-      case "mock":
-        return (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded ml-2">
-                  Simulated
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="max-w-xs text-xs">Simulated search results shown for demonstration purposes.</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        );
+    if (comparisonData.source === "serpapi") {
+      return (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded ml-2">
+                Live Data
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="max-w-xs text-xs">Real-time Google search results retrieved via SerpApi.</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
     }
+    return null;
   };
 
   return (
@@ -128,6 +83,12 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
           </div>
         )}
       </div>
+      
+      {comparisonData.topResults.length === 0 && !comparisonData.error && (
+        <div className="text-center py-4 text-muted-foreground">
+          ❌ No traditional search results found.
+        </div>
+      )}
       
       <div className="space-y-3 max-h-80 overflow-y-auto">
         {comparisonData.topResults.map((result, index) => (
