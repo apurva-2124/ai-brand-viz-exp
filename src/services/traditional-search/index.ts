@@ -27,7 +27,9 @@ export async function getTraditionalSearchResults(
     }
     
     // Client-side fetch of SerpAPI results
+    console.log("Calling fetchSerpApiResults...");
     const serpResults = await fetchSerpApiResults(query, brandName);
+    console.log("fetchSerpApiResults returned:", serpResults === "LIMIT_EXCEEDED" ? "LIMIT_EXCEEDED" : `Array with ${serpResults.length} items`);
     
     // Handle API limit exceeded
     if (serpResults === "LIMIT_EXCEEDED") {
@@ -42,11 +44,24 @@ export async function getTraditionalSearchResults(
       };
     }
 
+    // Handle empty results differently than error states
+    if (Array.isArray(serpResults) && serpResults.length === 0) {
+      console.log("SerpAPI returned an empty results array - no search results found");
+      return {
+        searchEngine: "Google",
+        query,
+        source: "serpapi",
+        brandMentions: 0,
+        retrievalDate: new Date().toISOString(),
+        topResults: [],
+        error: "NO_RESULTS"  // New error type for empty results
+      };
+    }
+
     // Log the results to verify we have them
     console.log(`getTraditionalSearchResults: Received ${serpResults.length} results from SerpAPI`);
     
-    // Return results from SerpApi - even if zero results, return an empty array
-    // but don't set an error when the array is empty
+    // Return results from SerpApi
     return {
       searchEngine: "Google",
       query,
