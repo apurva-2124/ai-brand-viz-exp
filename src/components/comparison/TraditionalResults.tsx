@@ -1,5 +1,5 @@
 
-import { Check, X, Info, Map, Globe, BookOpen, Newspaper, ExternalLink } from "lucide-react";
+import { Check, X, Info, Map, Globe, BookOpen, Newspaper, ExternalLink, Database } from "lucide-react";
 import { TraditionalSearchResults } from "@/services/traditional-search";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
@@ -15,8 +15,9 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
   console.log("Results array:", comparisonData.topResults);
   console.log("Results count:", comparisonData.topResults?.length || 0);
   console.log("Error type:", comparisonData.error);
+  console.log("Data source:", comparisonData.source);
 
-  // Define source badge - now only for SerpApi
+  // Define source badge - now for both SerpApi and mock data
   const getSourceBadge = () => {
     if (comparisonData.source === "serpapi") {
       return (
@@ -29,6 +30,22 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
             </TooltipTrigger>
             <TooltipContent>
               <p className="max-w-xs text-xs">Real-time Google search results retrieved via SerpApi.</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    } else if (comparisonData.source === "mock") {
+      return (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded ml-2 flex items-center">
+                <Database className="h-3 w-3 mr-1" />
+                Mock Data
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="max-w-xs text-xs">Generated mock data for testing and development.</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

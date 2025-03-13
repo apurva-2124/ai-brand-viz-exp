@@ -1,16 +1,24 @@
 
 import { TraditionalSearchResults } from "./types";
 import { fetchSerpApiResults } from "./serpApiService";
+import { generateMockTraditionalResults } from "./mockService";
 
 /**
  * Main function to get traditional search results using client-side SerpApi
  */
 export async function getTraditionalSearchResults(
   query: string,
-  brandName: string
+  brandName: string,
+  useMockData: boolean = false
 ): Promise<TraditionalSearchResults> {
   try {
-    console.log("getTraditionalSearchResults called with:", { query, brandName });
+    console.log("getTraditionalSearchResults called with:", { query, brandName, useMockData });
+    
+    // Use mock data if requested
+    if (useMockData) {
+      console.log("Using mock data instead of real API");
+      return generateMockTraditionalResults(query, brandName);
+    }
     
     // Check for API key first
     const apiKey = localStorage.getItem("serpapi_api_key");

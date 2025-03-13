@@ -23,6 +23,7 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
   const [comparisonData, setComparisonData] = useState<TraditionalSearchResults | null>(null);
   const [apiLimitExceeded, setApiLimitExceeded] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [useMockData, setUseMockData] = useState(false);
 
   useEffect(() => {
     if (brandData.keywords.length > 0) {
@@ -40,12 +41,12 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
     setErrorMessage(null);
     
     try {
-      console.log("Starting SerpAPI fetch for keyword:", selectedKeyword);
+      console.log(`Starting ${useMockData ? "mock" : "SerpAPI"} fetch for keyword:`, selectedKeyword);
       
-      if (!localStorage.getItem("serpapi_api_key")) {
+      if (!localStorage.getItem("serpapi_api_key") && !useMockData) {
         setApiLimitExceeded(true);
         setIsLoading(false);
-        toast.error("SerpAPI key missing. Please add your API key in settings.");
+        toast.error("SerpAPI key missing. Please add your API key in settings or use mock data.");
         return;
       }
       
@@ -53,11 +54,11 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
       const query = selectedKeyword;
       console.log("Fetching traditional results with query:", query);
       
-      // Client-side fetch of SerpAPI results
-      const results = await getTraditionalSearchResults(query, brandData.name);
+      // Client-side fetch of results (with optional mock data)
+      const results = await getTraditionalSearchResults(query, brandData.name, useMockData);
       console.log("Traditional search results:", results);
       
-      if (results.error === "API_LIMIT_EXCEEDED") {
+      if (results.error === "API_LIMIT_EXCEEDED" && !useMockData) {
         console.log("API limit exceeded or key missing");
         setApiLimitExceeded(true);
         setComparisonData(null);
@@ -65,7 +66,7 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
         setComparisonData(results);
         
         if (results.topResults.length === 0) {
-          toast.warning("No search results found. Try a different query.");
+          toast.warning("No search results found. Try a different query or use mock data.");
         } else {
           toast.success(`Found ${results.topResults.length} search results`);
         }
@@ -87,6 +88,8 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
         onCompare={fetchTraditionalResults}
         isLoading={isLoading}
         hasAiResult={!!aiResult}
+        useMockData={useMockData}
+        onToggleMockData={() => setUseMockData(prev => !prev)}
       />
       
       <CardContent>
