@@ -1,4 +1,3 @@
-
 import { SearchResult, TraditionalSearchResults } from "./types";
 
 interface StaticDataEntry {
@@ -450,7 +449,7 @@ export function getStaticTraditionalResults(brand: string, keyword: string): Tra
     return {
       searchEngine: "Google",
       query: keyword,
-      source: "mock",
+      source: "static",
       brandMentions: 0,
       retrievalDate: new Date().toISOString(),
       topResults: []
@@ -476,7 +475,7 @@ export function getStaticTraditionalResults(brand: string, keyword: string): Tra
   return {
     searchEngine: "Google",
     query: keyword,
-    source: "mock",
+    source: "static",
     brandMentions: entry.brandMentions,
     retrievalDate: entry.queryRunTime,
     topResults: searchResults
