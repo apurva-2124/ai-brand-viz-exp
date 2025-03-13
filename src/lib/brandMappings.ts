@@ -7,104 +7,119 @@ export interface BrandKeywordMapping {
 
 export const brandIndustryKeywordMappings: BrandKeywordMapping[] = [
   {
-    industry: "Travel & Hospitality",
-    brand: "Airbnb",
-    keywords: ["Short-term rentals", "Vacation homes", "Airbnb rentals"]
+    industry: "B2B SaaS",
+    brand: "Salesforce",
+    keywords: ["CRM software", "Salesforce pricing", "Salesforce vs HubSpot"]
   },
   {
-    industry: "Travel & Hospitality",
-    brand: "Expedia",
-    keywords: ["Discount travel", "Cheap flights", "All-inclusive resorts"]
+    industry: "B2B SaaS",
+    brand: "HubSpot",
+    keywords: ["inbound marketing software", "HubSpot CRM", "HubSpot alternatives"]
   },
   {
-    industry: "Travel & Hospitality",
-    brand: "Booking.com",
-    keywords: ["Hotel reservations", "Last-minute hotels", "Luxury hotels"]
+    industry: "B2B SaaS",
+    brand: "Airtable",
+    keywords: ["best project management tools", "Airtable templates", "Airtable vs Notion"]
   },
   {
-    industry: "Travel & Hospitality",
-    brand: "TripAdvisor",
-    keywords: ["Travel reviews", "Best vacation spots", "Top-rated destinations"]
+    industry: "B2B SaaS",
+    brand: "Coda",
+    keywords: ["Coda app", "Coda vs Notion", "Coda templates"]
   },
   {
-    industry: "Consumer Goods & CPG",
-    brand: "Casper",
-    keywords: ["Best mattresses", "Memory foam mattress", "Orthopedic mattress"]
+    industry: "B2B SaaS",
+    brand: "Monday.com",
+    keywords: ["project management software", "Monday.com pricing", "Monday.com vs Asana"]
   },
   {
-    industry: "Consumer Goods & CPG",
-    brand: "Purple",
-    keywords: ["Pressure relief mattress", "Back pain mattress", "Cooling mattress"]
-  },
-  {
-    industry: "Consumer Goods & CPG",
-    brand: "Sephora",
-    keywords: ["Beauty products", "Skincare essentials", "Makeup brands"]
-  },
-  {
-    industry: "Fitness & Consumer Brands",
-    brand: "Peloton",
-    keywords: ["Home workout", "Exercise bike", "Peloton bike"]
-  },
-  {
-    industry: "Fitness & Consumer Brands",
-    brand: "Birkenstock",
-    keywords: ["Comfortable sandals", "Arch support shoes", "Foot pain relief shoes"]
-  },
-  {
-    industry: "Automotive & Mobility",
-    brand: "Rivian",
-    keywords: ["Electric truck", "EV truck", "Sustainable vehicle"]
-  },
-  {
-    industry: "Entertainment & Media",
-    brand: "GeekWire",
-    keywords: ["Tech news", "Startup funding", "Tech startup news"]
-  },
-  {
-    industry: "Entertainment & Media",
-    brand: "TechCrunch",
-    keywords: ["Venture capital", "Investment news", "Silicon Valley insights"]
-  },
-  {
-    industry: "Entertainment & Media",
-    brand: "Engadget",
-    keywords: ["Consumer tech reviews", "Gadget reviews", "Best smartphones"]
-  },
-  {
-    industry: "Luxury & Designer Brands",
-    brand: "Louis Vuitton",
-    keywords: ["Luxury handbags", "Designer bags", "Fashion accessories"]
-  },
-  {
-    industry: "Luxury & Designer Brands",
-    brand: "Rolex",
-    keywords: ["Luxury watches", "High-end timepieces", "Prestige watches"]
-  },
-  {
-    industry: "Luxury & Designer Brands",
-    brand: "Patagonia",
-    keywords: ["Sustainable outdoor gear", "Eco-friendly clothing", "Outdoor adventure gear"]
-  },
-  {
-    industry: "Education & E-Learning",
-    brand: "MasterClass",
-    keywords: ["Online learning", "Video courses", "Self-improvement classes"]
-  },
-  {
-    industry: "Education & E-Learning",
-    brand: "Duolingo",
-    keywords: ["Learn a language", "Language app", "Bilingual education"]
+    industry: "B2B SaaS",
+    brand: "Highspot",
+    keywords: ["sales enablement platform", "Highspot competitors", "Highspot features"]
   },
   {
     industry: "Healthcare & Wellness",
-    brand: "Calm",
-    keywords: ["Meditation app", "Sleep aid", "Mindfulness exercises"]
+    brand: "Zocdoc",
+    keywords: ["find a doctor", "Zocdoc reviews", "Zocdoc app"]
   },
   {
-    industry: "Retail & Fashion",
-    brand: "Nike",
-    keywords: ["Running shoes", "Athletic clothing", "Sports gear"]
+    industry: "Healthcare & Wellness",
+    brand: "GoodRx",
+    keywords: ["prescription drug prices", "GoodRx coupon", "GoodRx vs SingleCare"]
+  },
+  {
+    industry: "Healthcare & Wellness",
+    brand: "Hims & Hers Health",
+    keywords: ["telehealth services", "Hims reviews", "Hims vs Roman"]
+  },
+  {
+    industry: "Healthcare & Wellness",
+    brand: "One Medical",
+    keywords: ["primary care near me", "One Medical membership", "One Medical reviews"]
+  },
+  {
+    industry: "Healthcare & Wellness",
+    brand: "Roman (Ro Health)",
+    keywords: ["men's health online", "Roman ED treatment", "Roman vs Hims"]
+  },
+  {
+    industry: "Fashion & Apparel",
+    brand: "Shein",
+    keywords: ["affordable women's clothing", "Shein dresses", "Shein reviews"]
+  },
+  {
+    industry: "eCommerce & Retail",
+    brand: "Wayfair",
+    keywords: ["online furniture store", "Wayfair couches", "Wayfair customer service"]
+  },
+  {
+    industry: "Fashion & Apparel",
+    brand: "Warby Parker",
+    keywords: ["buy eyeglasses online", "Warby Parker frames", "Warby Parker vs Zenni"]
+  },
+  {
+    industry: "Fashion & Apparel",
+    brand: "Glossier",
+    keywords: ["Glossier skincare", "Glossier makeup", "Glossier reviews"]
+  },
+  {
+    industry: "Fashion & Apparel",
+    brand: "Vuori",
+    keywords: ["Vuori clothing", "Vuori joggers", "Vuori vs Lululemon"]
+  },
+  {
+    industry: "Direct-to-Consumer & Lifestyle",
+    brand: "Beis Travel",
+    keywords: ["Beis luggage", "Beis weekender bag", "Beis vs Away"]
+  },
+  {
+    industry: "Consumer Packaged Goods",
+    brand: "Magic Spoon",
+    keywords: ["healthy cereal", "Magic Spoon flavors", "Magic Spoon reviews"]
+  },
+  {
+    industry: "Travel & Hospitality",
+    brand: "Vrbo",
+    keywords: ["vacation rentals", "Vrbo vs Airbnb", "Vrbo reviews"]
+  },
+  {
+    industry: "Travel & Hospitality",
+    brand: "Marriott Bonvoy",
+    keywords: ["Marriott rewards program", "Marriott Bonvoy credit card", "Marriott Bonvoy login"]
+  },
+  {
+    industry: "Automotive & Mobility",
+    brand: "Turo",
+    keywords: ["car rental alternatives", "Turo reviews", "Turo vs Enterprise"]
+  },
+  {
+    industry: "Travel & Hospitality",
+    brand: "Scott's Cheap Flights",
+    keywords: ["flight deals newsletter", "Scott's Cheap Flights reviews", "Scott's Cheap Flights vs Kayak"]
+  },
+  {
+    industry: "Travel & Hospitality",
+    brand: "Selina Hotels",
+    keywords: ["Selina hostel", "Selina CoLive", "Selina reviews"]
   }
 ];
 
