@@ -22,7 +22,7 @@ export const QueryTypeSelect = ({ queryType, setQueryType }: QueryTypeSelectProp
       <label className="block text-sm font-medium mb-2">Select Query Type</label>
       <Select
         value={queryType}
-        onValueChange={(value) => setQueryType(value as QueryType)}
+        onValueChange={(value: string) => setQueryType(value as QueryType)}
       >
         <SelectTrigger>
           <SelectValue placeholder="Choose query type" />

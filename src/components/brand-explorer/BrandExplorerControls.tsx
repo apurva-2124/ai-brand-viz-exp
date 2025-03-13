@@ -18,6 +18,8 @@ import { AIModelSelect } from "@/components/brand-explorer/AIModelSelect";
 import { QueryTypeSelect } from "@/components/brand-explorer/QueryTypeSelect";
 import { KeywordSelector } from "@/components/brand-explorer/KeywordSelector";
 import { AnalysisButton } from "@/components/brand-explorer/AnalysisButton";
+import { AIProvider } from "@/services/ai/types";
+import { QueryType } from "@/utils/queryTemplates";
 
 interface BrandExplorerControlsProps {
   selectedIndustry: string;
@@ -26,10 +28,10 @@ interface BrandExplorerControlsProps {
   handleBrandChange: (brand: string) => void;
   selectedKeyword: string;
   setSelectedKeyword: (keyword: string) => void;
-  provider: string;
-  setProvider: (provider: any) => void;
-  queryType: string;
-  setQueryType: (type: any) => void;
+  provider: AIProvider;
+  setProvider: (provider: AIProvider) => void;
+  queryType: QueryType;
+  setQueryType: (type: QueryType) => void;
   isAnalyzing: boolean;
   hasApiKey: boolean;
   aiResults: any;
