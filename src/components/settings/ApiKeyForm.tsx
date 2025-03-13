@@ -44,6 +44,9 @@ export const ApiKeyForm = ({ onClose }: ApiKeyFormProps) => {
     localStorage.setItem("gemini_api_key", geminiKey);
     localStorage.setItem("serpapi_api_key", serpApiKey);
     
+    // Dispatch a storage event to notify other components
+    window.dispatchEvent(new Event('storage'));
+    
     toast({
       title: "Settings Saved",
       description: "Your API keys have been saved successfully.",

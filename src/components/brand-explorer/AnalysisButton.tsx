@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, Loader2 } from "lucide-react";
+import { AlertTriangle, Loader2, Settings } from "lucide-react";
+import { ApiSettings } from "@/components/ApiSettings";
 
 interface AnalysisButtonProps {
   isAnalyzing: boolean;
@@ -20,10 +21,13 @@ export const AnalysisButton = ({ isAnalyzing, hasApiKey, onClick }: AnalysisButt
         {isAnalyzing ? "Analyzing..." : "Analyze AI Search Results"}
       </Button>
       {!hasApiKey && (
-        <p className="text-sm text-red-500 mt-2 flex items-center">
-          <AlertTriangle className="h-4 w-4 mr-1" />
-          API Key Required: Add your API key in settings to run an AI analysis and see results.
-        </p>
+        <div className="flex items-center justify-between mt-2">
+          <p className="text-sm text-red-500 flex items-center">
+            <AlertTriangle className="h-4 w-4 mr-1" />
+            API Key Required: Add your API key in settings
+          </p>
+          <ApiSettings />
+        </div>
       )}
     </div>
   );

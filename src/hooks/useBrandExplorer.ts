@@ -17,13 +17,34 @@ export const useBrandExplorer = () => {
   const [hasApiKey, setHasApiKeys] = useState(false);
   const [aiResults, setAiResults] = useState<any>(null);
 
-  // Check for API keys on mount
+  // Check for API keys on mount and when localStorage changes
   useEffect(() => {
-    const openAIKey = localStorage.getItem("openai_api_key");
-    const anthropicKey = localStorage.getItem("anthropic_api_key");
-    const geminiKey = localStorage.getItem("gemini_api_key");
+    const checkApiKeys = () => {
+      const openAIKey = localStorage.getItem("openai_api_key");
+      const anthropicKey = localStorage.getItem("anthropic_api_key");
+      const geminiKey = localStorage.getItem("gemini_api_key");
+      
+      setHasApiKeys(!!(openAIKey || anthropicKey || geminiKey));
+    };
     
-    setHasApiKeys(!!(openAIKey || anthropicKey || geminiKey));
+    // Check initially
+    checkApiKeys();
+    
+    // Listen for storage changes (when API keys are added/removed)
+    const handleStorageChange = () => {
+      checkApiKeys();
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also check every second for changes made in the same window
+    // (localStorage events don't fire in the same window that makes the change)
+    const interval = setInterval(checkApiKeys, 1000);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
   }, []);
   
   // When industry changes, update the selected brand to the first brand in that industry
