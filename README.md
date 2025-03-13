@@ -1,69 +1,64 @@
-# Welcome to your Lovable project
+# **AI vs. Traditional Search: Brand Visibility Experiment**  
 
-## Project info
+🔍 **Compare how brands appear in AI-generated search responses vs. traditional search engines.**  
 
-**URL**: https://lovable.dev/projects/b3d853e3-4f24-481f-9a98-1efe6bc9c6ef
+## 📌 **Overview**  
+This project explores how AI-powered search models (like OpenAI) compare to traditional search engines (Google) in displaying brand mentions. It helps businesses understand:  
+- **Brand visibility** across different search ecosystems  
+- **Search result accuracy** and completeness  
+- **How AI-generated answers differ** from organic search rankings  
 
-## How can I edit this code?
+## 🚀 **Features**  
+✅ AI-generated search results using OpenAI's API  
+✅ Traditional search results retrieved via SerpAPI (or alternative scraping methods)  
+✅ Side-by-side comparison of brand mentions  
+✅ Mock data toggle for debugging without API limits  
+✅ Interactive UI for real-time brand search queries  
 
-There are several ways of editing your application.
+## 🛠️ **Tech Stack**  
+- **Frontend:** React + TypeScript  
+- **UI Components:** TailwindCSS, Lucide React Icons  
+- **Search APIs:** OpenAI API, SerpAPI (Google Search)  
+- **State Management:** React Hooks  
+- **Data Handling:** Mock service fallback for testing  
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/b3d853e3-4f24-481f-9a98-1efe6bc9c6ef) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+## 🔧 **Setup Instructions**  
+- 1️⃣ Clone the Repository  
+git clone https://github.com/yourusername/ai-brand-visibility-experiment.git
+cd ai-brand-visibility-experiment
+- 2️⃣ Install Dependencies
+npm install
+- 3️⃣ Set Up API Keys
+Create a .env file in the root directory and add:
+- OPENAI_API_KEY=your_openai_api_key
+- SERPAPI_KEY=your_serpapi_api_key
+- (Or use the mock data toggle for local testing.)
+- 4️⃣ Run the App
 npm run dev
-```
+Then visit http://localhost:3000 in your browser.
 
-**Edit a file directly in GitHub**
+## 📊 How It Works
+- 1️⃣ Choose an Industry from the dropdown (e.g., Travel & Hospitality)
+- 2️⃣ Pick a Brand to analyze (e.g., Airbnb)
+- 3️⃣ Select an AI Model (e.g., OpenAI GPT-4)
+- 4️⃣ Choose a Query Type (e.g., General Query)
+- 5️⃣ Pick a Search Keyword (e.g., "Short-term rentals")
+- 6️⃣ Click "Analyze AI Search Results" to compare AI-generated vs. traditional search results
+- 7️⃣ View brand visibility insights side by side
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🚧 Troubleshooting
+- Live Search Results Not Displaying?
+- Check the SerpAPI key and ensure it’s valid
+- Enable mock data in settings for debugging
+- Use a web-scraping fallback if API requests fail
+- Check browser console logs for API errors
 
-**Use GitHub Codespaces**
+## 📜 License
+MIT License – Free to use and modify.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 👥 Contributing
+Contributions are welcome!
 
-## What technologies are used for this project?
-
-This project is built with .
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/b3d853e3-4f24-481f-9a98-1efe6bc9c6ef) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+Fork the repo
+Create a feature branch (feature/new-feature)
+Submit a pull request
