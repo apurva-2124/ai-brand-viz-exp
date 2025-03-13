@@ -23,7 +23,7 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
   const [comparisonData, setComparisonData] = useState<TraditionalSearchResults | null>(null);
   const [apiLimitExceeded, setApiLimitExceeded] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [useMockData, setUseMockData] = useState(false);
+  const [useStaticData, setUseStaticData] = useState(true);
 
   useEffect(() => {
     if (brandData.keywords.length > 0) {
@@ -41,26 +41,26 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
     setErrorMessage(null);
     
     try {
-      console.log(`Starting ${useMockData ? "mock" : "live web search"} fetch for keyword:`, selectedKeyword);
+      console.log(`Starting ${useStaticData ? "static" : "live web search"} fetch for keyword:`, selectedKeyword);
       
       // Use the keyword as query
       const query = selectedKeyword;
       console.log("Fetching traditional results with query:", query);
       
-      // Client-side fetch of results (with optional mock data)
-      const results = await getTraditionalSearchResults(query, brandData.name, useMockData);
+      // Client-side fetch of results (with optional static data)
+      const results = await getTraditionalSearchResults(query, brandData.name, useStaticData);
       console.log("Traditional search results:", results);
       
       if (results.error === "API_LIMIT_EXCEEDED" || results.error === "PROXY_ERROR") {
         console.log("API limit exceeded or proxy error");
         setApiLimitExceeded(true);
         setComparisonData(null);
-        toast.error("Could not access search results. Try using mock data instead.");
+        toast.error("Could not access search results. Try using static data instead.");
       } else {
         setComparisonData(results);
         
         if (results.topResults.length === 0) {
-          toast.warning("No search results found. Try a different query or use mock data.");
+          toast.warning("No search results found. Try a different query or use static data.");
         } else {
           toast.success(`Found ${results.topResults.length} search results`);
         }
@@ -82,8 +82,8 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
         onCompare={fetchTraditionalResults}
         isLoading={isLoading}
         hasAiResult={!!aiResult}
-        useMockData={useMockData}
-        onToggleMockData={() => setUseMockData(prev => !prev)}
+        useMockData={useStaticData}
+        onToggleMockData={() => setUseStaticData(prev => !prev)}
       />
       
       <CardContent>

@@ -2,22 +2,23 @@
 import { TraditionalSearchResults } from "./types";
 import { fetchSerpApiResults } from "./serpApiService";
 import { generateMockTraditionalResults } from "./mockService";
+import { getStaticTraditionalResults } from "./staticData";
 
 /**
- * Main function to get traditional search results using either proxy-based scraping or mock data
+ * Main function to get traditional search results using either proxy-based scraping or static/mock data
  */
 export async function getTraditionalSearchResults(
   query: string,
   brandName: string,
-  useMockData: boolean = false
+  useStaticData: boolean = true
 ): Promise<TraditionalSearchResults> {
   try {
-    console.log("getTraditionalSearchResults called with:", { query, brandName, useMockData });
+    console.log("getTraditionalSearchResults called with:", { query, brandName, useStaticData });
     
-    // Use mock data if requested
-    if (useMockData) {
-      console.log("Using mock data instead of real API");
-      return generateMockTraditionalResults(query, brandName);
+    // Use static data if requested (default)
+    if (useStaticData) {
+      console.log("Using static data for search");
+      return getStaticTraditionalResults(brandName, query);
     }
     
     // For the proxy-based approach, we don't need an API key

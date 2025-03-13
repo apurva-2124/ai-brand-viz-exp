@@ -3,7 +3,7 @@ import { useState } from "react";
 import { CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, Loader2, ArrowRight, Database, Cloud } from "lucide-react";
+import { AlertCircle, Loader2, ArrowRight, Database, Search } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
@@ -50,9 +50,9 @@ export const ComparisonHeader = ({
             <Label htmlFor="mock-data" className="text-sm font-normal flex items-center">
               {useMockData ? 
                 <Database className="h-4 w-4 mr-1" /> : 
-                <Cloud className="h-4 w-4 mr-1" />
+                <Search className="h-4 w-4 mr-1" />
               }
-              {useMockData ? "Using Mock Data" : "Using Live API"}
+              {useMockData ? "Using Static Data" : "Using Live Data"}
             </Label>
           </div>
         )}
@@ -91,9 +91,14 @@ export const ComparisonHeader = ({
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Searching...
             </>
+          ) : useMockData ? (
+            <>
+              View Static Results
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </>
           ) : (
             <>
-              Compare
+              Live Search Results
               <ArrowRight className="ml-2 h-4 w-4" />
             </>
           )}
