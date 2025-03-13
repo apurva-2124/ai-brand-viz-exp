@@ -4,7 +4,7 @@ import { fetchSerpApiResults } from "./serpApiService";
 import { generateMockTraditionalResults } from "./mockService";
 
 /**
- * Main function to get traditional search results using client-side SerpApi
+ * Main function to get traditional search results using either proxy-based scraping or mock data
  */
 export async function getTraditionalSearchResults(
   query: string,
@@ -20,60 +20,49 @@ export async function getTraditionalSearchResults(
       return generateMockTraditionalResults(query, brandName);
     }
     
-    // Check for API key first
-    const apiKey = localStorage.getItem("serpapi_api_key");
-    if (!apiKey) {
-      console.log("No SerpApi key found in localStorage");
-      return {
-        searchEngine: "Google",
-        query,
-        source: "serpapi",
-        brandMentions: 0,
-        topResults: [],
-        error: "API_KEY_MISSING"
-      };
-    }
+    // For the proxy-based approach, we don't need an API key
+    console.log("Starting proxy-based search for:", query);
     
-    // Client-side fetch of SerpAPI results
-    console.log("Calling fetchSerpApiResults...");
+    // Client-side fetch of Google results via proxy
+    console.log("Calling fetchSerpApiResults with proxy...");
     const serpResults = await fetchSerpApiResults(query, brandName);
     console.log("fetchSerpApiResults returned:", serpResults === "LIMIT_EXCEEDED" ? "LIMIT_EXCEEDED" : `Array with ${serpResults.length} items`);
     
-    // Handle API limit exceeded
+    // Handle proxy access error
     if (serpResults === "LIMIT_EXCEEDED") {
-      console.log("API limit exceeded or API error");
+      console.log("Proxy access error or request blocked");
       return {
         searchEngine: "Google",
         query,
-        source: "serpapi",
+        source: "proxy",
         brandMentions: 0,
         topResults: [],
-        error: "API_LIMIT_EXCEEDED"
+        error: "PROXY_ERROR"
       };
     }
 
     // Handle empty results differently than error states
     if (Array.isArray(serpResults) && serpResults.length === 0) {
-      console.log("SerpAPI returned an empty results array - no search results found");
+      console.log("Proxy returned an empty results array - no search results found");
       return {
         searchEngine: "Google",
         query,
-        source: "serpapi",
+        source: "proxy",
         brandMentions: 0,
         retrievalDate: new Date().toISOString(),
         topResults: [],
-        error: "NO_RESULTS"  // New error type for empty results
+        error: "NO_RESULTS"
       };
     }
 
     // Log the results to verify we have them
-    console.log(`getTraditionalSearchResults: Received ${serpResults.length} results from SerpAPI`);
+    console.log(`getTraditionalSearchResults: Received ${serpResults.length} results from proxy`);
     
-    // Return results from SerpApi
+    // Return results from proxy
     return {
       searchEngine: "Google",
       query,
-      source: "serpapi",
+      source: "proxy",
       brandMentions: serpResults.filter(r => r.hasBrandMention).length,
       retrievalDate: new Date().toISOString(),
       topResults: serpResults
@@ -85,7 +74,7 @@ export async function getTraditionalSearchResults(
     return {
       searchEngine: "Google",
       query,
-      source: "serpapi",
+      source: "proxy",
       brandMentions: 0,
       topResults: [],
       error: "FETCH_ERROR"

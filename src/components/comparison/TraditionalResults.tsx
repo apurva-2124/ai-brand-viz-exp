@@ -1,5 +1,5 @@
 
-import { Check, X, Info, Map, Globe, BookOpen, Newspaper, ExternalLink, Database } from "lucide-react";
+import { Check, X, Info, Map, Globe, BookOpen, Newspaper, ExternalLink, Database, Search } from "lucide-react";
 import { TraditionalSearchResults } from "@/services/traditional-search";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +17,7 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
   console.log("Error type:", comparisonData.error);
   console.log("Data source:", comparisonData.source);
 
-  // Define source badge - now for both SerpApi and mock data
+  // Define source badge - now for SerpApi, mock data, and proxy
   const getSourceBadge = () => {
     if (comparisonData.source === "serpapi") {
       return (
@@ -25,7 +25,7 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
           <Tooltip>
             <TooltipTrigger asChild>
               <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded ml-2">
-                Live Data
+                Live Data (SerpAPI)
               </span>
             </TooltipTrigger>
             <TooltipContent>
@@ -46,6 +46,22 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
             </TooltipTrigger>
             <TooltipContent>
               <p className="max-w-xs text-xs">Generated mock data for testing and development.</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    } else if (comparisonData.source === "proxy") {
+      return (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="text-xs bg-purple-100 text-purple-800 px-2 py-0.5 rounded ml-2 flex items-center">
+                <Search className="h-3 w-3 mr-1" />
+                Live Web Search
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="max-w-xs text-xs">Real-time Google search results retrieved via proxy.</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -101,12 +117,15 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
     } else if (comparisonData.error === "API_LIMIT_EXCEEDED") {
       errorTitle = "SerpAPI limit exceeded";
       errorDetails = ["You may have reached your API usage limit", "Try again later or check your API key"];
+    } else if (comparisonData.error === "PROXY_ERROR") {
+      errorTitle = "Web search access issue";
+      errorDetails = ["Could not access Google search via proxy", "The proxy service might be temporarily unavailable", "Try again later or use mock data"];
     } else if (comparisonData.error === "NO_RESULTS") {
       errorTitle = "No search results returned";
-      errorDetails = ["The API returned successfully but found no results", "Try a different or simpler search query"];
+      errorDetails = ["The search returned successfully but found no results", "Try a different or simpler search query"];
     } else if (comparisonData.error === "FETCH_ERROR") {
       errorTitle = "Error fetching results";
-      errorDetails = ["There was a problem with the API request", "Check your internet connection and try again"];
+      errorDetails = ["There was a problem with the search request", "Check your internet connection and try again"];
     }
 
     return (
@@ -123,8 +142,8 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
             errorDetails.map((detail, index) => <li key={index}>{detail}</li>) :
             <>
               <li>The search query might be too specific or complex</li>
-              <li>SerpAPI might not return results for this particular query format</li>
-              <li>Rate limits or API restrictions</li>
+              <li>Google might not return results for this particular query format</li>
+              <li>The proxy might be blocked by Google temporarily</li>
             </>
           }
         </ul>
@@ -145,7 +164,6 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
           <p>Error: {comparisonData.error || "None"}</p>
           <p>Source: {comparisonData.source}</p>
           <p>Top Results Array: {Array.isArray(comparisonData.topResults) ? `Array with ${comparisonData.topResults.length} items` : "Not an array"}</p>
-          <p>API Key Present: {localStorage.getItem("serpapi_api_key") ? "Yes" : "No"}</p>
         </div>
       </div>
     );

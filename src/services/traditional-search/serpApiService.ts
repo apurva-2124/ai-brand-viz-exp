@@ -2,94 +2,131 @@
 import { SearchResult } from "./types";
 
 /**
- * Client-side implementation for fetching results from SerpAPI
+ * Client-side implementation for fetching results from Google using a proxy 
+ * to bypass CORS restrictions
  */
 export async function fetchSerpApiResults(query: string, brandName: string): Promise<SearchResult[] | "LIMIT_EXCEEDED"> {
   try {
     console.log("fetchSerpApiResults called with:", { query, brandName });
-    const apiKey = localStorage.getItem("serpapi_api_key");
     
-    if (!apiKey) {
-      console.log("No SerpApi key found in localStorage");
-      return "LIMIT_EXCEEDED";
-    }
+    // Use a proxy to bypass CORS (Google blocks direct client-side requests)
+    const proxyUrl = "https://api.allorigins.win/get?url=";
+    const targetUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
     
-    // Simplify the query - only use up to 3 terms for better results
-    const simplifiedQuery = query.split(" ").slice(0, 3).join(" ");
-    console.log("Using query:", simplifiedQuery);
+    console.log(`Fetching from proxy: ${proxyUrl} with search query: ${query}`);
     
-    const encodedQuery = encodeURIComponent(simplifiedQuery);
-    const apiUrl = `https://serpapi.com/search.json?engine=google&q=${encodedQuery}&api_key=${apiKey}`;
-    
-    console.log("Fetching from SerpAPI with URL (sensitive parts redacted):", 
-      apiUrl.replace(apiKey, "API_KEY_REDACTED"));
-    
-    const response = await fetch(apiUrl);
-    console.log("SerpAPI response status:", response.status);
+    const response = await fetch(proxyUrl + encodeURIComponent(targetUrl));
     
     if (!response.ok) {
-      console.error("SerpAPI HTTP error:", response.status, response.statusText);
+      console.error("Proxy HTTP error:", response.status, response.statusText);
       return "LIMIT_EXCEEDED";
     }
     
     const data = await response.json();
     
-    // Extended logging to debug organic_results issue
-    console.log("SerpAPI response received with keys:", Object.keys(data));
-    
-    if (data.error) {
-      console.error("SerpApi error:", data.error);
-      return "LIMIT_EXCEEDED";
-    }
-    
-    // Explicit check for organic_results existence and log its type
-    if (!data.organic_results) {
-      console.log("No organic_results property found in SerpAPI response");
-      console.log("Full response structure:", JSON.stringify(data, null, 2).substring(0, 500) + "...");
+    if (!data || !data.contents) {
+      console.error("No content in proxy response");
       return [];
     }
     
-    // Check if organic_results is an array and log it
-    if (!Array.isArray(data.organic_results)) {
-      console.log("organic_results is not an array:", typeof data.organic_results);
-      console.log("organic_results value:", data.organic_results);
-      return [];
+    console.log("Received proxy response with content length:", data.contents.length);
+    
+    // Parse the HTML response into DOM
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(data.contents, "text/html");
+    
+    // Extract search results - Different selectors to try
+    // Google structures change frequently, so we have multiple fallbacks
+    let extractedResults: { title: string; url: string; description?: string }[] = [];
+    
+    // Main search results approach - look for heading elements in search results
+    const headings = [...doc.querySelectorAll("h3")];
+    console.log(`Found ${headings.length} potential result headings`);
+    
+    if (headings.length > 0) {
+      extractedResults = headings.map((h3, index) => {
+        const parentLink = h3.closest("a");
+        const resultContainer = h3.closest("div[data-ved]") || h3.closest("div.g");
+        
+        // Try to find description text in nearby elements
+        let description = "";
+        if (resultContainer) {
+          const descElement = resultContainer.querySelector("div[data-sncf='1']") || 
+                             resultContainer.querySelector(".VwiC3b") ||
+                             resultContainer.querySelector("span.st");
+          if (descElement) {
+            description = descElement.textContent || "";
+          }
+        }
+        
+        // Clean up the URL (Google URLs have redirects)
+        let url = parentLink ? parentLink.href : "#";
+        if (url.includes("/url?")) {
+          const match = url.match(/\/url\?q=([^&]+)/);
+          if (match && match[1]) {
+            url = decodeURIComponent(match[1]);
+          }
+        }
+        
+        return {
+          title: h3.textContent || `Result ${index + 1}`,
+          url: url,
+          description: description
+        };
+      });
     }
     
-    console.log("Organic results count:", data.organic_results.length);
-    if (data.organic_results.length > 0) {
-      console.log("First result sample:", data.organic_results[0]);
-    } else {
-      console.log("organic_results array is empty");
-    }
-    
-    // Map the organic results to our SearchResult interface
-    const results = data.organic_results.map((result: any, index: number) => {
-      const hasBrandMention = 
-        (result.title && result.title.toLowerCase().includes(brandName.toLowerCase())) ||
-        (result.snippet && result.snippet.toLowerCase().includes(brandName.toLowerCase())) ||
-        (result.link && result.link.toLowerCase().includes(brandName.toLowerCase()));
+    // Fallback - look for general result containers
+    if (extractedResults.length === 0) {
+      const resultContainers = [...doc.querySelectorAll("div.g, div[data-ved]")];
+      console.log(`Using fallback: found ${resultContainers.length} potential result containers`);
       
-      return {
-        rank: index + 1,
-        url: result.link || "",
-        title: result.title || "",
-        description: result.snippet || "",
-        hasBrandMention,
-        resultType: "organic"
-      };
-    });
-    
-    console.log(`Mapped ${results.length} results from SerpAPI organic_results`);
-    // Log the first result to verify transformation
-    if (results.length > 0) {
-      console.log("Sample transformed result:", results[0]);
+      extractedResults = resultContainers.map((container, index) => {
+        const link = container.querySelector("a");
+        const heading = container.querySelector("h3, [role='heading']");
+        const snippet = container.querySelector(".VwiC3b, .st, [data-sncf='1']");
+        
+        return {
+          title: heading ? heading.textContent || `Result ${index + 1}` : `Result ${index + 1}`,
+          url: link ? link.href : "#",
+          description: snippet ? snippet.textContent || "" : ""
+        };
+      });
     }
     
+    console.log(`Successfully extracted ${extractedResults.length} search results`);
+    console.log("Sample extracted result:", extractedResults[0]);
+    
+    // Filter out empty results and format to match our SearchResult interface
+    const results: SearchResult[] = extractedResults
+      .filter(result => result.title && result.url !== "#")
+      .map((result, index) => {
+        const hasBrandMention = 
+          (result.title.toLowerCase().includes(brandName.toLowerCase())) ||
+          (result.description && result.description.toLowerCase().includes(brandName.toLowerCase())) ||
+          (result.url.toLowerCase().includes(brandName.toLowerCase()));
+        
+        return {
+          rank: index + 1,
+          url: result.url,
+          title: result.title,
+          description: result.description || "No description available",
+          hasBrandMention,
+          resultType: "organic"
+        };
+      });
+    
+    if (results.length === 0) {
+      console.log("No results extracted after filtering");
+      // If Google blocked the request or results couldn't be parsed
+      return [];
+    }
+    
+    console.log(`Returning ${results.length} formatted search results`);
     return results;
     
   } catch (error) {
-    console.error("Error fetching from SerpApi:", error);
+    console.error("Error fetching from proxy:", error);
     return [];
   }
 }

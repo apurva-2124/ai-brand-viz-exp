@@ -41,14 +41,7 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
     setErrorMessage(null);
     
     try {
-      console.log(`Starting ${useMockData ? "mock" : "SerpAPI"} fetch for keyword:`, selectedKeyword);
-      
-      if (!localStorage.getItem("serpapi_api_key") && !useMockData) {
-        setApiLimitExceeded(true);
-        setIsLoading(false);
-        toast.error("SerpAPI key missing. Please add your API key in settings or use mock data.");
-        return;
-      }
+      console.log(`Starting ${useMockData ? "mock" : "live web search"} fetch for keyword:`, selectedKeyword);
       
       // Use the keyword as query
       const query = selectedKeyword;
@@ -58,10 +51,11 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
       const results = await getTraditionalSearchResults(query, brandData.name, useMockData);
       console.log("Traditional search results:", results);
       
-      if (results.error === "API_LIMIT_EXCEEDED" && !useMockData) {
-        console.log("API limit exceeded or key missing");
+      if (results.error === "API_LIMIT_EXCEEDED" || results.error === "PROXY_ERROR") {
+        console.log("API limit exceeded or proxy error");
         setApiLimitExceeded(true);
         setComparisonData(null);
+        toast.error("Could not access search results. Try using mock data instead.");
       } else {
         setComparisonData(results);
         

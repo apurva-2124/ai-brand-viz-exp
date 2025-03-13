@@ -18,7 +18,7 @@ export interface SearchResult {
 export interface TraditionalSearchResults {
   searchEngine: string;
   query: string;
-  source: "serpapi" | "mock";
+  source: "serpapi" | "mock" | "proxy";
   brandMentions: number;
   retrievalDate?: string;
   topResults: SearchResult[];
