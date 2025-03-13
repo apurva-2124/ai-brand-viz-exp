@@ -22,7 +22,7 @@ export async function getTraditionalSearchResults(
         source: "serpapi",
         brandMentions: 0,
         topResults: [],
-        error: "API_LIMIT_EXCEEDED"
+        error: "API_KEY_MISSING"
       };
     }
     
@@ -31,6 +31,7 @@ export async function getTraditionalSearchResults(
     
     // Handle API limit exceeded
     if (serpResults === "LIMIT_EXCEEDED") {
+      console.log("API limit exceeded or API error");
       return {
         searchEngine: "Google",
         query,

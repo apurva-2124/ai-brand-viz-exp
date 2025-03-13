@@ -11,8 +11,10 @@ interface TraditionalResultsProps {
 
 export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) => {
   // Debug logs
-  console.log("TraditionalResults received data:", comparisonData);
+  console.log("TraditionalResults component rendering with data:", comparisonData);
+  console.log("Results array:", comparisonData.topResults);
   console.log("Results count:", comparisonData.topResults?.length || 0);
+  console.log("Has error:", comparisonData.error);
 
   // Define source badge - now only for SerpApi
   const getSourceBadge = () => {
@@ -66,6 +68,10 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
         return 'Website';
     }
   };
+  
+  // Check if we have results or a specific error
+  const hasResults = Array.isArray(comparisonData.topResults) && comparisonData.topResults.length > 0;
+  const showNoResultsMessage = !hasResults;
 
   return (
     <div className="border rounded-lg p-4">
@@ -90,20 +96,20 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
         </div>
       )}
       
-      <div className="space-y-2 mb-4">
-        <div className="flex items-start gap-2">
-          {comparisonData.brandMentions > 0 ? 
-            <Check className="h-4 w-4 text-green-600 mt-0.5" /> : 
-            <X className="h-4 w-4 text-red-600 mt-0.5" />
-          }
-          <span className="text-sm">
+      {hasResults && (
+        <div className="space-y-2 mb-4">
+          <div className="flex items-start gap-2">
             {comparisonData.brandMentions > 0 ? 
-              `Brand appears ${comparisonData.brandMentions} times` : 
-              "Brand is not mentioned"}
-          </span>
-        </div>
-        
-        {comparisonData.topResults && comparisonData.topResults.length > 0 && (
+              <Check className="h-4 w-4 text-green-600 mt-0.5" /> : 
+              <X className="h-4 w-4 text-red-600 mt-0.5" />
+            }
+            <span className="text-sm">
+              {comparisonData.brandMentions > 0 ? 
+                `Brand appears ${comparisonData.brandMentions} times` : 
+                "Brand is not mentioned"}
+            </span>
+          </div>
+          
           <div className="flex items-start gap-2">
             {comparisonData.topResults[0]?.hasBrandMention ? 
               <Check className="h-4 w-4 text-green-600 mt-0.5" /> : 
@@ -119,10 +125,10 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
                   "Brand not found in top results"}
             </span>
           </div>
-        )}
-      </div>
+        </div>
+      )}
       
-      {(!comparisonData.topResults || comparisonData.topResults.length === 0) && (
+      {showNoResultsMessage && (
         <div className="text-center py-6 border border-amber-200 bg-amber-50 rounded-md my-4">
           <div className="flex justify-center mb-2">
             <Info className="h-6 w-6 text-amber-500" />
@@ -151,12 +157,13 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
             <p className="font-medium">Debug Information:</p>
             <p>Query: {comparisonData.query}</p>
             <p>Error: {comparisonData.error || "None"}</p>
+            <p>Top Results Array: {Array.isArray(comparisonData.topResults) ? `Array with ${comparisonData.topResults.length} items` : "Not an array"}</p>
           </div>
         </div>
       )}
       
       <div className="space-y-3 max-h-80 overflow-y-auto">
-        {comparisonData.topResults && comparisonData.topResults.map((result, index) => (
+        {hasResults && comparisonData.topResults.map((result, index) => (
           <div key={index} className={`p-3 rounded text-sm ${result.hasBrandMention ? 'bg-secondary/30' : 'bg-secondary/10'}`}>
             <div className="font-medium mb-1 flex items-center justify-between">
               <div className="break-words pr-2">

@@ -35,20 +35,26 @@ export async function fetchSerpApiResults(query: string, brandName: string): Pro
     
     // Extended logging to debug organic_results issue
     console.log("SerpAPI response received with keys:", Object.keys(data));
-    console.log("Organic results array exists:", !!data.organic_results);
-    console.log("Organic results length:", data.organic_results?.length);
-    console.log("First few organic results:", data.organic_results?.slice(0, 2));
     
     if (data.error) {
       console.error("SerpApi error:", data.error);
       return "LIMIT_EXCEEDED";
     }
     
-    // Check if organic_results is missing or empty
-    if (!data.organic_results || data.organic_results.length === 0) {
-      console.log("No organic_results found in SerpAPI response");
+    // Explicit check to handle case where organic_results exists but is empty
+    if (!data.organic_results) {
+      console.log("No organic_results property found in SerpAPI response");
       return [];
     }
+    
+    // Check if organic_results is an array and log it
+    if (!Array.isArray(data.organic_results)) {
+      console.log("organic_results is not an array:", data.organic_results);
+      return [];
+    }
+    
+    console.log("Organic results count:", data.organic_results.length);
+    console.log("First result sample:", data.organic_results[0]);
     
     // Map the organic results to our SearchResult interface
     const results = data.organic_results.map((result: any, index: number) => {
