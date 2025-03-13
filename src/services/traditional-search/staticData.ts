@@ -1,3 +1,4 @@
+
 import { SearchResult, TraditionalSearchResults } from "./types";
 
 interface StaticDataEntry {
@@ -400,7 +401,7 @@ const staticData: StaticDataEntry[] = [
     resultTitles: [
       "Going™ | Formerly Scott's Cheap Flights | Flight Subscription",
       "Jack's Flight Club | Cheap Flights, Flight Deals & Alerts",
-      "The Flight Deal – "Just because it's a great fare doesn't ...",
+      "The Flight Deal – \"Just because it's a great fare doesn't ...\"",
       "Daily Drop Pro | Never overpay for travel again",
       "Airfarewatchdog: Cheap Flights & Airline Tickets [Compare ..."
     ],

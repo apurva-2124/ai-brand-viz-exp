@@ -98,7 +98,7 @@ export const ComparisonHeader = ({
             </>
           ) : (
             <>
-              Live Search Results
+              Live Search Results from Google
               <ArrowRight className="ml-2 h-4 w-4" />
             </>
           )}

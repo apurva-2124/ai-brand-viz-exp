@@ -6,6 +6,7 @@ import { NoResultsMessage } from "./traditional/NoResultsMessage";
 import { SearchResultsList } from "./traditional/SearchResultsList";
 import { Button } from "@/components/ui/button";
 import { ExternalLink } from "lucide-react";
+import { getGoogleSearchUrl, formatDateString } from "@/utils/searchUtils";
 
 interface TraditionalResultsProps {
   comparisonData: TraditionalSearchResults;
@@ -23,35 +24,11 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
   const hasResults = Array.isArray(comparisonData.topResults) && comparisonData.topResults.length > 0;
   const showNoResultsMessage = !hasResults;
   
-  // Function to format the Google search URL
-  const getGoogleSearchUrl = (query: string) => {
-    return `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-  };
-
-  // Format the query run time if present
-  const formatQueryRunTime = (dateString?: string) => {
-    if (!dateString) return null;
-    
-    try {
-      const date = new Date(dateString);
-      return date.toLocaleString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-    } catch (e) {
-      console.error("Error formatting date:", e);
-      return dateString;
-    }
-  };
-
   return (
     <div className="border rounded-lg p-4">
       <h3 className="font-medium mb-3 text-primary flex items-center">
         Traditional Search Results
-        <SourceBadge source={comparisonData.source === "proxy" ? "proxy" : "static"} />
+        <SourceBadge source={comparisonData.source} />
       </h3>
       
       <div className="text-sm mb-2">
@@ -66,7 +43,7 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
 
       {comparisonData.retrievalDate && (
         <div className="text-xs text-muted-foreground mb-4">
-          Data retrieved: {formatQueryRunTime(comparisonData.retrievalDate)}
+          Data retrieved: {formatDateString(comparisonData.retrievalDate)}
         </div>
       )}
       
