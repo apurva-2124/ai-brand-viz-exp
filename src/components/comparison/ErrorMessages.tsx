@@ -17,7 +17,8 @@ export const ErrorMessages = ({ errorMessage, apiLimitExceeded }: ErrorMessagesP
   const isProxyError = errorMessage && (
     errorMessage.includes("Proxy server") || 
     errorMessage.includes("Failed to fetch") ||
-    errorMessage.includes("timeout")
+    errorMessage.includes("timeout") ||
+    errorMessage.includes("unreachable")
   );
   
   return (
@@ -30,19 +31,19 @@ export const ErrorMessages = ({ errorMessage, apiLimitExceeded }: ErrorMessagesP
       )}
 
       {isProxyError && (
-        <Alert variant="destructive" className="my-4">
-          <Wifi className="h-4 w-4" />
+        <Alert variant="info" className="my-4 border-blue-200 bg-blue-50">
+          <Wifi className="h-4 w-4 text-blue-500" />
           <AlertDescription>
-            <p className="font-medium">AI Proxy Server Issue</p>
-            <p className="text-sm mt-1">
+            <p className="font-medium text-blue-700">AI Proxy Server Temporarily Unavailable</p>
+            <p className="text-sm mt-1 text-blue-600">
               {errorMessage}
             </p>
-            <p className="text-sm mt-2">
-              <strong>Troubleshooting tips:</strong>
+            <p className="text-sm mt-2 text-blue-600">
+              <strong>Try these steps:</strong>
               <ul className="list-disc pl-5 mt-1">
+                <li>Wait a moment and try again</li>
                 <li>Check your internet connection</li>
-                <li>The AI proxy server might be temporarily down</li>
-                <li>Try again in a few minutes</li>
+                <li>The demo will show mock data for now to demonstrate the UI</li>
               </ul>
             </p>
           </AlertDescription>

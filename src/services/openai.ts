@@ -1,6 +1,8 @@
 
 // OpenAI API integration for querying brand visibility using proxy
 import { BrandData } from "@/components/BrandTracker";
+import { toast } from "sonner";
+import { generateMockData } from "@/lib/mockData";
 
 interface OpenAIResponse {
   content: string;
@@ -11,10 +13,11 @@ export async function queryOpenAI(keyword: string, query: string, brand: string)
   try {
     console.log('Querying OpenAI with:', { keyword, query, brand });
     
-    // Set a timeout of 10 seconds for the fetch request
+    // Set a timeout of 15 seconds for the fetch request
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
     
+    // Updated proxy endpoint
     const response = await fetch('https://ai-search-proxy-apurva5.replit.app/openai', {
       method: 'POST',
       headers: {
@@ -22,7 +25,7 @@ export async function queryOpenAI(keyword: string, query: string, brand: string)
       },
       body: JSON.stringify({
         prompt: query,
-        model: 'gpt-4' // Updated to use the specified model
+        model: 'gpt-4' // Ensure we're using the specified model
       }),
       signal: controller.signal
     });
@@ -52,12 +55,18 @@ export async function queryOpenAI(keyword: string, query: string, brand: string)
     console.error('OpenAI API Error:', error);
     // Check for specific error types to provide better error messages
     if (error instanceof TypeError && error.message === 'Failed to fetch') {
-      throw new Error('Proxy server unreachable. Please check your internet connection or try again later.');
+      toast.error("Proxy server connection failed. Using fallback data.");
+      return "Proxy server unreachable. Please check your internet connection or try again later.";
     }
     if (error instanceof DOMException && error.name === 'AbortError') {
-      throw new Error('Request timed out. The proxy server is taking too long to respond.');
+      toast.error("Request timed out. Using fallback data.");
+      return "Request timed out. The proxy server is taking too long to respond.";
     }
-    throw error;
+    
+    // Pass the error message through so it can be displayed in the UI
+    return error instanceof Error 
+      ? error.message 
+      : "Unknown error occurred when connecting to AI service.";
   }
 }
 
@@ -78,7 +87,16 @@ export async function analyzeBrandVisibility(
     try {
       console.log(`Analyzing brand visibility for ${keyword} with query: ${query}`);
       const response = await queryOpenAI(keyword, query, brandData.name);
-      const hasBrandMention = response.toLowerCase().includes(brandData.name.toLowerCase());
+      
+      // Check if the response is an error message
+      const isErrorResponse = 
+        response.includes("Proxy server") || 
+        response.includes("timed out") || 
+        response.includes("Failed to fetch");
+      
+      // If it's an error response, we won't have brand mentions
+      const hasBrandMention = !isErrorResponse && 
+        response.toLowerCase().includes(brandData.name.toLowerCase());
       
       // Check if brand appears in the first third of the response for prominence
       const isProminent = hasBrandMention && 

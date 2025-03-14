@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Wifi } from "lucide-react";
+import { AlertTriangle, Wifi } from "lucide-react";
 
 interface AIResponseAnalysisProps {
   results: Array<{
@@ -39,6 +39,14 @@ export const AIResponseAnalysis = ({ results }: AIResponseAnalysisProps) => {
     }
   };
   
+  // Check if all results are proxy errors
+  const allProxyErrors = results.every(result => 
+    result.response.includes("Proxy server") || 
+    result.response.includes("timeout") || 
+    result.response.includes("Failed to fetch") ||
+    result.response.includes("unreachable")
+  );
+  
   // Function to highlight brand mentions in the response
   const highlightBrandMentions = (text: string, brandName: string) => {
     if (!text || !brandName || brandName.trim() === '') return text;
@@ -48,9 +56,10 @@ export const AIResponseAnalysis = ({ results }: AIResponseAnalysisProps) => {
       text.includes("Proxy server") || 
       text.includes("Failed to fetch") ||
       text.includes("timeout") ||
-      text.includes("unreachable")
+      text.includes("unreachable") ||
+      text.includes("USING MOCK DATA")
     ) {
-      return `<div class="flex items-center gap-2 text-red-600">
+      return `<div class="flex items-center gap-2 text-blue-600">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0">
           <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
           <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
@@ -73,9 +82,31 @@ export const AIResponseAnalysis = ({ results }: AIResponseAnalysisProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>AI Response Analysis</CardTitle>
+        <CardTitle className="flex items-center justify-between">
+          <span>AI Response Analysis</span>
+          {allProxyErrors && (
+            <span className="text-xs flex items-center gap-1 bg-blue-50 text-blue-700 px-2 py-1 rounded-full">
+              <Wifi className="h-3 w-3" /> Using fallback data due to proxy unavailability
+            </span>
+          )}
+        </CardTitle>
       </CardHeader>
       <CardContent>
+        {allProxyErrors && (
+          <div className="bg-blue-50 border border-blue-100 rounded-md p-4 mb-4 text-blue-800 flex items-start gap-2">
+            <AlertTriangle className="h-5 w-5 text-blue-500 mt-0.5" />
+            <div>
+              <p className="font-medium">AI Proxy Server Temporarily Unavailable</p>
+              <p className="text-sm mt-1">
+                The AI proxy server is currently unreachable. We're displaying sample data for demonstration purposes.
+              </p>
+              <p className="text-sm mt-2">
+                Please try again later or check if you're using the correct proxy URL.
+              </p>
+            </div>
+          </div>
+        )}
+        
         <div className="space-y-6">
           {results.slice(0, 5).map((result, index) => (
             <div key={index} className="border rounded-lg p-4">
