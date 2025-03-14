@@ -68,16 +68,14 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
     brandName
   );
 
-  // Get consolidated status badge
+  // Get consolidated status badge with new labels
   const getConsolidatedStatusBadge = () => {
-    if (isProminent && recommendation.level === 'explicitly_recommended') {
-      return <Badge className="bg-green-100 text-green-800">Strong AI Visibility</Badge>;
-    } else if (hasBrandMention && !isProminent) {
-      return <Badge className="bg-yellow-100 text-yellow-800">Missing Structured Data</Badge>;
-    } else if (!hasBrandMention) {
-      return <Badge className="bg-red-100 text-red-800">Not Found in AI</Badge>;
+    if (recommendation.level === 'explicitly_recommended') {
+      return <Badge className="bg-green-100 text-green-800">✅ Mentioned & Recommended</Badge>;
+    } else if (hasBrandMention) {
+      return <Badge className="bg-yellow-100 text-yellow-800">⚠ Mentioned, Not Recommended</Badge>;
     } else {
-      return <Badge className="bg-yellow-100 text-yellow-800">Not Cited in AI Responses</Badge>;
+      return <Badge className="bg-red-100 text-red-800">❌ Not Mentioned in AI</Badge>;
     }
   };
 
@@ -109,7 +107,8 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
   // Create mapping for display values without emojis
   const aiDisplayValues = {
     mentions: hasBrandMention ? `Mentioned (${brandMentionCount}x)` : 'Not Found (0x)',
-    recommendation: recommendation.level === 'explicitly_recommended' ? 'Recommended' : 'Not Recommended',
+    recommendation: recommendation.level === 'explicitly_recommended' ? '✅ Mentioned & Recommended' : 
+                    hasBrandMention ? '⚠ Mentioned, Not Recommended' : '❌ Not Mentioned in AI',
     sentiment: sentiment.sentiment !== 'neutral' ? sentiment.sentiment : 'Neutral'
   };
   
@@ -163,7 +162,8 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
             </li>
             {competitorMentions.length > 0 && (
               <li>
-                AI explicitly mentions competitors: {competitorMentions.join(', ')}.
+                AI explicitly mentions competitors: 
+                <span className="text-red-600 font-medium"> {competitorMentions.join(', ')}</span>.
               </li>
             )}
           </ul>
@@ -217,8 +217,15 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
         
         {/* Competitor analysis - only if competitors found */}
         {competitorMentions.length > 0 && (
-          <div className="text-sm text-orange-700 mb-3 p-2 bg-orange-50 rounded-md">
-            <strong>Competitors mentioned:</strong> {competitorMentions.join(', ')}
+          <div className="text-sm mb-3 p-2 bg-red-50 rounded-md">
+            <strong className="text-red-700">Competitors mentioned:</strong>
+            <ul className="list-disc pl-5 mt-1">
+              {competitorMentions.map((competitor, i) => (
+                <li key={i} className="text-red-600 font-medium">
+                  {competitor}
+                </li>
+              ))}
+            </ul>
           </div>
         )}
         

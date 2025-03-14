@@ -22,22 +22,6 @@ export const SourceBadge = ({ source }: SourceBadgeProps) => {
         </Tooltip>
       </TooltipProvider>
     );
-  } else if (source === "static") {
-    return (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded ml-2 flex items-center">
-              <FileText className="h-3 w-3 mr-1" />
-              Saved Results
-            </span>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p className="max-w-xs text-xs">Historical search results data from recent searches.</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    );
   } else if (source === "mock") {
     return (
       <TooltipProvider>

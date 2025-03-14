@@ -1,24 +1,27 @@
 
-import { Wifi } from "lucide-react";
-
 interface HighlightedResponseProps {
   response: string;
   brandName: string;
+  competitors?: string[];
 }
 
-export const HighlightedResponse = ({ response, brandName }: HighlightedResponseProps) => {
+export const HighlightedResponse = ({ 
+  response, 
+  brandName, 
+  competitors = [] 
+}: HighlightedResponseProps) => {
   return (
     <div className="bg-secondary/50 p-3 rounded text-sm max-h-40 overflow-y-auto">
       <div dangerouslySetInnerHTML={{ 
-        __html: highlightBrandMentions(response, brandName || '') 
+        __html: highlightText(response, brandName, competitors) 
       }} />
     </div>
   );
 };
 
-// Function to highlight brand mentions in the response
-const highlightBrandMentions = (text: string, brandName: string) => {
-  if (!text || !brandName || brandName.trim() === '') return text;
+// Function to highlight brand mentions and competitors in the response
+const highlightText = (text: string, brandName: string, competitors: string[] = []) => {
+  if (!text) return text;
   
   // Check if the text is an error message related to the proxy
   if (
@@ -41,11 +44,30 @@ const highlightBrandMentions = (text: string, brandName: string) => {
     </div>`;
   }
   
-  // Create a regex with word boundaries to match the brand name
-  const regex = new RegExp(`\\b${brandName}\\b`, 'gi');
+  let highlightedText = text;
   
-  // Replace each occurrence with the highlighted version
-  return text.replace(regex, match => 
-    `<span class="font-bold text-green-600">${match}</span>`
-  );
+  // Highlight brand mentions if present
+  if (brandName && brandName.trim() !== '') {
+    // Create a regex with word boundaries to match the brand name
+    const regex = new RegExp(`\\b${brandName}\\b`, 'gi');
+    
+    // Replace each occurrence with the highlighted version
+    highlightedText = highlightedText.replace(regex, match => 
+      `<span class="font-bold text-green-600">${match}</span>`
+    );
+  }
+  
+  // Highlight competitor mentions in red
+  if (competitors && competitors.length > 0) {
+    competitors.forEach(competitor => {
+      if (competitor && competitor.trim() !== '') {
+        const compRegex = new RegExp(`\\b${competitor}\\b`, 'gi');
+        highlightedText = highlightedText.replace(compRegex, match => 
+          `<span class="font-bold text-red-600">${match}</span>`
+        );
+      }
+    });
+  }
+  
+  return highlightedText;
 };

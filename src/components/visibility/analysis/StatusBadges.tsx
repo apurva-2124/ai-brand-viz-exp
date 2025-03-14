@@ -4,36 +4,29 @@ import { Badge } from "@/components/ui/badge";
 // Get consolidated status badge
 export const getStatusBadge = (result: any) => {
   const hasBrandMention = result.hasBrandMention;
-  const isProminent = result.isProminent;
   
   if (result.recommendationStatus?.level === 'explicitly_recommended') {
     return (
       <Badge className="bg-green-100 text-green-800">
-        Strong AI Recommendation
+        ✅ Mentioned & Recommended
       </Badge>
     );
   } else if (hasBrandMention && result.recommendationStatus?.level === 'mentioned_not_recommended') {
     return (
       <Badge className="bg-yellow-100 text-yellow-800">
-        Missing Structured Data
-      </Badge>
-    );
-  } else if (isProminent) {
-    return (
-      <Badge className="bg-green-100 text-green-800">
-        Prominently Featured
+        ⚠ Mentioned, Not Recommended
       </Badge>
     );
   } else if (hasBrandMention) {
     return (
       <Badge className="bg-yellow-100 text-yellow-800">
-        Not Cited in AI Responses
+        ⚠ Mentioned, Not Recommended
       </Badge>
     );
   } else {
     return (
       <Badge className="bg-red-100 text-red-800">
-        Not Found
+        ❌ Not Mentioned in AI
       </Badge>
     );
   }

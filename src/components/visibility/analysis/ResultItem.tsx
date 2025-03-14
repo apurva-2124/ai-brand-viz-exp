@@ -9,6 +9,8 @@ interface ResultItemProps {
 }
 
 export const ResultItem = ({ result, index }: ResultItemProps) => {
+  const competitorsFound = result.competitorAnalysis?.competitorsFound || [];
+  
   return (
     <div key={index} className="border rounded-lg p-4">
       <div className="flex flex-wrap justify-between mb-2">
@@ -34,19 +36,27 @@ export const ResultItem = ({ result, index }: ResultItemProps) => {
       )}
       
       {/* Competitor analysis - only if competitors found */}
-      {result.competitorAnalysis?.competitorsFound?.length > 0 && (
-        <div className="text-sm text-orange-700 mb-2">
-          <strong>Competitors found:</strong> {result.competitorAnalysis.competitorsFound.join(', ')}
+      {competitorsFound.length > 0 && (
+        <div className="text-sm mb-2 p-2 bg-red-50 rounded-md">
+          <strong className="text-red-700">Competitors mentioned:</strong>
+          <ul className="list-disc pl-5 mt-1">
+            {competitorsFound.map((competitor: string, i: number) => (
+              <li key={i} className="text-red-600 font-medium">
+                {competitor}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
       
       {/* Actionable insights section - in a blue box */}
       <ActionableInsights result={result} />
       
-      {/* AI response with highlighted brand mentions */}
+      {/* AI response with highlighted brand mentions and competitors */}
       <HighlightedResponse 
         response={result.response} 
         brandName={result.brandName || ''} 
+        competitors={competitorsFound}
       />
     </div>
   );
