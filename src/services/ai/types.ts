@@ -23,6 +23,7 @@ export type VisibilityResult = {
     riskLevel: string;
   };
   recommendation?: string;
+  brandMentionCount?: number;
 };
 
 export interface AIVisibilityOptions {
