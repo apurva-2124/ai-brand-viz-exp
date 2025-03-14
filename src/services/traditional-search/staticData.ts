@@ -20,21 +20,92 @@ export function getStaticTraditionalResults(
     second: 'numeric'
   });
 
-  // Customize results based on the query to make them more relevant
-  const staticResults = getQuerySpecificResults(query, brandName);
+  // Check for specific query and brand combinations first
+  const specificResults = getSpecificQueryResults(query, brandName);
+  if (specificResults.length > 0) {
+    return {
+      searchEngine: "Google",
+      query: query,
+      source: "static",
+      brandMentions: specificResults.filter(r => r.hasBrandMention).length,
+      retrievalDate: timestamp,
+      topResults: specificResults
+    };
+  }
+
+  // Fallback to generic query results
+  const genericResults = getQuerySpecificResults(query, brandName);
   
   return {
     searchEngine: "Google",
     query: query,
     source: "static",
-    brandMentions: staticResults.filter(r => r.hasBrandMention).length,
+    brandMentions: genericResults.filter(r => r.hasBrandMention).length,
     retrievalDate: timestamp,
-    topResults: staticResults
+    topResults: genericResults
   };
 }
 
 /**
- * Get query-specific static results
+ * Get results for specific query + brand combinations that have custom data
+ */
+function getSpecificQueryResults(query: string, brandName: string): SearchResult[] {
+  // Lowercase for easier comparison
+  const lowerQuery = query.toLowerCase();
+  const lowerBrand = brandName.toLowerCase();
+  
+  // Salesforce pricing specific results
+  if (lowerBrand === "salesforce" && lowerQuery === "salesforce pricing") {
+    return [
+      {
+        rank: 1,
+        url: "https://www.salesforce.com/pricing/",
+        title: "Salesforce Pricing: See Pricing Plans for All Salesforce Products ...",
+        description: "Explore Salesforce pricing plans and learn which products and services are right for your business. Get transparent, affordable pricing for all Salesforce product suites.",
+        hasBrandMention: true,
+        resultType: "organic"
+      },
+      {
+        rank: 2,
+        url: "https://www.reddit.com/r/salesforce/comments/1csgxnd/i_dont_understand_the_salesforce_pricing_why_is/",
+        title: "I don't understand the Salesforce pricing. Why is it so expensive?? : r ...",
+        description: "Reddit discussion about Salesforce pricing, with users sharing their opinions and experiences about the platform's cost structure and value proposition.",
+        hasBrandMention: true,
+        resultType: "organic"
+      },
+      {
+        rank: 3,
+        url: "https://www.salesforce.com/sales/pricing/",
+        title: "Salesforce Sales Pricing | Salesforce US",
+        description: "Compare Sales Cloud pricing plans and find the right CRM solution for your business. Salesforce offers flexible pricing options to meet your needs.",
+        hasBrandMention: true,
+        resultType: "organic"
+      },
+      {
+        rank: 4,
+        url: "https://trailhead.salesforce.com/trailblazer-community/feed/0D54S00000A8kXISAZ",
+        title: "CPQ Different Pricing by Region | Salesforce Trailblazer Community",
+        description: "Salesforce Trailblazer Community discussion about implementing different pricing models by region using Salesforce CPQ.",
+        hasBrandMention: true,
+        resultType: "organic"
+      },
+      {
+        rank: 5,
+        url: "https://www.salesforce.com/eu/pricing/",
+        title: "Salesforce Pricing: See Pricing Plans for All Salesforce Products ...",
+        description: "European pricing page for Salesforce products and services. Compare plans and features to find the right solution for your business needs.",
+        hasBrandMention: true,
+        resultType: "organic"
+      }
+    ];
+  }
+  
+  // Return empty array if no specific match found
+  return [];
+}
+
+/**
+ * Get query-specific static results (generic fallback)
  */
 function getQuerySpecificResults(query: string, brandName: string): SearchResult[] {
   // Lowercase for easier comparison
@@ -974,3 +1045,4 @@ function getQuerySpecificResults(query: string, brandName: string): SearchResult
     }
   ];
 }
+
