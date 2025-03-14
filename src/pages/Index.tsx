@@ -5,6 +5,7 @@ import { ResearchQuestions } from "@/components/sections/ResearchQuestions";
 import { AboutExperiment } from "@/components/sections/AboutExperiment";
 import { BrandExplorer } from "@/components/sections/BrandExplorer";
 import { ExperimentDesignSection } from "@/components/sections/ExperimentDesignSection";
+import { Citations } from "@/components/sections/Citations";
 
 const Index = () => {
   return (
@@ -20,6 +21,7 @@ const Index = () => {
         <div id="about-experiment">
           <AboutExperiment />
         </div>
+        <Citations />
       </main>
       <footer className="py-2 bg-muted/30 text-center text-xs text-muted-foreground border-t">
         AI-generated results are for research purposes only and may not be accurate. This tool does not modify AI responses or represent any brands.

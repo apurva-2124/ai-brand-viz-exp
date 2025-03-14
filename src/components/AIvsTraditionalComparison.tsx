@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { BrandData } from "@/components/BrandTracker";
@@ -102,6 +101,7 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
         <ComparisonResults 
           aiResult={aiResult} 
           comparisonData={comparisonData} 
+          brandName={brandData.name}
         />
       </CardContent>
     </Card>

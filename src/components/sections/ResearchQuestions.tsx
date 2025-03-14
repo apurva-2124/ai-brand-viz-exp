@@ -10,21 +10,21 @@ export const ResearchQuestions = () => {
           <div className="flex gap-4">
             <span className="text-2xl text-primary/50">1</span>
             <p className="text-xl">
-              How do AI models construct brand narratives, and where do these interpretations diverge?
+              Does AI search favor certain types of content or brands?
             </p>
           </div>
           
           <div className="flex gap-4">
             <span className="text-2xl text-primary/50">2</span>
             <p className="text-xl">
-              What factors influence AI-generated brand perceptions across industries and AI models?
+              How does brand visibility differ between traditional search engines vs. AI-generated answers?
             </p>
           </div>
           
           <div className="flex gap-4">
             <span className="text-2xl text-primary/50">3</span>
             <p className="text-xl">
-              How do AI-generated brand results compare to traditional search rankings in visibility, sentiment, and accuracy?
+              What structured data signals improve AI-driven mentions?
             </p>
           </div>
         </div>
