@@ -5,7 +5,12 @@ import { toast } from "sonner";
 import { generateMockData } from "@/lib/mockData";
 
 interface OpenAIResponse {
-  content: string;
+  content?: string;
+  choices?: Array<{
+    message?: {
+      content?: string;
+    }
+  }>;
   error?: string;
 }
 
@@ -50,7 +55,30 @@ export async function queryOpenAI(keyword: string, query: string, brand: string)
       throw new Error(data.error);
     }
     
-    return data.content || "No response content";
+    // Extract content from the response - handle different response formats
+    let content = "";
+    
+    // Try to extract content directly (our proxy format)
+    if (data.content && typeof data.content === 'string') {
+      content = data.content;
+    } 
+    // Try to extract from standard OpenAI format
+    else if (data.choices && data.choices.length > 0) {
+      const messageContent = data.choices[0].message?.content;
+      if (messageContent) {
+        content = messageContent;
+      }
+    }
+    
+    // Log the extracted content
+    console.log('Extracted content:', content ? content.substring(0, 100) + "..." : "No content found");
+    
+    // If we still don't have content, use a more descriptive error
+    if (!content) {
+      throw new Error("Could not extract content from API response");
+    }
+    
+    return content;
   } catch (error) {
     console.error('OpenAI API Error:', error);
     // Check for specific error types to provide better error messages
