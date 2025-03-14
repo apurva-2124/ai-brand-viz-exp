@@ -175,18 +175,16 @@ export const VisibilityDashboard = ({ brandData }: VisibilityDashboardProps) => 
             overallScore={overallScore} 
             brandData={brandData} 
           />
+
+          <AIvsTraditionalComparison 
+            brandData={brandData} 
+            aiResults={visibilityData} 
+          />
         </>
       )}
 
       {visibilityData?.queries && (
         <SearchQueriesCard queries={visibilityData.queries} />
-      )}
-      
-      {visibilityData && !loading && !error && (
-        <AIvsTraditionalComparison 
-          brandData={brandData} 
-          aiResults={visibilityData} 
-        />
       )}
 
       <VisibilityBreakdownCards

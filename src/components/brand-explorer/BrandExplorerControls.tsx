@@ -113,29 +113,25 @@ export const BrandExplorerControls = ({
         </div>
       )}
 
-      {/* Display AI vs. Traditional Comparison - moved to appear after Search Queries */}
-      {aiResults && aiResults.results && aiResults.results.length > 0 && (
-        <div className="mb-6">
-          <AIvsTraditionalComparison
-            brandData={{
-              name: selectedBrand.brand,
-              industry: selectedBrand.industry,
-              keywords: [selectedKeyword],
-              email: "",
-              firstName: "",
-              lastName: ""
-            }}
-            aiResults={aiResults}
-          />
-        </div>
-      )}
-
-      {/* Display AI Response Analysis results - now after AI vs. Traditional Comparison */}
+      {/* Display AI Response Analysis results */}
       {aiResults && aiResults.results && aiResults.results.length > 0 && (
         <div className="mb-6">
           <AIResponseAnalysis results={aiResults.results} />
         </div>
       )}
+
+      {/* AI vs. Traditional Comparison */}
+      <AIvsTraditionalComparison
+        brandData={{
+          name: selectedBrand.brand,
+          industry: selectedBrand.industry,
+          keywords: [selectedKeyword],
+          email: "",
+          firstName: "",
+          lastName: ""
+        }}
+        aiResults={aiResults}
+      />
     </Card>
   );
 };
