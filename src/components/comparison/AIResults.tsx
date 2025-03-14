@@ -6,13 +6,15 @@ interface AIResultsProps {
 }
 
 export const AIResults = ({ aiResult }: AIResultsProps) => {
-  // Determine if the brand is mentioned and if it's prominent
-  const hasBrandMention = aiResult.hasBrandMention || 
-                          (aiResult.visibilityScore?.level !== "not_found") ||
-                          (aiResult.brandMentionCount > 0);
+  // Use the hasBrandMention and isProminent values from the processed result
+  // Fall back to calculating them only if they're not provided
+  const hasBrandMention = typeof aiResult.hasBrandMention === 'boolean' 
+    ? aiResult.hasBrandMention 
+    : aiResult.brandMentionCount > 0;
   
-  const isProminent = aiResult.isProminent || 
-                      (aiResult.visibilityScore?.level === "high");
+  const isProminent = typeof aiResult.isProminent === 'boolean'
+    ? aiResult.isProminent
+    : false; // Don't assume prominence if not explicitly set
 
   return (
     <div className="border rounded-lg p-4">

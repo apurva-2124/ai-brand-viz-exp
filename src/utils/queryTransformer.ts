@@ -49,8 +49,10 @@ export const scoreVisibility = (response: string, brandName: string) => {
 
   const lowerResponse = response.toLowerCase();
   const lowerBrand = brandName.toLowerCase();
-
-  if (!lowerResponse.includes(lowerBrand)) {
+  
+  // Use word boundary regex for more accurate detection
+  const regex = new RegExp('\\b' + lowerBrand + '\\b', 'i');
+  if (!regex.test(lowerResponse)) {
     return {
       level: "not_found",
       label: "Not Found",
@@ -60,12 +62,14 @@ export const scoreVisibility = (response: string, brandName: string) => {
   }
 
   // Check for prominent mentions (brand name near the beginning or with positive context)
+  const firstOccurrence = lowerResponse.indexOf(lowerBrand);
   const isProminent = 
-    lowerResponse.indexOf(lowerBrand) < 200 || 
+    (firstOccurrence >= 0 && firstOccurrence < response.length / 3) || 
     lowerResponse.includes(`${lowerBrand} is leading`) ||
     lowerResponse.includes(`${lowerBrand} is a top`) ||
     lowerResponse.includes(`best ${lowerBrand}`) ||
-    lowerResponse.includes(`popular ${lowerBrand}`);
+    lowerResponse.includes(`popular ${lowerBrand}`) ||
+    lowerResponse.includes(`such as ${lowerBrand}`);
 
   if (isProminent) {
     return {

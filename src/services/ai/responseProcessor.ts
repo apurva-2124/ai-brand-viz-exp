@@ -18,6 +18,33 @@ export function processAIResponse(
   competitors?: string[],
   provider: string = "AI"
 ): VisibilityResult {
+  // Improved brand mention detection
+  let brandMentionCount = 0;
+  let hasBrandMention = false;
+  let isProminent = false;
+  
+  if (result.response && brandName) {
+    const regex = new RegExp('\\b' + brandName + '\\b', 'gi');
+    const matches = result.response.match(regex);
+    brandMentionCount = matches ? matches.length : 0;
+    
+    // Only mark as having a brand mention if the brand name actually appears in the text
+    hasBrandMention = brandMentionCount > 0;
+    
+    // Check prominence - only if brand is actually mentioned
+    if (hasBrandMention) {
+      const responseLower = result.response.toLowerCase();
+      const brandLower = brandName.toLowerCase();
+      const firstOccurrence = responseLower.indexOf(brandLower);
+      
+      // Consider it prominent if mentioned in first third of the text or if it appears in a key position
+      isProminent = (firstOccurrence >= 0 && firstOccurrence < result.response.length / 3) ||
+        responseLower.includes(`${brandLower} is a leading`) ||
+        responseLower.includes(`${brandLower} is one of the top`) ||
+        responseLower.includes(`such as ${brandLower}`);
+    }
+  }
+  
   const visibilityScore = scoreVisibility(result.response, brandName);
   const competitorAnalysis = analyzeCompetitors(
     result.response, 
@@ -25,26 +52,14 @@ export function processAIResponse(
     competitors
   );
   
-  // Improved brand mention count
-  let brandMentionCount = 0;
-  if (result.response && brandName) {
-    const regex = new RegExp(brandName, 'gi');
-    const matches = result.response.match(regex);
-    brandMentionCount = matches ? matches.length : 0;
-  }
-  
-  // Check for prominence - if brand is mentioned early in the response
-  const isProminent = result.isProminent || 
-    (result.response && 
-     result.response.toLowerCase().indexOf(brandName.toLowerCase()) < result.response.length / 3);
-  
   return { 
     ...result, 
     provider,
+    hasBrandMention, // Override with accurate detection
+    isProminent, // Override with accurate detection
     visibilityScore,
     competitorAnalysis,
     recommendation: generateRecommendation(visibilityScore.level),
-    brandMentionCount,
-    isProminent
+    brandMentionCount
   };
 }
