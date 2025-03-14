@@ -884,7 +884,7 @@ function getQuerySpecificResults(query: string, brandName: string): SearchResult
       {
         rank: 3,
         url: "https://www.theflightdeal.com/",
-        title: "The Flight Deal – ""Just because it's a great fare doesn't ...",
+        title: "The Flight Deal – \"Just because it's a great fare doesn't ...\"",
         description: "The Flight Deal posts daily flight deals and travel deals from around the web. No subscription required.",
         hasBrandMention: false,
         resultType: "organic"
