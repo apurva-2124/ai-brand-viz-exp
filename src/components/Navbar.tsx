@@ -4,8 +4,11 @@ import { Link } from 'react-router-dom';
 import { Container } from './Container';
 import { ApiSettings } from './ApiSettings';
 import { Github } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Navbar = () => {
+  const isMobile = useIsMobile();
+  
   return (
     <nav className="w-full shadow-sm border-b py-3">
       <Container>
@@ -13,19 +16,21 @@ const Navbar = () => {
           <div className="flex items-center space-x-1">
             <Link to="/" className="flex items-center">
               <img src="/logo.svg" alt="Logo" className="h-7 w-auto" />
-              <span className="ml-2 text-xl font-semibold">AI Brand Visibility & Perception Explorer</span>
+              <span className={`ml-2 font-semibold ${isMobile ? "text-base" : "text-xl"}`}>
+                {isMobile ? "AI Brand Explorer" : "AI Brand Visibility & Perception Explorer"}
+              </span>
             </Link>
           </div>
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-2 md:space-x-6">
             <a 
               href="#about-experiment" 
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="text-xs md:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               About the Experiment
             </a>
             <a 
               href="#brand-explorer" 
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="text-xs md:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               Brand Explorer
             </a>

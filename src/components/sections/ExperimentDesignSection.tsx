@@ -1,8 +1,6 @@
-
 import { useState } from "react";
 import { Container } from "@/components/Container";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronUp } from "lucide-react";
 
 export const ExperimentDesignSection = () => {
@@ -26,25 +24,22 @@ export const ExperimentDesignSection = () => {
           </div>
         </div>
 
-        <Accordion type="single" collapsible className="space-y-4" defaultValue="traditional-vs-ai">
-          <AccordionItem value="traditional-vs-ai">
-            <Collapsible 
-              open={isOpen} 
-              onOpenChange={setIsOpen}
-              className="border-b pb-4"
-            >
-              <div className="flex items-center justify-between">
-                <AccordionTrigger className="text-xl font-semibold hover:no-underline">
-                  Traditional Search vs. AI Search Queries
-                </AccordionTrigger>
-                <CollapsibleTrigger asChild>
-                  <button className="rounded-full p-1 hover:bg-muted/50">
-                    <ChevronUp className={`h-5 w-5 transition-transform duration-200 ${isOpen ? "" : "rotate-180"}`} />
-                  </button>
-                </CollapsibleTrigger>
-              </div>
-              
-              <CollapsibleContent className="space-y-6 pt-4">
+        <Accordion type="single" collapsible className="space-y-4">
+          <AccordionItem value="traditional-vs-ai" className="border-b pb-4">
+            <div className="flex items-center justify-between">
+              <AccordionTrigger className="text-xl font-semibold hover:no-underline">
+                Traditional Search vs. AI Search Queries
+              </AccordionTrigger>
+              <button 
+                onClick={() => setIsOpen(!isOpen)} 
+                className="rounded-full p-1 hover:bg-muted/50"
+              >
+                <ChevronUp className={`h-5 w-5 transition-transform duration-200 ${isOpen ? "" : "rotate-180"}`} />
+              </button>
+            </div>
+            
+            {isOpen && (
+              <div className="space-y-6 pt-4">
                 <div>
                   <h4 className="font-semibold mb-2">Traditional Search: Keyword-Based Queries</h4>
                   <ul className="list-disc pl-6 space-y-2">
@@ -73,8 +68,8 @@ export const ExperimentDesignSection = () => {
                     <li>AI generates custom responses based on patterns in text it has processed.</li>
                   </ul>
                 </div>
-              </CollapsibleContent>
-            </Collapsible>
+              </div>
+            )}
           </AccordionItem>
 
           <AccordionItem value="why-ai-query-types">
