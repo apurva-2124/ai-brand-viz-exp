@@ -1,4 +1,3 @@
-
 import { TraditionalSearchResults, SearchResult } from "./types";
 
 /**
@@ -40,6 +39,36 @@ function getQuerySpecificResults(query: string, brandName: string): SearchResult
   // Lowercase for easier comparison
   const lowerQuery = query.toLowerCase();
   
+  // CRM software query - Using the provided HTML table data
+  if (lowerQuery.includes("crm") || lowerQuery.includes("crm software")) {
+    return [
+      {
+        rank: 1,
+        url: "https://www.salesforce.com/crm/what-is-crm/",
+        title: "What is CRM?",
+        description: `Learn about Customer Relationship Management (CRM) software and how it can help your business grow. ${brandName === "Salesforce" ? "Discover Salesforce's industry-leading CRM solutions." : ""}`,
+        hasBrandMention: brandName === "Salesforce",
+        resultType: "organic"
+      },
+      {
+        rank: 2,
+        url: "https://www.forbes.com/advisor/business/best-crm-software/",
+        title: "Best CRM Software 2025",
+        description: `Expert reviews and rankings of the top CRM software platforms for businesses of all sizes. ${brandName === "Salesforce" ? "See why Salesforce consistently ranks as a top choice." : ""}`,
+        hasBrandMention: brandName === "Salesforce",
+        resultType: "organic"
+      },
+      {
+        rank: 3,
+        url: "https://keap.com/product/what-is-crm",
+        title: "What is CRM? - Keap",
+        description: "Keap explains what CRM software is and how it can streamline your business operations, improve customer relationships, and drive growth.",
+        hasBrandMention: false,
+        resultType: "organic"
+      }
+    ];
+  }
+  
   // Find a doctor query
   if (lowerQuery.includes("doctor") || lowerQuery.includes("find a doctor")) {
     return [
@@ -64,36 +93,6 @@ function getQuerySpecificResults(query: string, brandName: string): SearchResult
         url: "https://www.healthgrades.com/find-a-doctor",
         title: "Find a Doctor - Find The Right Doctor For You | Healthgrades",
         description: "Find the right doctor, right now with Healthgrades. Search for doctors by name, specialty, condition, or procedure.",
-        hasBrandMention: false,
-        resultType: "organic"
-      }
-    ];
-  }
-  
-  // CRM software query
-  if (lowerQuery.includes("crm") || lowerQuery.includes("crm software")) {
-    return [
-      {
-        rank: 1,
-        url: "https://www.salesforce.com/crm/what-is-crm/software/",
-        title: "What Is CRM Software? A Comprehensive Guide",
-        description: `Search result for "CRM software" related to What Is CRM Software? A Comprehensive Guide. ${brandName === "Salesforce" ? "Learn about Salesforce's industry-leading CRM solution." : ""}`,
-        hasBrandMention: brandName === "Salesforce",
-        resultType: "organic"
-      },
-      {
-        rank: 2,
-        url: "https://www.forbes.com/advisor/business/software/best-crm-software/",
-        title: "10 Best CRM Software Of 2025",
-        description: `Search result for "CRM software" related to 10 Best CRM Software Of 2025. ${brandName === "HubSpot" ? "See why HubSpot ranks at the top." : ""}`,
-        hasBrandMention: brandName === "HubSpot",
-        resultType: "organic"
-      },
-      {
-        rank: 3,
-        url: "https://keap.com/product/what-is-crm",
-        title: "What is CRM? | Keap - Small Business CRM & Automation",
-        description: `Search result for "CRM software" related to What is CRM? Learn how CRM software can help your business grow.`,
         hasBrandMention: false,
         resultType: "organic"
       }
