@@ -23,6 +23,10 @@ export const WhatThisMeans = ({ aiResult, comparisonData, brandName }: WhatThisM
       (result.url && result.url.toLowerCase().includes(brandName.toLowerCase()))
     );
   
+  // Get sentiment and recommendation information
+  const sentiment = aiResult.sentiment?.sentiment || 'neutral';
+  const isRecommended = aiResult.recommendation?.level === 'explicitly_recommended';
+  
   // Create dynamic message based on actual comparison
   let visibilityMessage = "";
   if (isProminent && hasGoogleMention) {
@@ -36,6 +40,12 @@ export const WhatThisMeans = ({ aiResult, comparisonData, brandName }: WhatThisM
   } else {
     visibilityMessage = `${brandName} is missing from both Google's top results and AI-generated answers.`;
   }
+  
+  // Add sentiment and recommendation information
+  let sentimentMessage = "";
+  if (hasBrandMention) {
+    sentimentMessage = `AI search has a ${sentiment} tone towards ${brandName}${isRecommended ? ' and explicitly recommends it' : ' but does not explicitly recommend it'}.`;
+  }
 
   return (
     <div className="border rounded-lg p-4 mb-6">
@@ -43,7 +53,11 @@ export const WhatThisMeans = ({ aiResult, comparisonData, brandName }: WhatThisM
       <ul className="list-disc pl-6 space-y-2">
         <li>AI-driven search is reshaping how brands get discovered.</li>
         <li>{visibilityMessage}</li>
+        {hasBrandMention && <li>{sentimentMessage}</li>}
         <li>Brands who appear in AI-generated responses could capture early-mover advantage as AI-powered search grows.</li>
+        {hasBrandMention && !isRecommended && (
+          <li>Even when mentioned, brands may need to optimize for explicit AI recommendations to stand out.</li>
+        )}
       </ul>
     </div>
   );

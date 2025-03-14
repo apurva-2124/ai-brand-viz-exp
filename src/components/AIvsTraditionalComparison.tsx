@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { BrandData } from "@/components/BrandTracker";
@@ -8,6 +9,7 @@ import { EmptyState } from "@/components/comparison/EmptyState";
 import { ComparisonResults } from "@/components/comparison/ComparisonResults";
 import { getTraditionalSearchResults, TraditionalSearchResults } from "@/services/traditional-search";
 import { toast } from "sonner";
+import { analyzeSentiment, detectRecommendation } from "@/utils/sentimentAnalysis";
 
 interface AIvsTraditionalComparisonProps {
   brandData: BrandData;
@@ -30,9 +32,23 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
     }
   }, [brandData.keywords]);
 
+  // Find the AI result for the selected keyword
   const aiResult = aiResults?.results?.find(
     (result: any) => result.keyword === selectedKeyword
   );
+  
+  // Enhance the AI result with sentiment and recommendation analysis if found
+  let enhancedAiResult = aiResult;
+  if (aiResult && aiResult.response && brandData.name) {
+    const sentiment = analyzeSentiment(aiResult.response, brandData.name);
+    const recommendation = detectRecommendation(aiResult.response, brandData.name);
+    
+    enhancedAiResult = {
+      ...aiResult,
+      sentiment,
+      recommendation
+    };
+  }
 
   const fetchTraditionalResults = async () => {
     setIsLoading(true);
@@ -80,14 +96,14 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
         onKeywordChange={setSelectedKeyword}
         onCompare={fetchTraditionalResults}
         isLoading={isLoading}
-        hasAiResult={!!aiResult}
+        hasAiResult={!!enhancedAiResult}
         useMockData={useStaticData}
         onToggleMockData={() => setUseStaticData(prev => !prev)}
       />
       
       <CardContent>
         <EmptyState 
-          hasAiResult={!!aiResult} 
+          hasAiResult={!!enhancedAiResult} 
           hasComparisonData={!!comparisonData} 
         />
 
@@ -99,7 +115,7 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
         />
 
         <ComparisonResults 
-          aiResult={aiResult} 
+          aiResult={enhancedAiResult} 
           comparisonData={comparisonData} 
           brandName={brandData.name}
         />

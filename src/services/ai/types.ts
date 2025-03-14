@@ -24,6 +24,15 @@ export type VisibilityResult = {
   };
   recommendation?: string;
   brandMentionCount?: number;
+  sentiment?: {
+    sentiment: 'positive' | 'neutral' | 'negative';
+    score: number;
+    explanation: string;
+  };
+  recommendationStatus?: {
+    level: 'explicitly_recommended' | 'mentioned_not_recommended' | 'not_mentioned';
+    explanation: string;
+  };
 };
 
 export interface AIVisibilityOptions {

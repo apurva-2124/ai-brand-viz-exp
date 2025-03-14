@@ -1,5 +1,5 @@
 
-import { Check, X } from "lucide-react";
+import { Check, X, AlertCircle, ThumbsUp, Minus } from "lucide-react";
 
 interface AIResultsProps {
   aiResult: any;
@@ -29,6 +29,64 @@ export const AIResults = ({ aiResult }: AIResultsProps) => {
     );
   };
 
+  // Get sentiment badge colors
+  const getSentimentBadge = () => {
+    if (!aiResult.sentiment) return null;
+    
+    switch (aiResult.sentiment.sentiment) {
+      case 'positive':
+        return (
+          <div className="inline-flex items-center gap-1 bg-green-100 text-green-800 px-2 py-0.5 rounded">
+            <ThumbsUp className="h-3 w-3" />
+            <span className="text-xs">Positive</span>
+          </div>
+        );
+      case 'negative':
+        return (
+          <div className="inline-flex items-center gap-1 bg-red-100 text-red-800 px-2 py-0.5 rounded">
+            <ThumbsUp className="h-3 w-3 rotate-180" />
+            <span className="text-xs">Negative</span>
+          </div>
+        );
+      default:
+        return (
+          <div className="inline-flex items-center gap-1 bg-gray-100 text-gray-800 px-2 py-0.5 rounded">
+            <Minus className="h-3 w-3" />
+            <span className="text-xs">Neutral</span>
+          </div>
+        );
+    }
+  };
+  
+  // Get recommendation status
+  const getRecommendationStatus = () => {
+    if (!aiResult.recommendation) return null;
+    
+    switch (aiResult.recommendation.level) {
+      case 'explicitly_recommended':
+        return (
+          <div className="inline-flex items-center gap-1 bg-green-100 text-green-800 px-2 py-0.5 rounded">
+            <Check className="h-3 w-3" />
+            <span className="text-xs">Explicitly Recommended</span>
+          </div>
+        );
+      case 'mentioned_not_recommended':
+        return (
+          <div className="inline-flex items-center gap-1 bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">
+            <AlertCircle className="h-3 w-3" />
+            <span className="text-xs">Mentioned, Not Recommended</span>
+          </div>
+        );
+      default:
+        return (
+          <div className="inline-flex items-center gap-1 bg-red-100 text-red-800 px-2 py-0.5 rounded">
+            <X className="h-3 w-3" />
+            <span className="text-xs">Not Mentioned</span>
+          </div>
+        );
+    }
+  };
+
   return (
     <div className="border rounded-lg p-4">
       <h3 className="font-medium mb-3 text-primary">AI Search Results</h3>
@@ -38,18 +96,24 @@ export const AIResults = ({ aiResult }: AIResultsProps) => {
       <div className="text-sm mb-2">
         <span className="text-muted-foreground">Provider:</span> {aiResult.provider}
       </div>
-      <div className={`text-sm px-2 py-1 rounded inline-flex mb-4 ${
-        isProminent 
-          ? "bg-green-100 text-green-800" 
-          : hasBrandMention 
-            ? "bg-yellow-100 text-yellow-800"
-            : "bg-red-100 text-red-800"
-      }`}>
-        {isProminent 
-          ? "Prominently Featured" 
-          : hasBrandMention 
-            ? "Mentioned" 
-            : "Not Found"}
+      
+      <div className="flex flex-wrap gap-2 mb-4">
+        <div className={`text-xs px-2 py-1 rounded inline-flex items-center ${
+          isProminent 
+            ? "bg-green-100 text-green-800" 
+            : hasBrandMention 
+              ? "bg-yellow-100 text-yellow-800"
+              : "bg-red-100 text-red-800"
+        }`}>
+          {isProminent 
+            ? "Prominently Featured" 
+            : hasBrandMention 
+              ? "Mentioned" 
+              : "Not Found"}
+        </div>
+        
+        {aiResult.sentiment && getSentimentBadge()}
+        {aiResult.recommendation && getRecommendationStatus()}
       </div>
       
       <div className="space-y-2 mb-4">
@@ -73,6 +137,16 @@ export const AIResults = ({ aiResult }: AIResultsProps) => {
             {isProminent ? "Prominently featured" : "Not prominently featured"}
           </span>
         </div>
+        
+        {aiResult.sentiment && (
+          <div className="flex items-start gap-2">
+            <AlertCircle className="h-4 w-4 text-blue-600 mt-0.5" />
+            <span className="text-sm">
+              {aiResult.sentiment.explanation}
+            </span>
+          </div>
+        )}
+        
         {aiResult.competitorAnalysis?.competitorsFound?.length > 0 && (
           <div className="flex items-start gap-2">
             <X className="h-4 w-4 text-orange-600 mt-0.5" />

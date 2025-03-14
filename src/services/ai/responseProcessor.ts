@@ -5,6 +5,7 @@ import {
   generateRecommendation 
 } from "@/utils/queryTransformer";
 import { VisibilityResult } from "./types";
+import { analyzeSentiment, detectRecommendation } from "@/utils/sentimentAnalysis";
 
 export function processAIResponse(
   result: {
@@ -52,6 +53,10 @@ export function processAIResponse(
     competitors
   );
   
+  // New: analyze sentiment and recommendation status
+  const sentiment = analyzeSentiment(result.response, brandName);
+  const recommendation = detectRecommendation(result.response, brandName);
+  
   return { 
     ...result, 
     provider,
@@ -60,6 +65,8 @@ export function processAIResponse(
     visibilityScore,
     competitorAnalysis,
     recommendation: generateRecommendation(visibilityScore.level),
-    brandMentionCount
+    brandMentionCount,
+    sentiment,
+    recommendationStatus: recommendation
   };
 }
