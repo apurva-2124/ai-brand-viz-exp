@@ -14,9 +14,17 @@ interface ComparisonResultsProps {
 export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: ComparisonResultsProps) => {
   if (!aiResult || !comparisonData) return null;
   
-  // Calculate visibility level
-  const visibilityLevel = aiResult.visibilityScore?.level || 
-    (aiResult.isProminent ? "high" : aiResult.hasBrandMention ? "moderate" : "not_found");
+  // Calculate visibility level with improved logic
+  const hasBrandMention = aiResult.hasBrandMention || (aiResult.visibilityScore?.level !== "not_found");
+  
+  // Improved logic for determining prominence
+  // Check if brand appears early in the response (in the first third)
+  const isProminent = aiResult.isProminent || 
+    (hasBrandMention && aiResult.response && 
+      aiResult.response.toLowerCase().indexOf(brandName.toLowerCase()) < aiResult.response.length / 3);
+  
+  const visibilityLevel = isProminent ? "high" : 
+    hasBrandMention ? "moderate" : "not_found";
   
   // Get competitor mentions
   const competitorMentions = aiResult.competitorAnalysis?.competitorsFound || [];
@@ -28,6 +36,31 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
       const count = aiResult.competitorAnalysis?.competitorCount?.[competitor] || 0;
       return `${competitor} (${count})`;
     }).join(", ");
+  }
+
+  // Improved brand mention count in AI response
+  let brandMentionCount = 0;
+  if (aiResult.response && brandName) {
+    const regex = new RegExp(brandName, 'gi');
+    const matches = aiResult.response.match(regex);
+    brandMentionCount = matches ? matches.length : 0;
+  }
+
+  // Improved Google search mention count
+  // Count mentions in the top results (titles, descriptions, and URLs)
+  let googleMentionCount = 0;
+  if (comparisonData.topResults && comparisonData.topResults.length > 0) {
+    comparisonData.topResults.forEach(result => {
+      if (result.hasBrandMention) {
+        googleMentionCount++;
+      } else if (
+        (result.title && result.title.toLowerCase().includes(brandName.toLowerCase())) ||
+        (result.description && result.description.toLowerCase().includes(brandName.toLowerCase())) ||
+        (result.url && result.url.toLowerCase().includes(brandName.toLowerCase()))
+      ) {
+        googleMentionCount++;
+      }
+    });
   }
 
   // Visibility label and color mapping
@@ -62,10 +95,10 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
               <Badge className={`${visibilityColor}`}>{visibilityLabel}</Badge>
             </div>
             <div>
-              <span>Mentions in Google Search: {comparisonData.brandMentions} times</span>
+              <span>Mentions in Google Search: {googleMentionCount} times</span>
             </div>
             <div>
-              <span>Mentions in AI Search: {aiResult.brandMentionCount || 0} times</span>
+              <span>Mentions in AI Search: {brandMentionCount} times</span>
             </div>
             {competitorText && (
               <div>
@@ -77,13 +110,13 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
       )}
     
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <AIResults aiResult={aiResult} />
-        <TraditionalResults comparisonData={comparisonData} />
+        <AIResults aiResult={{...aiResult, brandMentionCount, isProminent}} />
+        <TraditionalResults comparisonData={{...comparisonData, brandMentions: googleMentionCount}} />
       </div>
       
       <WhatThisMeans 
-        aiResult={aiResult} 
-        comparisonData={comparisonData} 
+        aiResult={{...aiResult, brandMentionCount, isProminent}} 
+        comparisonData={{...comparisonData, brandMentions: googleMentionCount}} 
         brandName={brandName} 
       />
     </div>

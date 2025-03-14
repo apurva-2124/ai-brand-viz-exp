@@ -11,11 +11,23 @@ interface WhatThisMeansProps {
 export const WhatThisMeans = ({ aiResult, comparisonData, brandName }: WhatThisMeansProps) => {
   if (!aiResult || !comparisonData) return null;
   
+  // Determine visibility in both search types
   const hasBrandMention = aiResult.hasBrandMention || (aiResult.visibilityScore?.level !== "not_found");
-  const hasGoogleMention = comparisonData.brandMentions > 0;
+  const isProminent = aiResult.isProminent || (aiResult.visibilityScore?.level === "high");
   
+  // Check Google visibility - consider a brand mentioned if it appears in top 5 results
+  const topGoogleResults = comparisonData.topResults.slice(0, 5);
+  const hasGoogleMention = comparisonData.brandMentions > 0 || 
+    topGoogleResults.some(result => 
+      result.hasBrandMention || 
+      (result.url && result.url.toLowerCase().includes(brandName.toLowerCase()))
+    );
+  
+  // Create dynamic message based on actual comparison
   let visibilityMessage = "";
-  if (hasBrandMention && hasGoogleMention) {
+  if (isProminent && hasGoogleMention) {
+    visibilityMessage = `${brandName} appears prominently in both Google's top results and AI-generated answers.`;
+  } else if (hasBrandMention && hasGoogleMention) {
     visibilityMessage = `${brandName} appears in both Google's top results and AI-generated answers.`;
   } else if (hasGoogleMention && !hasBrandMention) {
     visibilityMessage = `${brandName} is present in Google's top results but missing from AI-generated answers.`;

@@ -8,7 +8,8 @@ interface AIResultsProps {
 export const AIResults = ({ aiResult }: AIResultsProps) => {
   // Determine if the brand is mentioned and if it's prominent
   const hasBrandMention = aiResult.hasBrandMention || 
-                          (aiResult.visibilityScore?.level !== "not_found");
+                          (aiResult.visibilityScore?.level !== "not_found") ||
+                          (aiResult.brandMentionCount > 0);
   
   const isProminent = aiResult.isProminent || 
                       (aiResult.visibilityScore?.level === "high");
@@ -43,7 +44,9 @@ export const AIResults = ({ aiResult }: AIResultsProps) => {
             <X className="h-4 w-4 text-red-600 mt-0.5" />
           }
           <span className="text-sm">
-            {hasBrandMention ? "Brand is mentioned" : "Brand is missing"}
+            {hasBrandMention ? 
+              `Brand is mentioned ${aiResult.brandMentionCount ? `${aiResult.brandMentionCount} times` : ""}` : 
+              "Brand is missing"}
           </span>
         </div>
         <div className="flex items-start gap-2">
