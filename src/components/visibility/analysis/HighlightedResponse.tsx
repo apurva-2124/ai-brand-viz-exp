@@ -46,6 +46,12 @@ const highlightText = (text: string, brandName: string, competitors: string[] = 
   
   let highlightedText = text;
   
+  // Convert URLs to clickable links
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  highlightedText = highlightedText.replace(urlRegex, url => 
+    `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">${url}</a>`
+  );
+  
   // Highlight brand mentions if present
   if (brandName && brandName.trim() !== '') {
     // Create a regex with word boundaries to match the brand name

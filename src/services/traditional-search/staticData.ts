@@ -105,7 +105,7 @@ function getQuerySpecificResults(query: string, brandName: string): SearchResult
     return [
       {
         rank: 1,
-        url: `https://www.${brandName.toLowerCase()}.com/furniture`,
+        url: `https://www.${brandName.toLowerCase().replace(/\s+/g, '')}.com/furniture`,
         title: `${brandName} | Online Furniture Store | Search Results`,
         description: `Shop furniture at ${brandName}. Find a wide selection of sofas, beds, tables, and more with free shipping on many items.`,
         hasBrandMention: true,
@@ -124,6 +124,36 @@ function getQuerySpecificResults(query: string, brandName: string): SearchResult
         url: "https://www.industry-guide.com/online-furniture-store",
         title: "Online furniture store Guide | Industry Best Practices",
         description: `Complete guide to online furniture stores. Expert advice, tips, and best practices for buying furniture online.`,
+        hasBrandMention: false,
+        resultType: "organic"
+      }
+    ];
+  }
+  
+  // Inbound marketing software query
+  if (lowerQuery.includes("inbound marketing") || lowerQuery.includes("marketing software")) {
+    return [
+      {
+        rank: 1,
+        url: `https://www.example.com/search?q=inbound%20marketing%20software`,
+        title: `Inbound marketing software | Search Results`,
+        description: `Search results for "inbound marketing software". Information about ${brandName} and related topics.`,
+        hasBrandMention: true,
+        resultType: "organic"
+      },
+      {
+        rank: 2,
+        url: `https://www.wikipedia.org/wiki/inbound_marketing_software`,
+        title: `Inbound marketing software - Wikipedia`,
+        description: `Wikipedia entry for "inbound marketing software". Learn about the history, features, and usage of inbound marketing software.`,
+        hasBrandMention: false,
+        resultType: "organic"
+      },
+      {
+        rank: 3,
+        url: `https://www.industry-guide.com/inbound-marketing-software`,
+        title: `Inbound marketing software Guide | Industry Best Practices`,
+        description: `Complete guide to inbound marketing software. Expert advice, tips, and best practices for inbound marketing software implementation.`,
         hasBrandMention: false,
         resultType: "organic"
       }

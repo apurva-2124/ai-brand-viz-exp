@@ -23,7 +23,9 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
   
   // Handle invalid date case
   const formattedDate = comparisonData.retrievalDate ? 
-    formatDateString(comparisonData.retrievalDate) : 
+    (typeof comparisonData.retrievalDate === 'string' ? 
+      comparisonData.retrievalDate : 
+      formatDateString(comparisonData.retrievalDate)) : 
     "Invalid Date";
   
   // Get top result rank if available
@@ -43,7 +45,7 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
         <span className="text-muted-foreground">Query:</span> {comparisonData.query}
       </div>
       <div className="text-sm mb-2">
-        <span className="text-muted-foreground">Brand Mentions:</span> {comparisonData.brandMentions} times
+        <span className="text-muted-foreground">Brand Mentions:</span> {comparisonData.brandMentions} {comparisonData.brandMentions === 1 ? 'time' : 'times'}
       </div>
 
       <div className="text-xs text-muted-foreground mb-4">
