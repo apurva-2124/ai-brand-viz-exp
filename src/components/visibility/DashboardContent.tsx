@@ -1,6 +1,5 @@
 
 import { BrandData } from "@/components/BrandTracker";
-import { AIvsTraditionalComparison } from "@/components/AIvsTraditionalComparison";
 import { ScoreCards } from "@/components/visibility/ScoreCards";
 import { SearchQueriesCard } from "@/components/visibility/SearchQueriesCard";
 import { VisibilityBreakdownCards } from "@/components/visibility/VisibilityBreakdownCards";
@@ -38,11 +37,6 @@ export const DashboardContent = ({
       {visibilityData?.queries && (
         <SearchQueriesCard queries={visibilityData.queries} />
       )}
-
-      <AIvsTraditionalComparison 
-        brandData={brandData} 
-        aiResults={visibilityData} 
-      />
 
       <VisibilityBreakdownCards
         overallScore={overallScore}

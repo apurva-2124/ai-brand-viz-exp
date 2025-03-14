@@ -1,7 +1,6 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { AIResponseAnalysis } from "@/components/visibility/AIResponseAnalysis";
-import { AIvsTraditionalComparison } from "@/components/AIvsTraditionalComparison";
 import { 
   Tooltip,
   TooltipContent,
@@ -18,6 +17,7 @@ import { KeywordSelector } from "@/components/brand-explorer/KeywordSelector";
 import { AnalysisButton } from "@/components/brand-explorer/AnalysisButton";
 import { AIProvider } from "@/services/ai/types";
 import { QueryType } from "@/utils/queryTemplates";
+import { ComparisonResults } from "@/components/comparison/ComparisonResults";
 
 interface BrandExplorerControlsProps {
   selectedIndustry: string;
@@ -105,22 +105,12 @@ export const BrandExplorerControls = ({
         </TooltipProvider>
       </div>
 
-      {/* Move the results section below the controls */}
-      {/* Removed separate AI Response Analysis section as it will be merged into the ComparisonResults */}
-      {/* Removed separate AI Search Queries section as it will be merged into the AI Search Overview */}
-      
-      {/* AIvsTraditionalComparison component will handle all the sections as per the new layout */}
-      {aiResults && (
-        <AIvsTraditionalComparison
-          brandData={{
-            name: selectedBrand.brand,
-            industry: selectedBrand.industry,
-            keywords: [selectedKeyword],
-            email: "",
-            firstName: "",
-            lastName: ""
-          }}
-          aiResults={aiResults}
+      {/* Display results using ComparisonResults directly instead of AIvsTraditionalComparison */}
+      {aiResults && aiResults.results && aiResults.results.length > 0 && (
+        <ComparisonResults
+          aiResult={aiResults.results.find((result: any) => result.keyword === selectedKeyword)}
+          comparisonData={aiResults.traditionalSearchData}
+          brandName={selectedBrand.brand}
         />
       )}
     </Card>
