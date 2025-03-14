@@ -1,8 +1,13 @@
 
+import { useState } from "react";
 import { Container } from "@/components/Container";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ChevronUp } from "lucide-react";
 
 export const ExperimentDesignSection = () => {
+  const [isOpen, setIsOpen] = useState(true);
+
   return (
     <Container className="py-16">
       <div className="max-w-5xl mx-auto space-y-8">
@@ -23,39 +28,53 @@ export const ExperimentDesignSection = () => {
 
         <Accordion type="single" collapsible className="space-y-4" defaultValue="traditional-vs-ai">
           <AccordionItem value="traditional-vs-ai">
-            <AccordionTrigger className="text-xl font-semibold">
-              Traditional Search vs. AI Search Queries
-            </AccordionTrigger>
-            <AccordionContent className="space-y-6 pt-4">
-              <div>
-                <h4 className="font-semibold mb-2">Traditional Search: Keyword-Based Queries</h4>
-                <ul className="list-disc pl-6 space-y-2">
-                  <li>Search engines rely on short keyword phrases to rank existing pages.</li>
-                  <li>Users type queries like:
-                    <ul className="list-disc pl-6 mt-2 space-y-1">
-                      <li>"Best electric truck"</li>
-                      <li>"Tesla vs. Rivian comparison"</li>
-                      <li>"Airbnb complaints 2024"</li>
-                    </ul>
-                  </li>
-                  <li>Google then ranks web pages with relevant content (blog posts, reviews, news articles).</li>
-                </ul>
+            <Collapsible 
+              open={isOpen} 
+              onOpenChange={setIsOpen}
+              className="border-b pb-4"
+            >
+              <div className="flex items-center justify-between">
+                <AccordionTrigger className="text-xl font-semibold hover:no-underline">
+                  Traditional Search vs. AI Search Queries
+                </AccordionTrigger>
+                <CollapsibleTrigger asChild>
+                  <button className="rounded-full p-1 hover:bg-muted/50">
+                    <ChevronUp className={`h-5 w-5 transition-transform duration-200 ${isOpen ? "" : "rotate-180"}`} />
+                  </button>
+                </CollapsibleTrigger>
               </div>
-              <div>
-                <h4 className="font-semibold mb-2">AI Search: Conversational Queries</h4>
-                <ul className="list-disc pl-6 space-y-2">
-                  <li>AI models work best when queries are phrased as natural language questions.</li>
-                  <li>Instead of short keywords, AI responds to full-sentence prompts like:
-                    <ul className="list-disc pl-6 mt-2 space-y-1">
-                      <li>"What are common problems with electric trucks from Rivian?"</li>
-                      <li>"How does Tesla compare to Rivian in the automotive industry?"</li>
-                      <li>"Tell me about short-term rentals in the hospitality sector."</li>
-                    </ul>
-                  </li>
-                  <li>AI generates custom responses based on patterns in text it has processed.</li>
-                </ul>
-              </div>
-            </AccordionContent>
+              
+              <CollapsibleContent className="space-y-6 pt-4">
+                <div>
+                  <h4 className="font-semibold mb-2">Traditional Search: Keyword-Based Queries</h4>
+                  <ul className="list-disc pl-6 space-y-2">
+                    <li>Search engines rely on short keyword phrases to rank existing pages.</li>
+                    <li>Users type queries like:
+                      <ul className="list-disc pl-6 mt-2 space-y-1">
+                        <li>"Best electric truck"</li>
+                        <li>"Tesla vs. Rivian comparison"</li>
+                        <li>"Airbnb complaints 2024"</li>
+                      </ul>
+                    </li>
+                    <li>Google then ranks web pages with relevant content (blog posts, reviews, news articles).</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-semibold mb-2">AI Search: Conversational Queries</h4>
+                  <ul className="list-disc pl-6 space-y-2">
+                    <li>AI models work best when queries are phrased as natural language questions.</li>
+                    <li>Instead of short keywords, AI responds to full-sentence prompts like:
+                      <ul className="list-disc pl-6 mt-2 space-y-1">
+                        <li>"What are common problems with electric trucks from Rivian?"</li>
+                        <li>"How does Tesla compare to Rivian in the automotive industry?"</li>
+                        <li>"Tell me about short-term rentals in the hospitality sector."</li>
+                      </ul>
+                    </li>
+                    <li>AI generates custom responses based on patterns in text it has processed.</li>
+                  </ul>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
           </AccordionItem>
 
           <AccordionItem value="why-ai-query-types">
