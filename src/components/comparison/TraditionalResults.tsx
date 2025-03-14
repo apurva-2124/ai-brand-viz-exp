@@ -20,6 +20,11 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
   const hasResults = Array.isArray(comparisonData.topResults) && comparisonData.topResults.length > 0;
   const showNoResultsMessage = !hasResults;
   
+  // Handle invalid date case
+  const formattedDate = comparisonData.retrievalDate ? 
+    formatDateString(comparisonData.retrievalDate) : 
+    "Invalid Date";
+  
   return (
     <div className="border rounded-lg p-4">
       <h3 className="font-medium mb-3 text-primary flex items-center">
@@ -37,11 +42,9 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
         <span className="text-muted-foreground">Brand Mentions:</span> {comparisonData.brandMentions} times
       </div>
 
-      {comparisonData.retrievalDate && (
-        <div className="text-xs text-muted-foreground mb-4">
-          Data retrieved: {formatDateString(comparisonData.retrievalDate)}
-        </div>
-      )}
+      <div className="text-xs text-muted-foreground mb-4">
+        Data retrieved: {formattedDate}
+      </div>
       
       {comparisonData.source === "proxy" ? (
         <div className="mb-4">

@@ -41,6 +41,14 @@ export const SearchResultItem = ({ result, index }: SearchResultItemProps) => {
     }
   };
 
+  // Format title to make it more readable for display
+  const formatTitle = (title: string) => {
+    // Remove common suffixes that make titles look cluttered
+    return title
+      .replace(/ \| Search Results$/, '')
+      .replace(/ \- .*$/, '');
+  };
+
   return (
     <div className={`p-3 rounded text-sm ${result.hasBrandMention ? 'bg-secondary/30' : 'bg-secondary/10'}`}>
       <div className="font-medium mb-1 flex items-center justify-between">

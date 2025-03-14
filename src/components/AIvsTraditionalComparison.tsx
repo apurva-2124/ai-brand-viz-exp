@@ -58,7 +58,7 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
     try {
       console.log(`Starting ${useStaticData ? "static" : "live web search"} fetch for keyword:`, selectedKeyword);
       
-      // Use the selected keyword as query directly
+      // Make sure to use the selected keyword as query
       const results = await getTraditionalSearchResults(selectedKeyword, brandData.name, useStaticData);
       console.log("Traditional search results:", results);
       

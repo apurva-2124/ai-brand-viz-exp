@@ -100,6 +100,36 @@ function getQuerySpecificResults(query: string, brandName: string): SearchResult
     ];
   }
   
+  // Online furniture store query
+  if (lowerQuery.includes("furniture") || lowerQuery.includes("online furniture")) {
+    return [
+      {
+        rank: 1,
+        url: `https://www.${brandName.toLowerCase()}.com/furniture`,
+        title: `${brandName} | Online Furniture Store | Search Results`,
+        description: `Shop furniture at ${brandName}. Find a wide selection of sofas, beds, tables, and more with free shipping on many items.`,
+        hasBrandMention: true,
+        resultType: "organic"
+      },
+      {
+        rank: 2,
+        url: "https://www.wikipedia.org/wiki/online_furniture_store",
+        title: "Online furniture store - Wikipedia",
+        description: "Wikipedia entry for \"online furniture store\". Learn about the history, features, and usage of online furniture store.",
+        hasBrandMention: false,
+        resultType: "organic"
+      },
+      {
+        rank: 3,
+        url: "https://www.industry-guide.com/online-furniture-store",
+        title: "Online furniture store Guide | Industry Best Practices",
+        description: `Complete guide to online furniture stores. Expert advice, tips, and best practices for buying furniture online.`,
+        hasBrandMention: false,
+        resultType: "organic"
+      }
+    ];
+  }
+  
   // Default fallback for any other query
   return [
     {
