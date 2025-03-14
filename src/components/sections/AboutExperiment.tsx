@@ -24,27 +24,6 @@ export const AboutExperiment = () => {
             responses differ from traditional search, shaping the way consumers discover brands.
           </p>
         </div>
-        
-        <div className="flex flex-col items-center gap-4 pt-8">
-          <Button variant="outline" className="gap-2">
-            <Github className="h-4 w-4" />
-            Visit GitHub Repository
-          </Button>
-          
-          <div className="text-sm text-center">
-            <p>© 2025 AI Brand Perception Explorer</p>
-            <p>
-              Created by{" "}
-              <a href="https://x.com/ApurvaLuty" className="text-primary hover:underline">
-                Apurva Luty
-              </a>
-              {" "}—{" "}
-              <a href="https://x.com/ApurvaLuty" className="text-primary hover:underline">
-                Follow along on X
-              </a>
-            </p>
-          </div>
-        </div>
       </div>
     </Container>
   );

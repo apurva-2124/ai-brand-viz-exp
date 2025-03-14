@@ -26,7 +26,7 @@ export const RecommendationHeader = ({
           size="sm"
           onClick={() => setUseMockData(!useMockData)}
         >
-          {useMockData ? "Use Real Data" : "Use Mock Data"}
+          {useMockData ? "Use Real Data" : "Use Saved Results"}
         </Button>
         <Button
           variant="outline"

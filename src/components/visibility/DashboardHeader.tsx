@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { RefreshCw, FileDown } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -101,7 +102,7 @@ export const DashboardHeader = ({
           size="sm"
           onClick={() => setUseMockData(!useMockData)}
         >
-          {useMockData ? "Use Real Data" : "Use Mock Data"}
+          {useMockData ? "Use Real Data" : "Use Saved Results"}
         </Button>
         <Button
           variant="outline"

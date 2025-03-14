@@ -52,7 +52,7 @@ export const ComparisonHeader = ({
                 <Database className="h-4 w-4 mr-1" /> : 
                 <Search className="h-4 w-4 mr-1" />
               }
-              {useMockData ? "Using Static Data" : "Using Live Data"}
+              {useMockData ? "Using Saved Results" : "Using Live Data"}
             </Label>
           </div>
         )}
@@ -93,7 +93,7 @@ export const ComparisonHeader = ({
             </>
           ) : useMockData ? (
             <>
-              View Static Results
+              View Traditional Search Results
               <ArrowRight className="ml-2 h-4 w-4" />
             </>
           ) : (
