@@ -12,16 +12,15 @@ export const AIModelSelect = ({ provider, setProvider }: AIModelSelectProps) => 
     <div>
       <label className="block text-sm font-medium mb-2">Select AI Model</label>
       <Select
-        value={provider}
-        onValueChange={(value: string) => setProvider(value as AIProvider)}
+        value="openai"
+        onValueChange={() => {}}
+        disabled={true}
       >
         <SelectTrigger>
-          <SelectValue placeholder="Choose an AI model" />
+          <SelectValue placeholder="OpenAI (GPT-4)" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="openai">OpenAI (GPT-4)</SelectItem>
-          <SelectItem value="anthropic">Anthropic (Claude)</SelectItem>
-          <SelectItem value="gemini">Google (Gemini)</SelectItem>
         </SelectContent>
       </Select>
     </div>

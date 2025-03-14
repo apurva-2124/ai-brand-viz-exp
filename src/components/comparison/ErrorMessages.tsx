@@ -43,7 +43,6 @@ export const ErrorMessages = ({ errorMessage, apiLimitExceeded }: ErrorMessagesP
                 <li>Check your internet connection</li>
                 <li>The AI proxy server might be temporarily down</li>
                 <li>Try again in a few minutes</li>
-                <li>Try a different AI provider (OpenAI, Anthropic, or Gemini)</li>
               </ul>
             </p>
           </AlertDescription>

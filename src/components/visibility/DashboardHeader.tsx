@@ -64,38 +64,15 @@ export const DashboardHeader = ({
           </SelectContent>
         </Select>
         
-        {!useMockData && (
-          <div className="flex space-x-1">
-            <Button 
-              variant={provider === "openai" ? "secondary" : "outline"} 
-              size="sm"
-              onClick={() => setProvider("openai")}
-            >
-              OpenAI
-            </Button>
-            <Button 
-              variant={provider === "anthropic" ? "secondary" : "outline"} 
-              size="sm"
-              onClick={() => setProvider("anthropic")}
-            >
-              Anthropic
-            </Button>
-            <Button 
-              variant={provider === "gemini" ? "secondary" : "outline"} 
-              size="sm"
-              onClick={() => setProvider("gemini")}
-            >
-              Gemini
-            </Button>
-            <Button 
-              variant={provider === "all" ? "secondary" : "outline"} 
-              size="sm"
-              onClick={() => setProvider("all")}
-            >
-              All
-            </Button>
-          </div>
-        )}
+        <div className="flex space-x-1">
+          <Button 
+            variant="secondary" 
+            size="sm"
+            disabled={true}
+          >
+            OpenAI (GPT-4)
+          </Button>
+        </div>
         
         <Button 
           variant="outline" 
