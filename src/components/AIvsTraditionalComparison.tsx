@@ -24,7 +24,9 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
   const [comparisonData, setComparisonData] = useState<TraditionalSearchResults | null>(null);
   const [apiLimitExceeded, setApiLimitExceeded] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [useStaticData, setUseStaticData] = useState(true);
+  
+  // Always use static data for simplicity
+  const useStaticData = true;
 
   useEffect(() => {
     if (brandData.keywords.length > 0) {
@@ -50,13 +52,20 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
     };
   }
 
+  // Auto-fetch traditional results when AI results are available
+  useEffect(() => {
+    if (enhancedAiResult && selectedKeyword) {
+      fetchTraditionalResults();
+    }
+  }, [enhancedAiResult, selectedKeyword]);
+
   const fetchTraditionalResults = async () => {
     setIsLoading(true);
     setApiLimitExceeded(false);
     setErrorMessage(null);
     
     try {
-      console.log(`Starting ${useStaticData ? "static" : "live web search"} fetch for keyword:`, selectedKeyword);
+      console.log(`Starting static fetch for keyword:`, selectedKeyword);
       
       // Make sure to use the selected keyword as query
       const results = await getTraditionalSearchResults(selectedKeyword, brandData.name, useStaticData);
@@ -66,14 +75,12 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
         console.log("API limit exceeded or proxy error");
         setApiLimitExceeded(true);
         setComparisonData(null);
-        toast.error("Could not access search results. Try using static data instead.");
+        toast.error("Could not access search results. Using static data instead.");
       } else {
         setComparisonData(results);
         
         if (results.topResults.length === 0) {
-          toast.warning("No search results found. Try a different query or use static data.");
-        } else {
-          toast.success(`Found ${results.topResults.length} search results`);
+          toast.warning("No search results found for this query.");
         }
       }
     } catch (error) {
@@ -94,7 +101,9 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
         isLoading={isLoading}
         hasAiResult={!!enhancedAiResult}
         useMockData={useStaticData}
-        onToggleMockData={() => setUseStaticData(prev => !prev)}
+        // Hide the toggle for static/live data
+        onToggleMockData={() => {}}
+        hideDataToggle={true}
       />
       
       <CardContent>

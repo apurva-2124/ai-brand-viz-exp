@@ -1,9 +1,7 @@
 
-import { useState } from "react";
-import { CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, Loader2, ArrowRight, Database, Search } from "lucide-react";
+import { CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
@@ -14,62 +12,34 @@ interface ComparisonHeaderProps {
   onCompare: () => void;
   isLoading: boolean;
   hasAiResult: boolean;
-  useMockData?: boolean;
-  onToggleMockData?: () => void;
+  useMockData: boolean;
+  onToggleMockData: () => void;
+  hideDataToggle?: boolean;
 }
 
-export const ComparisonHeader = ({ 
-  selectedKeyword, 
-  keywords, 
-  onKeywordChange, 
-  onCompare, 
+export const ComparisonHeader = ({
+  selectedKeyword,
+  keywords,
+  onKeywordChange,
+  onCompare,
   isLoading,
   hasAiResult,
-  useMockData = false,
-  onToggleMockData
+  useMockData,
+  onToggleMockData,
+  hideDataToggle = false
 }: ComparisonHeaderProps) => {
-  const [selectedValue, setSelectedValue] = useState(selectedKeyword);
-  
-  const handleSelectChange = (value: string) => {
-    setSelectedValue(value);
-    onKeywordChange(value);
-  };
-  
   return (
-    <CardHeader>
-      <CardTitle className="text-xl flex items-center justify-between">
-        <span>AI vs Traditional Search Comparison</span>
-        
-        {onToggleMockData && (
-          <div className="flex items-center space-x-2">
-            <Switch 
-              id="mock-data" 
-              checked={useMockData} 
-              onCheckedChange={onToggleMockData} 
-            />
-            <Label htmlFor="mock-data" className="text-sm font-normal flex items-center">
-              {useMockData ? 
-                <Database className="h-4 w-4 mr-1" /> : 
-                <Search className="h-4 w-4 mr-1" />
-              }
-              {useMockData ? "Using Saved Results" : "Using Live Data"}
-            </Label>
-          </div>
-        )}
-      </CardTitle>
-      
-      <CardDescription>
-        Compare how your brand appears in AI responses vs. traditional search results
+    <CardHeader className="pb-4">
+      <CardTitle className="text-xl mb-2">AI vs. Traditional Search</CardTitle>
+      <CardDescription className="mb-4">
+        Compare how AI responds to search queries about your brand versus how your brand appears in traditional search results.
       </CardDescription>
       
-      <div className="flex flex-col sm:flex-row gap-3 mt-4">
-        <div className="w-full sm:w-2/3">
-          <Select 
-            value={selectedValue} 
-            onValueChange={handleSelectChange}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select a keyword" />
+      <div className="flex flex-col sm:flex-row gap-4 justify-between">
+        <div className="flex flex-col sm:flex-row gap-2 sm:items-center flex-1">
+          <Select value={selectedKeyword} onValueChange={onKeywordChange}>
+            <SelectTrigger className="w-[240px]">
+              <SelectValue placeholder="Select Keyword" />
             </SelectTrigger>
             <SelectContent>
               {keywords.map((keyword) => (
@@ -79,38 +49,29 @@ export const ComparisonHeader = ({
               ))}
             </SelectContent>
           </Select>
+          
+          <Button
+            onClick={onCompare}
+            disabled={isLoading || !selectedKeyword || !hasAiResult}
+            className="w-full sm:w-auto"
+          >
+            {isLoading ? "Loading..." : "Compare Now"}
+          </Button>
         </div>
         
-        <Button 
-          onClick={onCompare}
-          disabled={isLoading || !selectedValue || !hasAiResult}
-          className="w-full sm:w-1/3"
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Searching...
-            </>
-          ) : useMockData ? (
-            <>
-              View Traditional Search Results
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </>
-          ) : (
-            <>
-              Live Search Results from Google
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </>
-          )}
-        </Button>
+        {!hideDataToggle && (
+          <div className="flex items-center space-x-2">
+            <Switch 
+              id="use-mock-data" 
+              checked={useMockData} 
+              onCheckedChange={onToggleMockData} 
+            />
+            <Label htmlFor="use-mock-data">
+              {useMockData ? "Using Static Data" : "Using Live Data"}
+            </Label>
+          </div>
+        )}
       </div>
-      
-      {!hasAiResult && (
-        <div className="flex items-center mt-3 text-sm text-amber-600">
-          <AlertCircle className="h-4 w-4 mr-1" />
-          Run AI analysis first to enable comparison
-        </div>
-      )}
     </CardHeader>
   );
 };

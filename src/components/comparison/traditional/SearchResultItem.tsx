@@ -50,11 +50,11 @@ export const SearchResultItem = ({ result, index }: SearchResultItemProps) => {
   };
 
   return (
-    <div className={`p-3 rounded text-sm ${result.hasBrandMention ? 'bg-secondary/30' : 'bg-secondary/10'}`}>
+    <div className={`p-3 rounded text-sm ${result.hasBrandMention ? 'bg-secondary/30' : 'bg-secondary/10'} mb-2`}>
       <div className="font-medium mb-1 flex items-center justify-between">
         <div className="break-words pr-2">
           <a href={result.url} target="_blank" rel="noopener noreferrer" className="hover:underline text-blue-600 flex items-center gap-1">
-            {result.title}
+            {formatTitle(result.title)}
             <ExternalLink className="h-3 w-3" />
           </a>
         </div>
@@ -71,7 +71,7 @@ export const SearchResultItem = ({ result, index }: SearchResultItemProps) => {
         </Badge>
       </div>
       <div className="text-xs text-blue-600 mb-1 truncate">{result.url}</div>
-      <div>{result.description}</div>
+      <div className="text-xs text-muted-foreground">{result.description}</div>
     </div>
   );
 };

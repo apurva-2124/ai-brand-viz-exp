@@ -3,6 +3,7 @@ import { AIResults } from "@/components/comparison/AIResults";
 import { TraditionalResults } from "@/components/comparison/TraditionalResults";
 import { TraditionalSearchResults } from "@/services/traditional-search";
 import { Badge } from "@/components/ui/badge";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { analyzeSentiment, detectRecommendation, generateComparisonInsights } from "@/utils/sentimentAnalysis";
 
 interface ComparisonResultsProps {
@@ -21,9 +22,6 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
   const isProminent = aiResult.isProminent || 
     (hasBrandMention && aiResult.response && 
       aiResult.response.toLowerCase().indexOf(brandName.toLowerCase()) < aiResult.response.length / 3);
-  
-  const visibilityLevel = isProminent ? "high" : 
-    hasBrandMention ? "moderate" : "not_found";
   
   // Get competitor mentions
   const competitorMentions = aiResult.competitorAnalysis?.competitorsFound || [];
@@ -63,21 +61,7 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
     brandName
   );
 
-  // Get status badges for visibility
-  const getVisibilityBadge = (level: string) => {
-    switch(level) {
-      case "high":
-        return <Badge className="bg-green-100 text-green-800">High Visibility</Badge>;
-      case "moderate":
-        return <Badge className="bg-yellow-100 text-yellow-800">Moderate</Badge>;
-      case "low": 
-        return <Badge className="bg-orange-100 text-orange-800">Low Visibility</Badge>;
-      default:
-        return <Badge className="bg-red-100 text-red-800">Not Found</Badge>;
-    }
-  };
-
-  // Get single consolidated status badge
+  // Get consolidated status badge
   const getConsolidatedStatusBadge = () => {
     if (isProminent && recommendation.level === 'explicitly_recommended') {
       return <Badge className="bg-green-100 text-green-800">✅ Strong AI Visibility</Badge>;
@@ -110,115 +94,114 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
       hypotheses.push(`Are competitors (${competitorMentions.join(', ')}) doing something different for AI visibility?`);
     }
     
+    hypotheses.push("Would AI-specific content (FAQ, schema markup) improve ranking?");
+    
     return hypotheses;
   };
 
-  // Create side-by-side comparison data
-  const comparisonTableData = {
-    ai: {
-      mentions: `${hasBrandMention ? '🟡 Mentioned' : '🔴 Not Found'} (${brandMentionCount}x)`,
-      recommendation: `${recommendation.level === 'explicitly_recommended' ? '✅ Recommended' : '⚠️ Not Recommended'}`,
-      sentiment: `${
-        sentiment.sentiment === 'positive' ? '🟢 Positive' : 
-        sentiment.sentiment === 'negative' ? '🔴 Negative' : 
-        '🔹 Neutral'
-      }`
-    },
-    google: {
-      mentions: `${googleMentionCount > 0 ? (
-        comparisonData.topResults[0]?.hasBrandMention ? '🟢 Top Result' : '🟡 Mentioned'
-      ) : '🔴 Not Found'} (${googleMentionCount}x)`,
-      recommendation: `${googleMentionCount > 0 && comparisonData.topResults[0]?.hasBrandMention ? '✅ Recommended' : '⚠️ Not Highlighted'}`,
-      sentiment: '🔹 Neutral' // Google search results don't have sentiment analysis
+  // Sentiment display
+  const getSentimentDisplay = (sentimentValue: string) => {
+    switch(sentimentValue) {
+      case 'positive': return '🟢 Positive';
+      case 'negative': return '🔴 Negative';
+      default: return '🔹 Neutral';
     }
   };
 
+  // Create mapping for display values
+  const aiDisplayValues = {
+    mentions: hasBrandMention ? `🟡 Mentioned (${brandMentionCount}x)` : '🔴 Not Found (0x)',
+    recommendation: recommendation.level === 'explicitly_recommended' ? '✅ Recommended' : '⚠️ Not Recommended',
+    sentiment: getSentimentDisplay(sentiment.sentiment)
+  };
+  
+  const googleDisplayValues = {
+    mentions: googleMentionCount > 0 ? 
+      (comparisonData.topResults[0]?.hasBrandMention ? `🟢 Top Result (${googleMentionCount}x)` : `🟡 Mentioned (${googleMentionCount}x)`) : 
+      '🔴 Not Found (0x)',
+    recommendation: googleMentionCount > 0 && comparisonData.topResults[0]?.hasBrandMention ? '✅ Recommended' : '⚠️ Not Highlighted',
+    sentiment: '🔹 Neutral'
+  };
+
   return (
-    <div className="space-y-6">
-      {/* Insight banner */}
-      {comparisonData.topResults.length > 0 && (
-        <div className="p-4 mb-4 border rounded bg-blue-50 border-blue-200 text-sm">
-          <p className="font-medium mb-2 text-blue-800">
-            AI vs. Traditional Search Comparison:
-          </p>
-          <p className="text-blue-800">
-            {comparisonInsights}
-          </p>
-        </div>
-      )}
-    
-      {/* Metrics summary card */}
-      <div className="p-4 mb-4 border rounded bg-amber-50 border-amber-200">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="font-medium text-amber-800">Insights:</h3>
+    <div className="space-y-4">
+      {/* Search Analysis Header */}
+      <div className="p-4 border rounded bg-white">
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="font-medium text-lg">AI Search Analysis for "{aiResult.keyword || comparisonData.query}"</h3>
           {getConsolidatedStatusBadge()}
         </div>
         
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <p className="text-sm font-medium text-amber-800 mb-1">{brandName} AI Visibility:</p>
-            <p className="text-sm">{visibilityLabels[visibilityLevel]}</p>
-          </div>
-          <div>
-            <p className="text-sm font-medium text-amber-800 mb-1">AI Sentiment:</p>
-            <p className="text-sm">{sentiment.sentiment.charAt(0).toUpperCase() + sentiment.sentiment.slice(1)}</p>
-          </div>
-          <div>
-            <p className="text-sm font-medium text-amber-800 mb-1">Mentions in Google:</p>
-            <p className="text-sm">{googleMentionCount} times</p>
-          </div>
-          <div>
-            <p className="text-sm font-medium text-amber-800 mb-1">Mentions in AI:</p>
-            <p className="text-sm">{brandMentionCount} times</p>
-          </div>
+        <div className="grid grid-cols-2 gap-2 mb-4 text-sm">
+          <div><span className="font-medium">Brand:</span> {brandName}</div>
+          <div><span className="font-medium">AI Sentiment:</span> {getSentimentDisplay(sentiment.sentiment)}</div>
+          <div><span className="font-medium">Google Rank:</span> #{comparisonData.topResults[0]?.rank || 'Not Found'}</div>
+          <div><span className="font-medium">AI Mentions:</span> {brandMentionCount} times</div>
         </div>
         
-        {/* Side-by-side comparison table */}
-        <table className="w-full border-collapse mb-4">
-          <thead>
-            <tr className="bg-amber-100">
-              <th className="text-left py-2 px-3 text-xs font-medium text-amber-800">Search Type</th>
-              <th className="text-left py-2 px-3 text-xs font-medium text-amber-800">Brand Mentions</th>
-              <th className="text-left py-2 px-3 text-xs font-medium text-amber-800">Recommendation</th>
-              <th className="text-left py-2 px-3 text-xs font-medium text-amber-800">Sentiment</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="border-b border-amber-100">
-              <td className="py-2 px-3 text-xs">AI Search</td>
-              <td className="py-2 px-3 text-xs">{comparisonTableData.ai.mentions}</td>
-              <td className="py-2 px-3 text-xs">{comparisonTableData.ai.recommendation}</td>
-              <td className="py-2 px-3 text-xs">{comparisonTableData.ai.sentiment}</td>
-            </tr>
-            <tr>
-              <td className="py-2 px-3 text-xs">Google Search</td>
-              <td className="py-2 px-3 text-xs">{comparisonTableData.google.mentions}</td>
-              <td className="py-2 px-3 text-xs">{comparisonTableData.google.recommendation}</td>
-              <td className="py-2 px-3 text-xs">{comparisonTableData.google.sentiment}</td>
-            </tr>
-          </tbody>
-        </table>
+        {/* Key Takeaways Section */}
+        <div className="mb-4">
+          <h4 className="font-medium mb-2">📊 Key Takeaways</h4>
+          <ul className="list-disc pl-5 space-y-1 text-sm">
+            <li>
+              AI {recommendation.level === 'explicitly_recommended' ? 'recommends' : 
+                 hasBrandMention ? 'mentions but does not explicitly recommend' : 'does not mention'} {brandName}.
+            </li>
+            <li>
+              Google {googleMentionCount > 0 ? 
+                (comparisonData.topResults[0]?.hasBrandMention ? 'ranks it as a top result' : 'includes it in results') : 
+                'does not include it in top results'}.
+            </li>
+            {competitorMentions.length > 0 && (
+              <li>
+                AI explicitly mentions competitors: {competitorMentions.join(', ')}.
+              </li>
+            )}
+          </ul>
+        </div>
         
-        {/* Competitor mentions */}
-        {competitorMentions.length > 0 && (
-          <div className="mb-4">
-            <p className="text-sm font-medium text-amber-800 mb-1">Competitors in AI Results:</p>
-            <p className="text-sm">{competitorMentions.join(', ')}</p>
-          </div>
-        )}
+        {/* Side-by-Side Comparison Table */}
+        <div className="mb-4">
+          <h4 className="font-medium mb-2">📊 AI vs Traditional Search – Side-by-Side</h4>
+          <Table className="border">
+            <TableHeader className="bg-muted/30">
+              <TableRow>
+                <TableHead className="font-medium">Search Type</TableHead>
+                <TableHead className="font-medium">Brand Mentions</TableHead>
+                <TableHead className="font-medium">Recommendation</TableHead>
+                <TableHead className="font-medium">Sentiment</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell className="font-medium">AI Search</TableCell>
+                <TableCell>{aiDisplayValues.mentions}</TableCell>
+                <TableCell>{aiDisplayValues.recommendation}</TableCell>
+                <TableCell>{aiDisplayValues.sentiment}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell className="font-medium">Google Search</TableCell>
+                <TableCell>{googleDisplayValues.mentions}</TableCell>
+                <TableCell>{googleDisplayValues.recommendation}</TableCell>
+                <TableCell>{googleDisplayValues.sentiment}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
         
-        {/* Actionable Hypotheses */}
+        {/* Next Steps Section */}
         <div>
-          <p className="text-sm font-medium text-amber-800 mb-1">Actionable Hypotheses to Test:</p>
-          <ul className="list-disc pl-5 space-y-1">
-            {getActionableHypotheses().map((hypothesis, index) => (
-              <li key={index} className="text-xs">🔹 {hypothesis}</li>
+          <h4 className="font-medium mb-2">🔬 Next Steps: Hypotheses to Test</h4>
+          <ul className="list-disc pl-5 space-y-1 text-sm">
+            {getActionableHypotheses().slice(0, 3).map((hypothesis, index) => (
+              <li key={index}>{hypothesis}</li>
             ))}
           </ul>
         </div>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Original AI & Traditional Results (Collapsed) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <AIResults aiResult={{
           ...aiResult, 
           brandMentionCount, 
@@ -231,12 +214,4 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
       </div>
     </div>
   );
-};
-
-// Visibility label mapping
-const visibilityLabels: Record<string, string> = {
-  "high": "Strong Visibility",
-  "moderate": "Moderate Visibility",
-  "low": "Low Visibility",
-  "not_found": "Not Found"
 };
