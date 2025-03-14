@@ -1,3 +1,4 @@
+
 // Gemini API integration for querying brand visibility using proxy
 import { BrandData } from "@/components/BrandTracker";
 
@@ -10,6 +11,10 @@ export async function queryGemini(keyword: string, query: string, brand: string)
   try {
     console.log('Querying Gemini with:', { keyword, query, brand });
     
+    // Set a timeout of 10 seconds for the fetch request
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    
     const response = await fetch('https://ai-search-proxy-apurva5.replit.app/gemini', {
       method: 'POST',
       headers: {
@@ -18,11 +23,21 @@ export async function queryGemini(keyword: string, query: string, brand: string)
       body: JSON.stringify({
         prompt: query,
         model: 'gemini-pro'
-      })
+      }),
+      signal: controller.signal
     });
+    
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
-      const errorData = await response.json();
+      if (response.status === 404) {
+        throw new Error("Proxy server not found. Please try again later.");
+      }
+      if (response.status === 429) {
+        throw new Error("API rate limit exceeded. Please try again later.");
+      }
+      
+      const errorData = await response.json().catch(() => ({ error: `HTTP error: ${response.status}` }));
       throw new Error(errorData.error || `HTTP error: ${response.status}`);
     }
 
@@ -35,6 +50,13 @@ export async function queryGemini(keyword: string, query: string, brand: string)
     return data.content || "No response content";
   } catch (error) {
     console.error('Gemini API Error:', error);
+    // Check for specific error types to provide better error messages
+    if (error instanceof TypeError && error.message === 'Failed to fetch') {
+      throw new Error('Proxy server unreachable. Please check your internet connection or try again later.');
+    }
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      throw new Error('Request timed out. The proxy server is taking too long to respond.');
+    }
     throw error;
   }
 }
@@ -68,6 +90,7 @@ export async function analyzeBrandVisibility(
       });
     } catch (error) {
       console.error(`Failed to analyze visibility for keyword: ${keyword}`, error);
+      // Add failed result with more informative error message
       results.push({
         keyword,
         query,

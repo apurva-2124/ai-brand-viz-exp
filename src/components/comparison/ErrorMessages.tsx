@@ -1,6 +1,6 @@
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Ban, Info } from "lucide-react";
+import { AlertCircle, Ban, Info, Wifi } from "lucide-react";
 
 interface ErrorMessagesProps {
   errorMessage: string | null;
@@ -13,12 +13,40 @@ export const ErrorMessages = ({ errorMessage, apiLimitExceeded }: ErrorMessagesP
   
   console.log("Displaying error messages:", { errorMessage, apiLimitExceeded });
   
+  // Check if the error is proxy related
+  const isProxyError = errorMessage && (
+    errorMessage.includes("Proxy server") || 
+    errorMessage.includes("Failed to fetch") ||
+    errorMessage.includes("timeout")
+  );
+  
   return (
     <>
-      {errorMessage && (
+      {errorMessage && !isProxyError && (
         <Alert variant="destructive" className="my-4">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>{errorMessage}</AlertDescription>
+        </Alert>
+      )}
+
+      {isProxyError && (
+        <Alert variant="destructive" className="my-4">
+          <Wifi className="h-4 w-4" />
+          <AlertDescription>
+            <p className="font-medium">AI Proxy Server Issue</p>
+            <p className="text-sm mt-1">
+              {errorMessage}
+            </p>
+            <p className="text-sm mt-2">
+              <strong>Troubleshooting tips:</strong>
+              <ul className="list-disc pl-5 mt-1">
+                <li>Check your internet connection</li>
+                <li>The AI proxy server might be temporarily down</li>
+                <li>Try again in a few minutes</li>
+                <li>Try a different AI provider (OpenAI, Anthropic, or Gemini)</li>
+              </ul>
+            </p>
+          </AlertDescription>
         </Alert>
       )}
 
