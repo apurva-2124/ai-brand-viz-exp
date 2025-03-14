@@ -53,9 +53,9 @@ export function processAIResponse(
     competitors
   );
   
-  // New: analyze sentiment and recommendation status
+  // Analyze sentiment and recommendation status
   const sentiment = analyzeSentiment(result.response, brandName);
-  const recommendation = detectRecommendation(result.response, brandName);
+  const recommendationStatus = detectRecommendation(result.response, brandName);
   
   return { 
     ...result, 
@@ -67,6 +67,7 @@ export function processAIResponse(
     recommendation: generateRecommendation(visibilityScore.level),
     brandMentionCount,
     sentiment,
-    recommendationStatus: recommendation
+    recommendationStatus,
+    brandName // Add brandName for highlighting in UI
   };
 }

@@ -1,5 +1,6 @@
 
-import { Check, X, AlertCircle, ThumbsUp, Minus } from "lucide-react";
+import { Check, X, AlertCircle, ThumbsUp, ThumbsDown, Minus } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface AIResultsProps {
   aiResult: any;
@@ -44,7 +45,7 @@ export const AIResults = ({ aiResult }: AIResultsProps) => {
       case 'negative':
         return (
           <div className="inline-flex items-center gap-1 bg-red-100 text-red-800 px-2 py-0.5 rounded">
-            <ThumbsUp className="h-3 w-3 rotate-180" />
+            <ThumbsDown className="h-3 w-3" />
             <span className="text-xs">Negative</span>
           </div>
         );
@@ -60,9 +61,9 @@ export const AIResults = ({ aiResult }: AIResultsProps) => {
   
   // Get recommendation status
   const getRecommendationStatus = () => {
-    if (!aiResult.recommendation) return null;
+    if (!aiResult.recommendationStatus) return null;
     
-    switch (aiResult.recommendation.level) {
+    switch (aiResult.recommendationStatus.level) {
       case 'explicitly_recommended':
         return (
           <div className="inline-flex items-center gap-1 bg-green-100 text-green-800 px-2 py-0.5 rounded">
@@ -113,7 +114,7 @@ export const AIResults = ({ aiResult }: AIResultsProps) => {
         </div>
         
         {aiResult.sentiment && getSentimentBadge()}
-        {aiResult.recommendation && getRecommendationStatus()}
+        {aiResult.recommendationStatus && getRecommendationStatus()}
       </div>
       
       <div className="space-y-2 mb-4">

@@ -25,7 +25,7 @@ export const WhatThisMeans = ({ aiResult, comparisonData, brandName }: WhatThisM
   
   // Get sentiment and recommendation information
   const sentiment = aiResult.sentiment?.sentiment || 'neutral';
-  const isRecommended = aiResult.recommendation?.level === 'explicitly_recommended';
+  const isRecommended = aiResult.recommendationStatus?.level === 'explicitly_recommended';
   
   // Create dynamic message based on actual comparison
   let visibilityMessage = "";

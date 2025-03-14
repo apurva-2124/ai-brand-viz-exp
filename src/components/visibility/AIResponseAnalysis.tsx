@@ -1,6 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertTriangle, Wifi } from "lucide-react";
+import { AlertTriangle, Check, ThumbsUp, ThumbsDown, Minus, X, ArrowRight, Wifi } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface AIResponseAnalysisProps {
   results: Array<{
@@ -24,6 +25,16 @@ interface AIResponseAnalysisProps {
     recommendation?: string;
     queryType?: string;
     brandName?: string;
+    brandMentionCount?: number;
+    sentiment?: {
+      sentiment: 'positive' | 'neutral' | 'negative';
+      score: number;
+      explanation: string;
+    };
+    recommendationStatus?: {
+      level: 'explicitly_recommended' | 'mentioned_not_recommended' | 'not_mentioned';
+      explanation: string;
+    };
   }>;
 }
 
@@ -85,6 +96,116 @@ export const AIResponseAnalysis = ({ results }: AIResponseAnalysisProps) => {
     return text.replace(regex, match => 
       `<span class="font-bold text-green-600">${match}</span>`
     );
+  };
+
+  // Get brand mention badge
+  const getBrandMentionBadge = (result: any) => {
+    const hasBrandMention = result.hasBrandMention;
+    const isProminent = result.isProminent;
+    
+    if (isProminent) {
+      return (
+        <Badge className="bg-green-100 text-green-800">
+          <Check className="h-3 w-3 mr-1" />
+          Prominently Featured
+        </Badge>
+      );
+    } else if (hasBrandMention) {
+      return (
+        <Badge className="bg-yellow-100 text-yellow-800">
+          <AlertTriangle className="h-3 w-3 mr-1" />
+          Mentioned
+        </Badge>
+      );
+    } else {
+      return (
+        <Badge className="bg-red-100 text-red-800">
+          <X className="h-3 w-3 mr-1" />
+          Not Mentioned
+        </Badge>
+      );
+    }
+  };
+  
+  // Get sentiment badge
+  const getSentimentBadge = (result: any) => {
+    if (!result.sentiment) return null;
+    
+    switch (result.sentiment.sentiment) {
+      case 'positive':
+        return (
+          <Badge className="bg-green-100 text-green-800">
+            <ThumbsUp className="h-3 w-3 mr-1" />
+            Positive
+          </Badge>
+        );
+      case 'negative':
+        return (
+          <Badge className="bg-red-100 text-red-800">
+            <ThumbsDown className="h-3 w-3 mr-1" />
+            Negative
+          </Badge>
+        );
+      default:
+        return (
+          <Badge className="bg-gray-100 text-gray-800">
+            <Minus className="h-3 w-3 mr-1" />
+            Neutral
+          </Badge>
+        );
+    }
+  };
+  
+  // Get recommendation badge
+  const getRecommendationBadge = (result: any) => {
+    if (!result.recommendationStatus) return null;
+    
+    switch (result.recommendationStatus.level) {
+      case 'explicitly_recommended':
+        return (
+          <Badge className="bg-green-100 text-green-800">
+            <Check className="h-3 w-3 mr-1" />
+            Strong AI Recommendation
+          </Badge>
+        );
+      case 'mentioned_not_recommended':
+        return (
+          <Badge className="bg-yellow-100 text-yellow-800">
+            <AlertTriangle className="h-3 w-3 mr-1" />
+            Needs Optimization
+          </Badge>
+        );
+      default:
+        return (
+          <Badge className="bg-red-100 text-red-800">
+            <X className="h-3 w-3 mr-1" />
+            Not Recommended
+          </Badge>
+        );
+    }
+  };
+  
+  // Generate actionable insights based on sentiment and recommendation status
+  const getActionableInsights = (result: any) => {
+    const insights = [];
+    
+    if (!result.hasBrandMention) {
+      insights.push("Increase brand mentions in AI-generated responses for this query");
+    } else if (result.recommendationStatus?.level === 'mentioned_not_recommended') {
+      insights.push("AI search does not explicitly recommend your brand. Consider optimizing content for AI models.");
+    }
+    
+    if (result.sentiment?.sentiment === 'negative') {
+      insights.push("AI-generated content may be misrepresenting your brand. Consider addressing negative AI sentiment.");
+    } else if (result.sentiment?.sentiment === 'neutral' && result.hasBrandMention) {
+      insights.push("Increase brand authority signals in AI-generated responses.");
+    }
+    
+    if (result.competitorAnalysis?.competitorsFound?.length > 0) {
+      insights.push(`Address competitor mentions (${result.competitorAnalysis.competitorsFound.join(', ')}) in AI results.`);
+    }
+    
+    return insights;
   };
 
   return (
@@ -151,6 +272,14 @@ export const AIResponseAnalysis = ({ results }: AIResponseAnalysisProps) => {
                 <strong>Query:</strong> {result.query}
               </div>
               
+              {/* New: Badge row for brand mention, sentiment, and recommendation */}
+              <div className="flex flex-wrap gap-2 mb-3">
+                {getBrandMentionBadge(result)}
+                {getSentimentBadge(result)}
+                {getRecommendationBadge(result)}
+              </div>
+              
+              {/* Competitor analysis section */}
               {result.competitorAnalysis?.competitorsFound?.length > 0 && (
                 <div className="text-sm text-orange-700 mb-2">
                   <strong>Competitors found:</strong> {result.competitorAnalysis.competitorsFound.join(', ')}
@@ -162,12 +291,29 @@ export const AIResponseAnalysis = ({ results }: AIResponseAnalysisProps) => {
                 </div>
               )}
               
+              {/* Actionable insights section */}
+              {result.hasBrandMention !== undefined && (
+                <div className="mb-3 bg-blue-50 p-2 rounded-md">
+                  <p className="text-sm font-medium text-blue-800 mb-1">Actionable Insights:</p>
+                  <ul className="space-y-1">
+                    {getActionableInsights(result).map((insight, i) => (
+                      <li key={i} className="text-xs text-blue-800 flex">
+                        <ArrowRight className="h-3 w-3 mr-1 flex-shrink-0 mt-0.5" />
+                        <span>{insight}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              
+              {/* Original recommendation row (if present) */}
               {result.recommendation && (
                 <div className="text-sm text-blue-700 mb-2">
                   <strong>Recommendation:</strong> {result.recommendation}
                 </div>
               )}
               
+              {/* AI response with highlighted brand mentions */}
               <div className="bg-secondary/50 p-3 rounded text-sm max-h-40 overflow-y-auto">
                 <div dangerouslySetInnerHTML={{ 
                   __html: highlightBrandMentions(result.response, result.brandName || '') 

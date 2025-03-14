@@ -33,6 +33,7 @@ export type VisibilityResult = {
     level: 'explicitly_recommended' | 'mentioned_not_recommended' | 'not_mentioned';
     explanation: string;
   };
+  brandName?: string; // Add brandName for highlighting in UI
 };
 
 export interface AIVisibilityOptions {
