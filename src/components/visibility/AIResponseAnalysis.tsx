@@ -22,6 +22,7 @@ interface AIResponseAnalysisProps {
     };
     recommendation?: string;
     queryType?: string;
+    brandName?: string;
   }>;
 }
 
@@ -35,6 +36,19 @@ export const AIResponseAnalysis = ({ results }: AIResponseAnalysisProps) => {
       default:
         return <span className="bg-red-100 text-red-800 px-2 py-1 rounded text-xs">❌ Missing from AI Results</span>;
     }
+  };
+  
+  // Function to highlight brand mentions in the response
+  const highlightBrandMentions = (text: string, brandName: string) => {
+    if (!text || !brandName || brandName.trim() === '') return text;
+    
+    // Create a regex with word boundaries to match the brand name
+    const regex = new RegExp(`\\b${brandName}\\b`, 'gi');
+    
+    // Replace each occurrence with the highlighted version
+    return text.replace(regex, match => 
+      `<span class="font-bold text-green-600">${match}</span>`
+    );
   };
 
   return (
@@ -81,7 +95,9 @@ export const AIResponseAnalysis = ({ results }: AIResponseAnalysisProps) => {
               )}
               
               <div className="bg-secondary/50 p-3 rounded text-sm max-h-40 overflow-y-auto">
-                <p>{result.response}</p>
+                <div dangerouslySetInnerHTML={{ 
+                  __html: highlightBrandMentions(result.response, result.brandName || '') 
+                }} />
               </div>
             </div>
           ))}

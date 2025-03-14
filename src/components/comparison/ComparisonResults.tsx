@@ -110,7 +110,7 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
       )}
     
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <AIResults aiResult={{...aiResult, brandMentionCount, isProminent}} />
+        <AIResults aiResult={{...aiResult, brandMentionCount, isProminent, brandName}} />
         <TraditionalResults comparisonData={{...comparisonData, brandMentions: googleMentionCount}} />
       </div>
       

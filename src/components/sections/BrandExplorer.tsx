@@ -29,7 +29,7 @@ export const BrandExplorer = () => {
       <div className="max-w-5xl mx-auto space-y-10">
         <BrandExplorerHeader 
           title="Brand Explorer"
-          description="See how AI describes your brand vs. traditional search. Select a brand, industry, and keyword to compare AI-generated results with Google search rankings."
+          description="See how AI describes brands and categories vs. how these brands and keywords rank in traditional search. Select a brand, industry, and keyword to compare AI-generated results with Google search rankings."
         />
 
         <BrandExplorerControls

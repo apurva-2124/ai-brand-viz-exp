@@ -15,6 +15,19 @@ export const AIResults = ({ aiResult }: AIResultsProps) => {
   const isProminent = typeof aiResult.isProminent === 'boolean'
     ? aiResult.isProminent
     : false; // Don't assume prominence if not explicitly set
+    
+  // Function to highlight brand mentions in the response
+  const highlightBrandMentions = (text: string, brandName: string) => {
+    if (!text || !brandName || brandName.trim() === '') return text;
+    
+    // Create a regex with word boundaries to match the brand name
+    const regex = new RegExp(`\\b${brandName}\\b`, 'gi');
+    
+    // Replace each occurrence with the highlighted version
+    return text.replace(regex, match => 
+      `<span class="font-bold text-green-600">${match}</span>`
+    );
+  };
 
   return (
     <div className="border rounded-lg p-4">
@@ -71,7 +84,9 @@ export const AIResults = ({ aiResult }: AIResultsProps) => {
       </div>
       
       <div className="bg-secondary/30 p-3 rounded text-sm max-h-80 overflow-y-auto">
-        {aiResult.response}
+        <div dangerouslySetInnerHTML={{ 
+          __html: highlightBrandMentions(aiResult.response, aiResult.brandName || '') 
+        }} />
       </div>
     </div>
   );
