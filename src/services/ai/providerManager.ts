@@ -46,15 +46,7 @@ export async function fetchFromProviders(
   return results;
 }
 
+// Update to always return true since we're using the proxy now
 export function checkApiKeys(provider: AIProvider): boolean {
-  const openAIKey = localStorage.getItem("openai_api_key");
-  const anthropicKey = localStorage.getItem("anthropic_api_key");
-  const geminiKey = localStorage.getItem("gemini_api_key");
-  
-  if (provider === "openai") return !!openAIKey;
-  if (provider === "anthropic") return !!anthropicKey;
-  if (provider === "gemini") return !!geminiKey;
-  if (provider === "all") return !!(openAIKey || anthropicKey || geminiKey);
-  
-  return false;
+  return true; // Always return true since we're using the proxy
 }

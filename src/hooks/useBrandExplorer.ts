@@ -14,39 +14,9 @@ export const useBrandExplorer = () => {
   const [provider, setProvider] = useState<AIProvider>("openai");
   const [queryType, setQueryType] = useState<QueryType>("general");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [hasApiKey, setHasApiKeys] = useState(false);
+  const [hasApiKey, setHasApiKeys] = useState(true); // Always true now since we're using a proxy
   const [aiResults, setAiResults] = useState<any>(null);
 
-  // Check for API keys on mount and when localStorage changes
-  useEffect(() => {
-    const checkApiKeys = () => {
-      const openAIKey = localStorage.getItem("openai_api_key");
-      const anthropicKey = localStorage.getItem("anthropic_api_key");
-      const geminiKey = localStorage.getItem("gemini_api_key");
-      
-      setHasApiKeys(!!(openAIKey || anthropicKey || geminiKey));
-    };
-    
-    // Check initially
-    checkApiKeys();
-    
-    // Listen for storage changes (when API keys are added/removed)
-    const handleStorageChange = () => {
-      checkApiKeys();
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    
-    // Also check every second for changes made in the same window
-    // (localStorage events don't fire in the same window that makes the change)
-    const interval = setInterval(checkApiKeys, 1000);
-    
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      clearInterval(interval);
-    };
-  }, []);
-  
   // When industry changes, update the selected brand to the first brand in that industry
   useEffect(() => {
     const brandsInIndustry = brandIndustryKeywordMappings.filter(
@@ -74,11 +44,6 @@ export const useBrandExplorer = () => {
   };
 
   const runAIVisibilityAnalysis = async () => {
-    if (!hasApiKey) {
-      toast.error("Please add an API key in the settings before running analysis");
-      return;
-    }
-    
     setIsAnalyzing(true);
     setAiResults(null);
     
@@ -110,7 +75,7 @@ export const useBrandExplorer = () => {
       
       console.log('Generated queries for analysis:', queriesForAnalysis);
       
-      // Run the analysis with real API calls
+      // Run the analysis with proxy API calls
       const results = await analyzeAIVisibility(brandData, provider, queryType);
       
       console.log('Analysis results:', results);
@@ -118,7 +83,7 @@ export const useBrandExplorer = () => {
       toast.success("AI Visibility analysis completed");
     } catch (error) {
       console.error("Error running AI visibility analysis:", error);
-      toast.error("Failed to complete analysis. Please check API key and try again.");
+      toast.error("Failed to complete analysis. Please try again.");
     } finally {
       setIsAnalyzing(false);
     }
@@ -146,7 +111,7 @@ export const useBrandExplorer = () => {
     queryType,
     setQueryType,
     isAnalyzing,
-    hasApiKey,
+    hasApiKey: true, // Always true now since we're using a proxy
     aiResults,
     runAIVisibilityAnalysis,
     queries

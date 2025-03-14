@@ -1,61 +1,40 @@
-
-// Anthropic API integration for querying brand visibility
+// Anthropic API integration for querying brand visibility using proxy
 import { BrandData } from "@/components/BrandTracker";
 
 interface AnthropicResponse {
-  content: {
-    text: string;
-  }[];
-  type: string;
+  content: string;
+  error?: string;
 }
 
 export async function queryAnthropic(keyword: string, query: string, brand: string): Promise<string> {
   try {
-    const apiKey = localStorage.getItem('anthropic_api_key');
+    console.log('Querying Anthropic with:', { keyword, query, brand });
     
-    if (!apiKey) {
-      throw new Error("Anthropic API key not found. Please add it in the settings.");
-    }
-    
-    // Check if API key format is valid (basic check)
-    if (!apiKey.startsWith('sk-ant-')) {
-      throw new Error("Invalid Anthropic API key format. Should start with 'sk-ant-'");
-    }
-    
-    // Updated to use the latest Anthropic API format
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch('https://ai-search-proxy-apurva5.replit.app/anthropic', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01'
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'claude-3-haiku-20240307',
-        max_tokens: 500,
-        messages: [
-          {
-            role: 'user',
-            content: query
-          }
-        ]
+        prompt: query,
+        model: 'claude-3-haiku-20240307'
       })
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      const errorMessage = errorData.error?.message || `HTTP error ${response.status}`;
-      console.error('Anthropic API Error:', { status: response.status, message: errorMessage });
-      throw new Error(errorMessage);
+      const errorData = await response.json();
+      throw new Error(errorData.error || `HTTP error: ${response.status}`);
     }
 
     const data: AnthropicResponse = await response.json();
-    return data.content?.[0]?.text || "No response content";
+    
+    if (data.error) {
+      throw new Error(data.error);
+    }
+    
+    return data.content || "No response content";
   } catch (error) {
     console.error('Anthropic API Error:', error);
-    if (error instanceof Error) {
-      throw new Error(`Anthropic API Error: ${error.message}`);
-    }
     throw error;
   }
 }

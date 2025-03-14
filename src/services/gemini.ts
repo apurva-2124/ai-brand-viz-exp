@@ -1,46 +1,38 @@
-
-// Gemini API integration for querying brand visibility
+// Gemini API integration for querying brand visibility using proxy
 import { BrandData } from "@/components/BrandTracker";
 
 interface GeminiResponse {
-  candidates: {
-    content: {
-      parts: {
-        text: string;
-      }[];
-    };
-  }[];
+  content: string;
+  error?: string;
 }
 
 export async function queryGemini(keyword: string, query: string, brand: string): Promise<string> {
   try {
-    const apiKey = localStorage.getItem('gemini_api_key');
+    console.log('Querying Gemini with:', { keyword, query, brand });
     
-    if (!apiKey) {
-      throw new Error("Gemini API key not found. Please add it in the settings.");
-    }
-    
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${apiKey}`, {
+    const response = await fetch('https://ai-search-proxy-apurva5.replit.app/gemini', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: query
-          }]
-        }]
+        prompt: query,
+        model: 'gemini-pro'
       })
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error?.message || 'Failed to query Gemini');
+      const errorData = await response.json();
+      throw new Error(errorData.error || `HTTP error: ${response.status}`);
     }
 
     const data: GeminiResponse = await response.json();
-    return data.candidates[0]?.content?.parts[0]?.text || "No response content";
+    
+    if (data.error) {
+      throw new Error(data.error);
+    }
+    
+    return data.content || "No response content";
   } catch (error) {
     console.error('Gemini API Error:', error);
     throw error;
