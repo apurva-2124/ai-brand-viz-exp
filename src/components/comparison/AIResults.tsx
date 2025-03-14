@@ -8,14 +8,13 @@ interface AIResultsProps {
 
 export const AIResults = ({ aiResult }: AIResultsProps) => {
   // Use the hasBrandMention and isProminent values from the processed result
-  // Fall back to calculating them only if they're not provided
   const hasBrandMention = typeof aiResult.hasBrandMention === 'boolean' 
     ? aiResult.hasBrandMention 
     : aiResult.brandMentionCount > 0;
   
   const isProminent = typeof aiResult.isProminent === 'boolean'
     ? aiResult.isProminent
-    : false; // Don't assume prominence if not explicitly set
+    : false;
     
   // Function to highlight brand mentions in the response
   const highlightBrandMentions = (text: string, brandName: string) => {
@@ -30,134 +29,74 @@ export const AIResults = ({ aiResult }: AIResultsProps) => {
     );
   };
 
-  // Get sentiment badge colors
+  // Get consolidated status badge
+  const getStatusBadge = () => {
+    if (aiResult.recommendationStatus?.level === 'explicitly_recommended') {
+      return (
+        <Badge className="bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
+          ✅ Recommended by AI
+        </Badge>
+      );
+    } else if (hasBrandMention && aiResult.recommendationStatus?.level === 'mentioned_not_recommended') {
+      return (
+        <Badge className="bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full">
+          ⚠️ Mentioned, Not Recommended
+        </Badge>
+      );
+    } else if (hasBrandMention) {
+      return (
+        <Badge className="bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full">
+          🟡 Mentioned
+        </Badge>
+      );
+    } else {
+      return (
+        <Badge className="bg-red-100 text-red-800 px-2 py-0.5 rounded-full">
+          ❌ Not Found
+        </Badge>
+      );
+    }
+  };
+  
+  // Get sentiment badge
   const getSentimentBadge = () => {
     if (!aiResult.sentiment) return null;
     
     switch (aiResult.sentiment.sentiment) {
       case 'positive':
-        return (
-          <div className="inline-flex items-center gap-1 bg-green-100 text-green-800 px-2 py-0.5 rounded">
-            <ThumbsUp className="h-3 w-3" />
-            <span className="text-xs">Positive</span>
-          </div>
-        );
+        return <Badge className="bg-green-100 text-green-800">🟢 Positive</Badge>;
       case 'negative':
-        return (
-          <div className="inline-flex items-center gap-1 bg-red-100 text-red-800 px-2 py-0.5 rounded">
-            <ThumbsDown className="h-3 w-3" />
-            <span className="text-xs">Negative</span>
-          </div>
-        );
+        return <Badge className="bg-red-100 text-red-800">🔴 Negative</Badge>;
       default:
-        return (
-          <div className="inline-flex items-center gap-1 bg-gray-100 text-gray-800 px-2 py-0.5 rounded">
-            <Minus className="h-3 w-3" />
-            <span className="text-xs">Neutral</span>
-          </div>
-        );
-    }
-  };
-  
-  // Get recommendation status
-  const getRecommendationStatus = () => {
-    if (!aiResult.recommendationStatus) return null;
-    
-    switch (aiResult.recommendationStatus.level) {
-      case 'explicitly_recommended':
-        return (
-          <div className="inline-flex items-center gap-1 bg-green-100 text-green-800 px-2 py-0.5 rounded">
-            <Check className="h-3 w-3" />
-            <span className="text-xs">Explicitly Recommended</span>
-          </div>
-        );
-      case 'mentioned_not_recommended':
-        return (
-          <div className="inline-flex items-center gap-1 bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">
-            <AlertCircle className="h-3 w-3" />
-            <span className="text-xs">Mentioned, Not Recommended</span>
-          </div>
-        );
-      default:
-        return (
-          <div className="inline-flex items-center gap-1 bg-red-100 text-red-800 px-2 py-0.5 rounded">
-            <X className="h-3 w-3" />
-            <span className="text-xs">Not Mentioned</span>
-          </div>
-        );
+        return <Badge className="bg-gray-100 text-gray-800">🔹 Neutral</Badge>;
     }
   };
 
   return (
     <div className="border rounded-lg p-4">
       <h3 className="font-medium mb-3 text-primary">AI Search Results</h3>
-      <div className="text-sm mb-2">
-        <span className="text-muted-foreground">Query:</span> {aiResult.query}
-      </div>
-      <div className="text-sm mb-2">
-        <span className="text-muted-foreground">Provider:</span> {aiResult.provider}
-      </div>
       
       <div className="flex flex-wrap gap-2 mb-4">
-        <div className={`text-xs px-2 py-1 rounded inline-flex items-center ${
-          isProminent 
-            ? "bg-green-100 text-green-800" 
-            : hasBrandMention 
-              ? "bg-yellow-100 text-yellow-800"
-              : "bg-red-100 text-red-800"
-        }`}>
-          {isProminent 
-            ? "Prominently Featured" 
-            : hasBrandMention 
-              ? "Mentioned" 
-              : "Not Found"}
+        <div className="text-sm mb-2 flex-grow">
+          <span className="text-muted-foreground">Query:</span> {aiResult.query}
         </div>
-        
-        {aiResult.sentiment && getSentimentBadge()}
-        {aiResult.recommendationStatus && getRecommendationStatus()}
+        {getStatusBadge()}
       </div>
       
-      <div className="space-y-2 mb-4">
-        <div className="flex items-start gap-2">
-          {hasBrandMention ? 
-            <Check className="h-4 w-4 text-green-600 mt-0.5" /> : 
-            <X className="h-4 w-4 text-red-600 mt-0.5" />
-          }
-          <span className="text-sm">
-            {hasBrandMention ? 
-              `Brand is mentioned ${aiResult.brandMentionCount ? `${aiResult.brandMentionCount} times` : ""}` : 
-              "Brand is missing"}
-          </span>
-        </div>
-        <div className="flex items-start gap-2">
-          {isProminent ? 
-            <Check className="h-4 w-4 text-green-600 mt-0.5" /> : 
-            <X className="h-4 w-4 text-red-600 mt-0.5" />
-          }
-          <span className="text-sm">
-            {isProminent ? "Prominently featured" : "Not prominently featured"}
-          </span>
-        </div>
-        
-        {aiResult.sentiment && (
-          <div className="flex items-start gap-2">
-            <AlertCircle className="h-4 w-4 text-blue-600 mt-0.5" />
-            <span className="text-sm">
-              {aiResult.sentiment.explanation}
-            </span>
-          </div>
-        )}
-        
-        {aiResult.competitorAnalysis?.competitorsFound?.length > 0 && (
-          <div className="flex items-start gap-2">
-            <X className="h-4 w-4 text-orange-600 mt-0.5" />
-            <span className="text-sm">
-              Competitors mentioned: {aiResult.competitorAnalysis.competitorsFound.join(', ')}
-            </span>
-          </div>
-        )}
+      <div className="flex flex-wrap items-center gap-2 mb-3">
+        <span className="text-sm text-muted-foreground">Provider:</span> 
+        <span className="text-sm">{aiResult.provider}</span>
+        <div className="ml-auto">{getSentimentBadge()}</div>
       </div>
       
+      {/* Competitor analysis - only if competitors found */}
+      {aiResult.competitorAnalysis?.competitorsFound?.length > 0 && (
+        <div className="text-sm text-orange-700 mb-3 p-2 bg-orange-50 rounded-md">
+          <strong>Competitors mentioned:</strong> {aiResult.competitorAnalysis.competitorsFound.join(', ')}
+        </div>
+      )}
+      
+      {/* AI response with highlighted brand mentions */}
       <div className="bg-secondary/30 p-3 rounded text-sm max-h-80 overflow-y-auto">
         <div dangerouslySetInnerHTML={{ 
           __html: highlightBrandMentions(aiResult.response, aiResult.brandName || '') 

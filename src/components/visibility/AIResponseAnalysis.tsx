@@ -39,17 +39,6 @@ interface AIResponseAnalysisProps {
 }
 
 export const AIResponseAnalysis = ({ results }: AIResponseAnalysisProps) => {
-  const getVisibilityStatusBadge = (level: string) => {
-    switch(level) {
-      case "high":
-        return <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">✅ High Visibility</span>;
-      case "low":
-        return <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">⚠️ Needs Optimization</span>;
-      default:
-        return <span className="bg-red-100 text-red-800 px-2 py-1 rounded text-xs">❌ Missing from AI Results</span>;
-    }
-  };
-  
   // Check if all results are proxy errors
   const allProxyErrors = results.every(result => 
     result.response.includes("Proxy server") || 
@@ -98,30 +87,39 @@ export const AIResponseAnalysis = ({ results }: AIResponseAnalysisProps) => {
     );
   };
 
-  // Get brand mention badge
-  const getBrandMentionBadge = (result: any) => {
+  // Get consolidated status badge
+  const getStatusBadge = (result: any) => {
     const hasBrandMention = result.hasBrandMention;
     const isProminent = result.isProminent;
     
-    if (isProminent) {
+    if (result.recommendationStatus?.level === 'explicitly_recommended') {
       return (
         <Badge className="bg-green-100 text-green-800">
-          <Check className="h-3 w-3 mr-1" />
-          Prominently Featured
+          ✅ Strong AI Recommendation
+        </Badge>
+      );
+    } else if (hasBrandMention && result.recommendationStatus?.level === 'mentioned_not_recommended') {
+      return (
+        <Badge className="bg-yellow-100 text-yellow-800">
+          ⚠️ Needs Optimization
+        </Badge>
+      );
+    } else if (isProminent) {
+      return (
+        <Badge className="bg-green-100 text-green-800">
+          ✅ Prominently Featured
         </Badge>
       );
     } else if (hasBrandMention) {
       return (
         <Badge className="bg-yellow-100 text-yellow-800">
-          <AlertTriangle className="h-3 w-3 mr-1" />
-          Mentioned
+          🟡 Mentioned
         </Badge>
       );
     } else {
       return (
         <Badge className="bg-red-100 text-red-800">
-          <X className="h-3 w-3 mr-1" />
-          Not Mentioned
+          ❌ Not Found
         </Badge>
       );
     }
@@ -135,51 +133,19 @@ export const AIResponseAnalysis = ({ results }: AIResponseAnalysisProps) => {
       case 'positive':
         return (
           <Badge className="bg-green-100 text-green-800">
-            <ThumbsUp className="h-3 w-3 mr-1" />
-            Positive
+            🟢 Positive
           </Badge>
         );
       case 'negative':
         return (
           <Badge className="bg-red-100 text-red-800">
-            <ThumbsDown className="h-3 w-3 mr-1" />
-            Negative
+            🔴 Negative
           </Badge>
         );
       default:
         return (
           <Badge className="bg-gray-100 text-gray-800">
-            <Minus className="h-3 w-3 mr-1" />
-            Neutral
-          </Badge>
-        );
-    }
-  };
-  
-  // Get recommendation badge
-  const getRecommendationBadge = (result: any) => {
-    if (!result.recommendationStatus) return null;
-    
-    switch (result.recommendationStatus.level) {
-      case 'explicitly_recommended':
-        return (
-          <Badge className="bg-green-100 text-green-800">
-            <Check className="h-3 w-3 mr-1" />
-            Strong AI Recommendation
-          </Badge>
-        );
-      case 'mentioned_not_recommended':
-        return (
-          <Badge className="bg-yellow-100 text-yellow-800">
-            <AlertTriangle className="h-3 w-3 mr-1" />
-            Needs Optimization
-          </Badge>
-        );
-      default:
-        return (
-          <Badge className="bg-red-100 text-red-800">
-            <X className="h-3 w-3 mr-1" />
-            Not Recommended
+            🔹 Neutral
           </Badge>
         );
     }
@@ -230,9 +196,6 @@ export const AIResponseAnalysis = ({ results }: AIResponseAnalysisProps) => {
               <p className="text-sm mt-1">
                 The AI proxy server is currently unreachable. We're displaying sample data for demonstration purposes.
               </p>
-              <p className="text-sm mt-2">
-                Please try again later or check if you're using the correct proxy URL.
-              </p>
             </div>
           </div>
         )}
@@ -244,9 +207,6 @@ export const AIResponseAnalysis = ({ results }: AIResponseAnalysisProps) => {
               <p className="font-medium">API Response Format Issue</p>
               <p className="text-sm mt-1">
                 The AI proxy returned a success response but we couldn't extract the content. This could be due to changes in the API response format.
-              </p>
-              <p className="text-sm mt-2">
-                Try refreshing the page or contact support if the issue persists.
               </p>
             </div>
           </div>
@@ -263,36 +223,29 @@ export const AIResponseAnalysis = ({ results }: AIResponseAnalysisProps) => {
                     <span className="text-xs ml-2 px-2 py-0.5 bg-secondary rounded-full">{result.queryType}</span>
                   )}
                 </div>
-                <div>
-                  {getVisibilityStatusBadge(result.visibilityScore?.level || 
-                    (result.isProminent ? 'high' : result.hasBrandMention ? 'low' : 'not_found'))}
-                </div>
+                {getStatusBadge(result)}
               </div>
+              
               <div className="text-sm text-muted-foreground mb-2">
                 <strong>Query:</strong> {result.query}
               </div>
               
-              {/* New: Badge row for brand mention, sentiment, and recommendation */}
-              <div className="flex flex-wrap gap-2 mb-3">
-                {getBrandMentionBadge(result)}
-                {getSentimentBadge(result)}
-                {getRecommendationBadge(result)}
-              </div>
-              
-              {/* Competitor analysis section */}
-              {result.competitorAnalysis?.competitorsFound?.length > 0 && (
-                <div className="text-sm text-orange-700 mb-2">
-                  <strong>Competitors found:</strong> {result.competitorAnalysis.competitorsFound.join(', ')}
-                  {result.competitorAnalysis.competitorOutranking && (
-                    <span className="ml-2 text-red-600 font-medium">
-                      (Outranking your brand)
-                    </span>
-                  )}
+              {/* Sentiment badge - only show if we have sentiment data */}
+              {result.sentiment && (
+                <div className="mb-2">
+                  {getSentimentBadge(result)}
                 </div>
               )}
               
-              {/* Actionable insights section */}
-              {result.hasBrandMention !== undefined && (
+              {/* Competitor analysis - only if competitors found */}
+              {result.competitorAnalysis?.competitorsFound?.length > 0 && (
+                <div className="text-sm text-orange-700 mb-2">
+                  <strong>Competitors found:</strong> {result.competitorAnalysis.competitorsFound.join(', ')}
+                </div>
+              )}
+              
+              {/* Actionable insights section - in a blue box */}
+              {result.hasBrandMention !== undefined && getActionableInsights(result).length > 0 && (
                 <div className="mb-3 bg-blue-50 p-2 rounded-md">
                   <p className="text-sm font-medium text-blue-800 mb-1">Actionable Insights:</p>
                   <ul className="space-y-1">
@@ -303,13 +256,6 @@ export const AIResponseAnalysis = ({ results }: AIResponseAnalysisProps) => {
                       </li>
                     ))}
                   </ul>
-                </div>
-              )}
-              
-              {/* Original recommendation row (if present) */}
-              {result.recommendation && (
-                <div className="text-sm text-blue-700 mb-2">
-                  <strong>Recommendation:</strong> {result.recommendation}
                 </div>
               )}
               
