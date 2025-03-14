@@ -1,7 +1,5 @@
-
 import React from "react";
 import { Card } from "@/components/ui/card";
-import { SearchQueriesCard } from "@/components/visibility/SearchQueriesCard";
 import { AIResponseAnalysis } from "@/components/visibility/AIResponseAnalysis";
 import { AIvsTraditionalComparison } from "@/components/AIvsTraditionalComparison";
 import { 
@@ -58,6 +56,7 @@ export const BrandExplorerControls = ({
 }: BrandExplorerControlsProps) => {
   return (
     <Card className="p-6">
+      {/* 1️⃣ Brand Explorer (Top Section) - Keep as Is */}
       <div className="grid md:grid-cols-4 gap-4 mb-6">
         <IndustrySelect 
           selectedIndustry={selectedIndustry} 
@@ -106,32 +105,24 @@ export const BrandExplorerControls = ({
         </TooltipProvider>
       </div>
 
-      {/* Display Search Queries */}
-      {queries.length > 0 && (
-        <div className="mb-6">
-          <SearchQueriesCard queries={queries} />
-        </div>
+      {/* Move the results section below the controls */}
+      {/* Removed separate AI Response Analysis section as it will be merged into the ComparisonResults */}
+      {/* Removed separate AI Search Queries section as it will be merged into the AI Search Overview */}
+      
+      {/* AIvsTraditionalComparison component will handle all the sections as per the new layout */}
+      {aiResults && (
+        <AIvsTraditionalComparison
+          brandData={{
+            name: selectedBrand.brand,
+            industry: selectedBrand.industry,
+            keywords: [selectedKeyword],
+            email: "",
+            firstName: "",
+            lastName: ""
+          }}
+          aiResults={aiResults}
+        />
       )}
-
-      {/* Display AI Response Analysis results */}
-      {aiResults && aiResults.results && aiResults.results.length > 0 && (
-        <div className="mb-6">
-          <AIResponseAnalysis results={aiResults.results} />
-        </div>
-      )}
-
-      {/* AI vs. Traditional Comparison */}
-      <AIvsTraditionalComparison
-        brandData={{
-          name: selectedBrand.brand,
-          industry: selectedBrand.industry,
-          keywords: [selectedKeyword],
-          email: "",
-          firstName: "",
-          lastName: ""
-        }}
-        aiResults={aiResults}
-      />
     </Card>
   );
 };

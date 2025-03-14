@@ -119,11 +119,14 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
           apiLimitExceeded={apiLimitExceeded} 
         />
 
-        <ComparisonResults 
-          aiResult={enhancedAiResult} 
-          comparisonData={comparisonData} 
-          brandName={brandData.name}
-        />
+        {/* The ComparisonResults component now contains all the sections in the correct order */}
+        {enhancedAiResult && comparisonData && (
+          <ComparisonResults 
+            aiResult={enhancedAiResult} 
+            comparisonData={comparisonData} 
+            brandName={brandData.name}
+          />
+        )}
       </CardContent>
     </Card>
   );

@@ -129,9 +129,12 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
     sentiment: '🔹 Neutral'
   };
 
+  // Format transformed query for display in the overview section
+  const transformedQuery = aiResult.query || comparisonData.query;
+
   return (
     <div className="space-y-4">
-      {/* 1️⃣ AI Search Overview - Previously "AI Search Analysis for [query_keyword]" */}
+      {/* 1️⃣ AI Search Overview for [query_keyword] */}
       <div className="p-4 border rounded bg-white">
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-medium text-lg">AI Search Overview for "{aiResult.keyword || comparisonData.query}"</h3>
@@ -145,7 +148,18 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
           <div><span className="font-medium">AI Mentions:</span> {brandMentionCount} times</div>
         </div>
         
-        {/* 2️⃣ Key AI Search Insights - Previously "Key Takeaways" */}
+        {/* Show transformed query info (merged from AI Search Queries) */}
+        <div className="mb-4 p-3 bg-secondary/20 rounded-md">
+          <div className="text-xs text-muted-foreground mb-1">Transformed Query:</div>
+          <div className="text-sm">{transformedQuery}</div>
+          {aiResult.queryType && (
+            <div className="mt-1">
+              <span className="text-xs px-2 py-0.5 bg-primary/10 rounded-full">{aiResult.queryType}</span>
+            </div>
+          )}
+        </div>
+        
+        {/* 2️⃣ Key AI Search Insights */}
         <div className="mb-4">
           <h4 className="font-medium mb-2">📊 Key AI Search Insights</h4>
           <ul className="list-disc pl-5 space-y-1 text-sm">
@@ -166,7 +180,7 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
           </ul>
         </div>
         
-        {/* 3️⃣ AI vs. Traditional Search: Quick Comparison - Previously "AI vs Traditional Search" */}
+        {/* 3️⃣ AI vs. Traditional Search: Quick Comparison */}
         <div className="mb-4">
           <h4 className="font-medium mb-2">📊 AI vs. Traditional Search: Quick Comparison</h4>
           <Table className="border">
@@ -195,7 +209,7 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
           </Table>
         </div>
         
-        {/* 4️⃣ AI Visibility Strategy: Hypotheses to Test - Previously "Next Steps: Hypotheses to Test" */}
+        {/* 4️⃣ AI Visibility Strategy: Hypotheses to Test */}
         <div>
           <h4 className="font-medium mb-2">🔬 AI Visibility Strategy: Hypotheses to Test</h4>
           <ul className="list-disc pl-5 space-y-1 text-sm">
@@ -206,7 +220,7 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
         </div>
       </div>
       
-      {/* 5️⃣ AI Response Breakdown - New section summarizing AI Response Analysis */}
+      {/* 5️⃣ AI Response Breakdown */}
       <div className="p-4 border rounded bg-white">
         <h4 className="font-medium mb-3">AI Response Breakdown</h4>
         
@@ -224,7 +238,7 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
         </div>
       </div>
       
-      {/* 6️⃣ Full AI Search Results - Previously "AI Search Results" but now collapsible */}
+      {/* 6️⃣ Full AI Search Results - collapsible */}
       <Collapsible open={isAIResultsOpen} onOpenChange={setIsAIResultsOpen} className="border rounded-lg">
         <CollapsibleTrigger className="flex items-center justify-between w-full p-4 text-left bg-secondary/20">
           <h4 className="font-medium">Full AI Search Results</h4>
@@ -247,7 +261,7 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
         </CollapsibleContent>
       </Collapsible>
       
-      {/* 7️⃣ Full Traditional Search Results - Previously "Traditional Search Results" but now collapsible */}
+      {/* 7️⃣ Full Traditional Search Results - collapsible */}
       <Collapsible open={isTraditionalResultsOpen} onOpenChange={setIsTraditionalResultsOpen} className="border rounded-lg">
         <CollapsibleTrigger className="flex items-center justify-between w-full p-4 text-left bg-secondary/20">
           <h4 className="font-medium">Full Traditional Search Results</h4>
