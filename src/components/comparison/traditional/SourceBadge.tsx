@@ -1,12 +1,21 @@
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Database, Search, FileText } from "lucide-react";
+import { getGoogleRankingBadge } from "@/components/visibility/analysis/StatusBadges";
 
 interface SourceBadgeProps {
   source: "serpapi" | "mock" | "proxy" | "static";
+  rank?: number;
+  showRank?: boolean;
 }
 
-export const SourceBadge = ({ source }: SourceBadgeProps) => {
+export const SourceBadge = ({ source, rank, showRank = false }: SourceBadgeProps) => {
+  // Google ranking badge if requested
+  if (showRank && rank !== undefined) {
+    return getGoogleRankingBadge(rank);
+  }
+
+  // Source badges
   if (source === "serpapi") {
     return (
       <TooltipProvider>

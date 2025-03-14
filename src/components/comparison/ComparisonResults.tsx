@@ -9,6 +9,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { ChevronDown, ChevronUp, Eye } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { getStatusBadge, getGoogleRankingBadge, getMentionsBadge, getRecommendationBadge } from "@/components/visibility/analysis/StatusBadges";
 
 interface ComparisonResultsProps {
   aiResult: any;
@@ -68,16 +69,15 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
     brandName
   );
 
-  // Get consolidated status badge with new labels
-  const getConsolidatedStatusBadge = () => {
-    if (recommendation.level === 'explicitly_recommended') {
-      return <Badge className="bg-green-100 text-green-800">✅ Mentioned & Recommended</Badge>;
-    } else if (hasBrandMention) {
-      return <Badge className="bg-yellow-100 text-yellow-800">⚠ Mentioned, Not Recommended</Badge>;
-    } else {
-      return <Badge className="bg-red-100 text-red-800">❌ Not Mentioned in AI</Badge>;
-    }
-  };
+  // Get Google rank
+  const googleRank = comparisonData.topResults[0]?.rank;
+  const isTopGoogleResult = googleRank === 1;
+  
+  // Determine if the brand is explicitly recommended in AI
+  const isExplicitlyRecommended = recommendation.level === 'explicitly_recommended';
+  
+  // Grammar correction for mention count
+  const mentionText = brandMentionCount === 1 ? "time" : "times";
 
   // Generate actionable hypotheses
   const getActionableHypotheses = () => {
@@ -104,51 +104,48 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
     return hypotheses;
   };
 
-  // Create mapping for display values without emojis
-  const aiDisplayValues = {
-    mentions: hasBrandMention ? `Mentioned (${brandMentionCount}x)` : 'Not Found (0x)',
-    recommendation: recommendation.level === 'explicitly_recommended' ? '✅ Mentioned & Recommended' : 
-                    hasBrandMention ? '⚠ Mentioned, Not Recommended' : '❌ Not Mentioned in AI',
-    sentiment: sentiment.sentiment !== 'neutral' ? sentiment.sentiment : 'Neutral'
-  };
-  
-  const googleDisplayValues = {
-    mentions: googleMentionCount > 0 ? 
-      (comparisonData.topResults[0]?.hasBrandMention ? `Top Result (${googleMentionCount}x)` : `Mentioned (${googleMentionCount}x)`) : 
-      'Not Found (0x)',
-    recommendation: googleMentionCount > 0 && comparisonData.topResults[0]?.hasBrandMention ? 'Recommended' : 'Not Highlighted',
-    sentiment: 'Neutral'
-  };
-
-  // Format transformed query for display in the overview section
-  const transformedQuery = aiResult.query || comparisonData.query;
-
   return (
     <div className="space-y-4">
-      {/* 1️⃣ AI Search Overview for [query_keyword] - With reduced spacing */}
-      <div className="p-4 border rounded bg-white">
-        <div className="flex items-center justify-between mb-2">
+      {/* 1️⃣ AI Search Overview for [query_keyword] - With improved spacing */}
+      <div className="p-5 border rounded bg-white">
+        <div className="flex items-center justify-between mb-3">
           <h3 className="font-medium text-lg">AI Search Overview for "{aiResult.keyword || comparisonData.query}"</h3>
-          {getConsolidatedStatusBadge()}
         </div>
         
-        <div className="grid grid-cols-2 gap-2 mb-3 text-sm">
-          <div><span className="font-medium">Brand:</span> {brandName}</div>
+        <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+          <div className="flex items-center gap-1">
+            <span className="font-medium">Brand:</span> 
+            <span>{brandName}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="font-medium text-blue-600">Google Rank:</span> 
+            <span className="text-blue-600">#{comparisonData.topResults[0]?.rank || 'Not Found'}</span>
+          </div>
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1">
+              <span className="font-medium">AI Mentions:</span> 
+              <span className="font-bold">{brandMentionCount} {mentionText}</span>
+            </div>
+            <div className="mt-1">
+              {getStatusBadge({
+                hasBrandMention, 
+                recommendationStatus: recommendation
+              })}
+            </div>
+          </div>
           {sentiment.sentiment !== 'neutral' && (
             <div><span className="font-medium">AI Sentiment:</span> {sentiment.explanation}</div>
           )}
-          <div><span className="font-medium">Google Rank:</span> #{comparisonData.topResults[0]?.rank || 'Not Found'}</div>
-          <div><span className="font-medium">AI Mentions:</span> {brandMentionCount} times</div>
         </div>
         
         {/* Show transformed query info without general tag */}
-        <div className="mb-3 p-3 bg-secondary/20 rounded-md">
+        <div className="mb-4 p-3 bg-secondary/20 rounded-md">
           <div className="text-xs text-muted-foreground mb-1">Transformed Query:</div>
-          <div className="text-sm">{transformedQuery}</div>
+          <div className="text-sm">{aiResult.query || comparisonData.query}</div>
         </div>
         
         {/* 2️⃣ Key AI Search Insights - with bold text instead of emoji */}
-        <div className="mb-3">
+        <div className="mb-4">
           <h4 className="font-medium mb-2 underline">Key AI Search Insights</h4>
           <ul className="list-disc pl-5 space-y-1 text-sm">
             <li>
@@ -169,8 +166,8 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
           </ul>
         </div>
         
-        {/* 3️⃣ AI vs. Traditional Search: Quick Comparison */}
-        <div className="mb-3">
+        {/* 3️⃣ AI vs. Traditional Search: Quick Comparison - with improved badges */}
+        <div className="mb-4">
           <h4 className="font-medium mb-2 underline">AI vs. Traditional Search: Quick Comparison</h4>
           <Table className="border">
             <TableHeader className="bg-muted/30">
@@ -184,15 +181,23 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
             <TableBody>
               <TableRow className={!hasBrandMention ? "bg-red-50" : ""}>
                 <TableCell className="font-medium">AI Search</TableCell>
-                <TableCell>{aiDisplayValues.mentions}</TableCell>
-                <TableCell>{aiDisplayValues.recommendation}</TableCell>
-                <TableCell>{aiDisplayValues.sentiment}</TableCell>
+                <TableCell>
+                  {getMentionsBadge(brandMentionCount, true, recommendation.level)}
+                </TableCell>
+                <TableCell>
+                  {getRecommendationBadge(isExplicitlyRecommended, true)}
+                </TableCell>
+                <TableCell>{sentiment.sentiment}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell className="font-medium">Google Search</TableCell>
-                <TableCell>{googleDisplayValues.mentions}</TableCell>
-                <TableCell>{googleDisplayValues.recommendation}</TableCell>
-                <TableCell>{googleDisplayValues.sentiment}</TableCell>
+                <TableCell>
+                  {getMentionsBadge(googleMentionCount, false, isTopGoogleResult ? 'top' : 'regular')}
+                </TableCell>
+                <TableCell>
+                  {getRecommendationBadge(isTopGoogleResult, false)}
+                </TableCell>
+                <TableCell>Neutral</TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -222,7 +227,7 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
             <ul className="list-disc pl-5 mt-1">
               {competitorMentions.map((competitor, i) => (
                 <li key={i} className="text-red-600 font-medium">
-                  {competitor}
+                  Competitor Mentioned: {competitor}
                 </li>
               ))}
             </ul>

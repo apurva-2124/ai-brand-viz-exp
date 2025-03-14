@@ -7,6 +7,7 @@ import { SearchResultsList } from "./traditional/SearchResultsList";
 import { Button } from "@/components/ui/button";
 import { ExternalLink } from "lucide-react";
 import { getGoogleSearchUrl, formatDateString } from "@/utils/searchUtils";
+import { getGoogleRankingBadge } from "@/components/visibility/analysis/StatusBadges";
 
 interface TraditionalResultsProps {
   comparisonData: TraditionalSearchResults;
@@ -25,11 +26,14 @@ export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) 
     formatDateString(comparisonData.retrievalDate) : 
     "Invalid Date";
   
+  // Get top result rank if available
+  const topRank = hasResults ? comparisonData.topResults[0]?.rank : undefined;
+  
   return (
     <div className="border rounded-lg p-4">
-      <h3 className="font-medium mb-3 text-primary flex items-center">
-        Traditional Search Results
-        <SourceBadge source={comparisonData.source} />
+      <h3 className="font-medium mb-3 text-primary flex items-center justify-between">
+        <span>Traditional Search Results</span>
+        {topRank && getGoogleRankingBadge(topRank)}
       </h3>
       
       <div className="text-sm mb-2">

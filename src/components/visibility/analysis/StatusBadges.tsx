@@ -54,3 +54,112 @@ export const getSentimentBadge = (result: any) => {
       return null; // Don't display badge for neutral sentiment
   }
 };
+
+// New function to get Google ranking badge based on rank position
+export const getGoogleRankingBadge = (rank?: number) => {
+  if (!rank) {
+    return (
+      <Badge className="bg-red-100 text-red-800">
+        Not Found in Google
+      </Badge>
+    );
+  } else if (rank === 1) {
+    return (
+      <Badge className="bg-green-100 text-green-800">
+        Top Google Result
+      </Badge>
+    );
+  } else if (rank <= 10) {
+    return (
+      <Badge className="bg-yellow-100 text-yellow-800">
+        High Google Ranking
+      </Badge>
+    );
+  } else {
+    return (
+      <Badge className="bg-orange-100 text-orange-800">
+        Low Google Visibility
+      </Badge>
+    );
+  }
+};
+
+// New function to get mentions badge for comparison table
+export const getMentionsBadge = (count: number, isAI: boolean, status?: string) => {
+  if (isAI) {
+    if (!count) {
+      return (
+        <Badge className="bg-red-100 text-red-800">
+          Not Found (0x)
+        </Badge>
+      );
+    } else if (status === 'explicitly_recommended') {
+      return (
+        <Badge className="bg-green-100 text-green-800">
+          Mentioned ({count}x)
+        </Badge>
+      );
+    } else {
+      return (
+        <Badge className="bg-yellow-100 text-yellow-800">
+          Mentioned ({count}x)
+        </Badge>
+      );
+    }
+  } else {
+    // Google mentions
+    if (!count) {
+      return (
+        <Badge className="bg-red-100 text-red-800">
+          Not Found (0x)
+        </Badge>
+      );
+    } else if (status === 'top') {
+      return (
+        <Badge className="bg-green-100 text-green-800">
+          Top Google Result ({count}x)
+        </Badge>
+      );
+    } else {
+      return (
+        <Badge className="bg-yellow-100 text-yellow-800">
+          Mentioned ({count}x)
+        </Badge>
+      );
+    }
+  }
+};
+
+// New function to get recommendation badge for comparison table
+export const getRecommendationBadge = (isRecommended: boolean, isAI: boolean) => {
+  if (isAI) {
+    if (isRecommended) {
+      return (
+        <Badge className="bg-green-100 text-green-800">
+          Recommended
+        </Badge>
+      );
+    } else {
+      return (
+        <Badge className="bg-yellow-100 text-yellow-800">
+          Not Recommended
+        </Badge>
+      );
+    }
+  } else {
+    // Google recommendation
+    if (isRecommended) {
+      return (
+        <Badge className="bg-green-100 text-green-800">
+          Recommended
+        </Badge>
+      );
+    } else {
+      return (
+        <Badge className="bg-gray-100 text-gray-800">
+          Not Highlighted
+        </Badge>
+      );
+    }
+  }
+};

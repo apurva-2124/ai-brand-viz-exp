@@ -42,7 +42,7 @@ export const ResultItem = ({ result, index }: ResultItemProps) => {
           <ul className="list-disc pl-5 mt-1">
             {competitorsFound.map((competitor: string, i: number) => (
               <li key={i} className="text-red-600 font-medium">
-                {competitor}
+                Competitor Mentioned: {competitor}
               </li>
             ))}
           </ul>

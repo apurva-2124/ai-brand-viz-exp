@@ -2,6 +2,7 @@
 import Navbar from "@/components/Navbar";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { ResearchQuestions } from "@/components/sections/ResearchQuestions";
+import { TLDRFindings } from "@/components/sections/TLDRFindings";
 import { AboutExperiment } from "@/components/sections/AboutExperiment";
 import { BrandExplorer } from "@/components/sections/BrandExplorer";
 import { ExperimentDesignSection } from "@/components/sections/ExperimentDesignSection";
@@ -14,6 +15,7 @@ const Index = () => {
       <main>
         <HeroSection />
         <ResearchQuestions />
+        <TLDRFindings />
         <div id="brand-explorer">
           <BrandExplorer />
         </div>
