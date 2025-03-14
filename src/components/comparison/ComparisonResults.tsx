@@ -6,8 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { analyzeSentiment, detectRecommendation, generateComparisonInsights } from "@/utils/sentimentAnalysis";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Eye } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 interface ComparisonResultsProps {
   aiResult: any;
@@ -70,13 +71,13 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
   // Get consolidated status badge
   const getConsolidatedStatusBadge = () => {
     if (isProminent && recommendation.level === 'explicitly_recommended') {
-      return <Badge className="bg-green-100 text-green-800">✅ Strong AI Visibility</Badge>;
+      return <Badge className="bg-green-100 text-green-800">Strong AI Visibility</Badge>;
     } else if (hasBrandMention && !isProminent) {
-      return <Badge className="bg-yellow-100 text-yellow-800">⚠️ Needs Optimization</Badge>;
+      return <Badge className="bg-yellow-100 text-yellow-800">Missing Structured Data</Badge>;
     } else if (!hasBrandMention) {
-      return <Badge className="bg-red-100 text-red-800">❌ Not Found in AI</Badge>;
+      return <Badge className="bg-red-100 text-red-800">Not Found in AI</Badge>;
     } else {
-      return <Badge className="bg-yellow-100 text-yellow-800">⚠️ Mentioned, Not Recommended</Badge>;
+      return <Badge className="bg-yellow-100 text-yellow-800">Not Cited in AI Responses</Badge>;
     }
   };
 
@@ -105,28 +106,19 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
     return hypotheses;
   };
 
-  // Sentiment display
-  const getSentimentDisplay = (sentimentValue: string) => {
-    switch(sentimentValue) {
-      case 'positive': return '🟢 Positive';
-      case 'negative': return '🔴 Negative';
-      default: return '🔹 Neutral';
-    }
-  };
-
-  // Create mapping for display values
+  // Create mapping for display values without emojis
   const aiDisplayValues = {
-    mentions: hasBrandMention ? `🟡 Mentioned (${brandMentionCount}x)` : '🔴 Not Found (0x)',
-    recommendation: recommendation.level === 'explicitly_recommended' ? '✅ Recommended' : '⚠️ Not Recommended',
-    sentiment: getSentimentDisplay(sentiment.sentiment)
+    mentions: hasBrandMention ? `Mentioned (${brandMentionCount}x)` : 'Not Found (0x)',
+    recommendation: recommendation.level === 'explicitly_recommended' ? 'Recommended' : 'Not Recommended',
+    sentiment: sentiment.sentiment !== 'neutral' ? sentiment.sentiment : 'Neutral'
   };
   
   const googleDisplayValues = {
     mentions: googleMentionCount > 0 ? 
-      (comparisonData.topResults[0]?.hasBrandMention ? `🟢 Top Result (${googleMentionCount}x)` : `🟡 Mentioned (${googleMentionCount}x)`) : 
-      '🔴 Not Found (0x)',
-    recommendation: googleMentionCount > 0 && comparisonData.topResults[0]?.hasBrandMention ? '✅ Recommended' : '⚠️ Not Highlighted',
-    sentiment: '🔹 Neutral'
+      (comparisonData.topResults[0]?.hasBrandMention ? `Top Result (${googleMentionCount}x)` : `Mentioned (${googleMentionCount}x)`) : 
+      'Not Found (0x)',
+    recommendation: googleMentionCount > 0 && comparisonData.topResults[0]?.hasBrandMention ? 'Recommended' : 'Not Highlighted',
+    sentiment: 'Neutral'
   };
 
   // Format transformed query for display in the overview section
@@ -134,34 +126,31 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
 
   return (
     <div className="space-y-4">
-      {/* 1️⃣ AI Search Overview for [query_keyword] */}
+      {/* 1️⃣ AI Search Overview for [query_keyword] - With reduced spacing */}
       <div className="p-4 border rounded bg-white">
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-2">
           <h3 className="font-medium text-lg">AI Search Overview for "{aiResult.keyword || comparisonData.query}"</h3>
           {getConsolidatedStatusBadge()}
         </div>
         
-        <div className="grid grid-cols-2 gap-2 mb-4 text-sm">
+        <div className="grid grid-cols-2 gap-2 mb-3 text-sm">
           <div><span className="font-medium">Brand:</span> {brandName}</div>
-          <div><span className="font-medium">AI Sentiment:</span> {getSentimentDisplay(sentiment.sentiment)}</div>
+          {sentiment.sentiment !== 'neutral' && (
+            <div><span className="font-medium">AI Sentiment:</span> {sentiment.explanation}</div>
+          )}
           <div><span className="font-medium">Google Rank:</span> #{comparisonData.topResults[0]?.rank || 'Not Found'}</div>
           <div><span className="font-medium">AI Mentions:</span> {brandMentionCount} times</div>
         </div>
         
-        {/* Show transformed query info (merged from AI Search Queries) */}
-        <div className="mb-4 p-3 bg-secondary/20 rounded-md">
+        {/* Show transformed query info without general tag */}
+        <div className="mb-3 p-3 bg-secondary/20 rounded-md">
           <div className="text-xs text-muted-foreground mb-1">Transformed Query:</div>
           <div className="text-sm">{transformedQuery}</div>
-          {aiResult.queryType && (
-            <div className="mt-1">
-              <span className="text-xs px-2 py-0.5 bg-primary/10 rounded-full">{aiResult.queryType}</span>
-            </div>
-          )}
         </div>
         
-        {/* 2️⃣ Key AI Search Insights */}
-        <div className="mb-4">
-          <h4 className="font-medium mb-2">📊 Key AI Search Insights</h4>
+        {/* 2️⃣ Key AI Search Insights - with bold text instead of emoji */}
+        <div className="mb-3">
+          <h4 className="font-medium mb-2 underline">Key AI Search Insights</h4>
           <ul className="list-disc pl-5 space-y-1 text-sm">
             <li>
               AI {recommendation.level === 'explicitly_recommended' ? 'recommends' : 
@@ -181,8 +170,8 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
         </div>
         
         {/* 3️⃣ AI vs. Traditional Search: Quick Comparison */}
-        <div className="mb-4">
-          <h4 className="font-medium mb-2">📊 AI vs. Traditional Search: Quick Comparison</h4>
+        <div className="mb-3">
+          <h4 className="font-medium mb-2 underline">AI vs. Traditional Search: Quick Comparison</h4>
           <Table className="border">
             <TableHeader className="bg-muted/30">
               <TableRow>
@@ -193,7 +182,7 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow>
+              <TableRow className={!hasBrandMention ? "bg-red-50" : ""}>
                 <TableCell className="font-medium">AI Search</TableCell>
                 <TableCell>{aiDisplayValues.mentions}</TableCell>
                 <TableCell>{aiDisplayValues.recommendation}</TableCell>
@@ -211,18 +200,20 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
         
         {/* 4️⃣ AI Visibility Strategy: Hypotheses to Test */}
         <div>
-          <h4 className="font-medium mb-2">🔬 AI Visibility Strategy: Hypotheses to Test</h4>
-          <ul className="list-disc pl-5 space-y-1 text-sm">
-            {getActionableHypotheses().slice(0, 3).map((hypothesis, index) => (
-              <li key={index}>{hypothesis}</li>
-            ))}
-          </ul>
+          <h4 className="font-medium mb-2 underline">AI Visibility Strategy: Hypotheses to Test</h4>
+          <div className="border border-muted rounded-md p-3">
+            <ul className="list-disc pl-5 space-y-1 text-sm">
+              {getActionableHypotheses().slice(0, 3).map((hypothesis, index) => (
+                <li key={index}>{hypothesis}</li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
       
       {/* 5️⃣ AI Response Breakdown */}
       <div className="p-4 border rounded bg-white">
-        <h4 className="font-medium mb-3">AI Response Breakdown</h4>
+        <h4 className="font-medium mb-3 underline">AI Response Breakdown</h4>
         
         {/* Competitor analysis - only if competitors found */}
         {competitorMentions.length > 0 && (
@@ -238,14 +229,17 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
         </div>
       </div>
       
-      {/* 6️⃣ Full AI Search Results - collapsible */}
+      {/* 6️⃣ Full AI Search Results - collapsed by default with "View AI Response" button */}
       <Collapsible open={isAIResultsOpen} onOpenChange={setIsAIResultsOpen} className="border rounded-lg">
         <CollapsibleTrigger className="flex items-center justify-between w-full p-4 text-left bg-secondary/20">
           <h4 className="font-medium">Full AI Search Results</h4>
-          {isAIResultsOpen ? 
-            <ChevronUp className="h-4 w-4 text-muted-foreground" /> : 
-            <ChevronDown className="h-4 w-4 text-muted-foreground" />
-          }
+          <Button variant="outline" size="sm" className="flex items-center gap-2">
+            <Eye className="h-4 w-4" /> View AI Response
+            {isAIResultsOpen ? 
+              <ChevronUp className="h-4 w-4 text-muted-foreground" /> : 
+              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+            }
+          </Button>
         </CollapsibleTrigger>
         <CollapsibleContent>
           <div className="p-4">
@@ -261,14 +255,17 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
         </CollapsibleContent>
       </Collapsible>
       
-      {/* 7️⃣ Full Traditional Search Results - collapsible */}
+      {/* 7️⃣ Full Traditional Search Results - collapsed by default with "View Traditional Results" button */}
       <Collapsible open={isTraditionalResultsOpen} onOpenChange={setIsTraditionalResultsOpen} className="border rounded-lg">
         <CollapsibleTrigger className="flex items-center justify-between w-full p-4 text-left bg-secondary/20">
           <h4 className="font-medium">Full Traditional Search Results</h4>
-          {isTraditionalResultsOpen ? 
-            <ChevronUp className="h-4 w-4 text-muted-foreground" /> : 
-            <ChevronDown className="h-4 w-4 text-muted-foreground" />
-          }
+          <Button variant="outline" size="sm" className="flex items-center gap-2">
+            <Eye className="h-4 w-4" /> View Traditional Results
+            {isTraditionalResultsOpen ? 
+              <ChevronUp className="h-4 w-4 text-muted-foreground" /> : 
+              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+            }
+          </Button>
         </CollapsibleTrigger>
         <CollapsibleContent>
           <div className="p-4">

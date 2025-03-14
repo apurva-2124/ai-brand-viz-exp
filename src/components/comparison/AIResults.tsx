@@ -1,5 +1,5 @@
 
-import { Check, X, AlertCircle, ThumbsUp, ThumbsDown, Minus } from "lucide-react";
+import { Check, X, AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface AIResultsProps {
@@ -34,41 +34,41 @@ export const AIResults = ({ aiResult }: AIResultsProps) => {
     if (aiResult.recommendationStatus?.level === 'explicitly_recommended') {
       return (
         <Badge className="bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
-          ✅ Recommended by AI
+          Strong AI Recommendation
         </Badge>
       );
     } else if (hasBrandMention && aiResult.recommendationStatus?.level === 'mentioned_not_recommended') {
       return (
         <Badge className="bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full">
-          ⚠️ Mentioned, Not Recommended
+          Not Cited in AI Responses
         </Badge>
       );
     } else if (hasBrandMention) {
       return (
         <Badge className="bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full">
-          🟡 Mentioned
+          Mentioned
         </Badge>
       );
     } else {
       return (
         <Badge className="bg-red-100 text-red-800 px-2 py-0.5 rounded-full">
-          ❌ Not Found
+          Not Found
         </Badge>
       );
     }
   };
   
-  // Get sentiment badge
+  // Only display sentiment badge for non-neutral sentiment
   const getSentimentBadge = () => {
-    if (!aiResult.sentiment) return null;
+    if (!aiResult.sentiment || aiResult.sentiment.sentiment === 'neutral') return null;
     
     switch (aiResult.sentiment.sentiment) {
       case 'positive':
-        return <Badge className="bg-green-100 text-green-800">🟢 Positive</Badge>;
+        return <Badge className="bg-green-100 text-green-800">Positive: {aiResult.sentiment.explanation}</Badge>;
       case 'negative':
-        return <Badge className="bg-red-100 text-red-800">🔴 Negative</Badge>;
+        return <Badge className="bg-red-100 text-red-800">Negative: {aiResult.sentiment.explanation}</Badge>;
       default:
-        return <Badge className="bg-gray-100 text-gray-800">🔹 Neutral</Badge>;
+        return null;
     }
   };
 
@@ -84,9 +84,7 @@ export const AIResults = ({ aiResult }: AIResultsProps) => {
       </div>
       
       <div className="flex flex-wrap items-center gap-2 mb-3">
-        <span className="text-sm text-muted-foreground">Provider:</span> 
-        <span className="text-sm">{aiResult.provider}</span>
-        <div className="ml-auto">{getSentimentBadge()}</div>
+        {getSentimentBadge()}
       </div>
       
       {/* Competitor analysis - only if competitors found */}
