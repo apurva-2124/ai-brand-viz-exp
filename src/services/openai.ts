@@ -22,7 +22,7 @@ export async function queryOpenAI(keyword: string, query: string, brand: string)
       },
       body: JSON.stringify({
         prompt: query,
-        model: 'gpt-4o-mini' // Updated to use a supported model
+        model: 'gpt-4' // Updated to use the specified model
       }),
       signal: controller.signal
     });
