@@ -15,10 +15,6 @@ interface TraditionalResultsProps {
 export const TraditionalResults = ({ comparisonData }: TraditionalResultsProps) => {
   // Debug logs
   console.log("TraditionalResults component rendering with data:", comparisonData);
-  console.log("Results array:", comparisonData.topResults);
-  console.log("Results count:", comparisonData.topResults?.length || 0);
-  console.log("Error type:", comparisonData.error);
-  console.log("Data source:", comparisonData.source);
   
   // Check if we have results or a specific error
   const hasResults = Array.isArray(comparisonData.topResults) && comparisonData.topResults.length > 0;

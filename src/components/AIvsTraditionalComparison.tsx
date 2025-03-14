@@ -58,12 +58,8 @@ export const AIvsTraditionalComparison = ({ brandData, aiResults }: AIvsTraditio
     try {
       console.log(`Starting ${useStaticData ? "static" : "live web search"} fetch for keyword:`, selectedKeyword);
       
-      // Use the keyword as query
-      const query = selectedKeyword;
-      console.log("Fetching traditional results with query:", query);
-      
-      // Client-side fetch of results (with optional static data)
-      const results = await getTraditionalSearchResults(query, brandData.name, useStaticData);
+      // Use the selected keyword as query directly
+      const results = await getTraditionalSearchResults(selectedKeyword, brandData.name, useStaticData);
       console.log("Traditional search results:", results);
       
       if (results.error === "API_LIMIT_EXCEEDED" || results.error === "PROXY_ERROR") {
