@@ -5,6 +5,9 @@ import { TraditionalSearchResults } from "@/services/traditional-search";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { analyzeSentiment, detectRecommendation, generateComparisonInsights } from "@/utils/sentimentAnalysis";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { useState } from "react";
 
 interface ComparisonResultsProps {
   aiResult: any;
@@ -13,6 +16,9 @@ interface ComparisonResultsProps {
 }
 
 export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: ComparisonResultsProps) => {
+  const [isAIResultsOpen, setIsAIResultsOpen] = useState(false);
+  const [isTraditionalResultsOpen, setIsTraditionalResultsOpen] = useState(false);
+  
   if (!aiResult || !comparisonData) return null;
   
   // Calculate visibility level with improved logic
@@ -125,10 +131,10 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
 
   return (
     <div className="space-y-4">
-      {/* Search Analysis Header */}
+      {/* 1️⃣ AI Search Overview - Previously "AI Search Analysis for [query_keyword]" */}
       <div className="p-4 border rounded bg-white">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="font-medium text-lg">AI Search Analysis for "{aiResult.keyword || comparisonData.query}"</h3>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-medium text-lg">AI Search Overview for "{aiResult.keyword || comparisonData.query}"</h3>
           {getConsolidatedStatusBadge()}
         </div>
         
@@ -139,9 +145,9 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
           <div><span className="font-medium">AI Mentions:</span> {brandMentionCount} times</div>
         </div>
         
-        {/* Key Takeaways Section */}
+        {/* 2️⃣ Key AI Search Insights - Previously "Key Takeaways" */}
         <div className="mb-4">
-          <h4 className="font-medium mb-2">📊 Key Takeaways</h4>
+          <h4 className="font-medium mb-2">📊 Key AI Search Insights</h4>
           <ul className="list-disc pl-5 space-y-1 text-sm">
             <li>
               AI {recommendation.level === 'explicitly_recommended' ? 'recommends' : 
@@ -160,9 +166,9 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
           </ul>
         </div>
         
-        {/* Side-by-Side Comparison Table */}
+        {/* 3️⃣ AI vs. Traditional Search: Quick Comparison - Previously "AI vs Traditional Search" */}
         <div className="mb-4">
-          <h4 className="font-medium mb-2">📊 AI vs Traditional Search – Side-by-Side</h4>
+          <h4 className="font-medium mb-2">📊 AI vs. Traditional Search: Quick Comparison</h4>
           <Table className="border">
             <TableHeader className="bg-muted/30">
               <TableRow>
@@ -189,9 +195,9 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
           </Table>
         </div>
         
-        {/* Next Steps Section */}
+        {/* 4️⃣ AI Visibility Strategy: Hypotheses to Test - Previously "Next Steps: Hypotheses to Test" */}
         <div>
-          <h4 className="font-medium mb-2">🔬 Next Steps: Hypotheses to Test</h4>
+          <h4 className="font-medium mb-2">🔬 AI Visibility Strategy: Hypotheses to Test</h4>
           <ul className="list-disc pl-5 space-y-1 text-sm">
             {getActionableHypotheses().slice(0, 3).map((hypothesis, index) => (
               <li key={index}>{hypothesis}</li>
@@ -200,18 +206,62 @@ export const ComparisonResults = ({ aiResult, comparisonData, brandName = "" }: 
         </div>
       </div>
       
-      {/* Original AI & Traditional Results (Collapsed) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <AIResults aiResult={{
-          ...aiResult, 
-          brandMentionCount, 
-          isProminent, 
-          brandName,
-          sentiment,
-          recommendation
-        }} />
-        <TraditionalResults comparisonData={{...comparisonData, brandMentions: googleMentionCount}} />
+      {/* 5️⃣ AI Response Breakdown - New section summarizing AI Response Analysis */}
+      <div className="p-4 border rounded bg-white">
+        <h4 className="font-medium mb-3">AI Response Breakdown</h4>
+        
+        {/* Competitor analysis - only if competitors found */}
+        {competitorMentions.length > 0 && (
+          <div className="text-sm text-orange-700 mb-3 p-2 bg-orange-50 rounded-md">
+            <strong>Competitors mentioned:</strong> {competitorMentions.join(', ')}
+          </div>
+        )}
+        
+        {/* Sentiment & recommendation summary */}
+        <div className="mb-3 text-sm">
+          <p><strong>Sentiment:</strong> {sentiment.explanation}</p>
+          <p><strong>Recommendation Status:</strong> {recommendation.explanation}</p>
+        </div>
       </div>
+      
+      {/* 6️⃣ Full AI Search Results - Previously "AI Search Results" but now collapsible */}
+      <Collapsible open={isAIResultsOpen} onOpenChange={setIsAIResultsOpen} className="border rounded-lg">
+        <CollapsibleTrigger className="flex items-center justify-between w-full p-4 text-left bg-secondary/20">
+          <h4 className="font-medium">Full AI Search Results</h4>
+          {isAIResultsOpen ? 
+            <ChevronUp className="h-4 w-4 text-muted-foreground" /> : 
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+          }
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <div className="p-4">
+            <AIResults aiResult={{
+              ...aiResult, 
+              brandMentionCount, 
+              isProminent, 
+              brandName,
+              sentiment,
+              recommendation
+            }} />
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
+      
+      {/* 7️⃣ Full Traditional Search Results - Previously "Traditional Search Results" but now collapsible */}
+      <Collapsible open={isTraditionalResultsOpen} onOpenChange={setIsTraditionalResultsOpen} className="border rounded-lg">
+        <CollapsibleTrigger className="flex items-center justify-between w-full p-4 text-left bg-secondary/20">
+          <h4 className="font-medium">Full Traditional Search Results</h4>
+          {isTraditionalResultsOpen ? 
+            <ChevronUp className="h-4 w-4 text-muted-foreground" /> : 
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+          }
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <div className="p-4">
+            <TraditionalResults comparisonData={{...comparisonData, brandMentions: googleMentionCount}} />
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
     </div>
   );
 };
