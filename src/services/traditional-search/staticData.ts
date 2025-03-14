@@ -1,5 +1,5 @@
 
-import { TraditionalSearchResults } from "./types";
+import { TraditionalSearchResults, SearchResult } from "./types";
 
 /**
  * Get static traditional search results for testing and demo purposes
@@ -36,7 +36,7 @@ export function getStaticTraditionalResults(
 /**
  * Get query-specific static results
  */
-function getQuerySpecificResults(query: string, brandName: string) {
+function getQuerySpecificResults(query: string, brandName: string): SearchResult[] {
   // Lowercase for easier comparison
   const lowerQuery = query.toLowerCase();
   
