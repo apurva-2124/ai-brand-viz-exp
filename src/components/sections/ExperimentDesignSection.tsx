@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Container } from "@/components/Container";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -26,17 +27,9 @@ export const ExperimentDesignSection = () => {
 
         <Accordion type="single" collapsible className="space-y-4">
           <AccordionItem value="traditional-vs-ai" className="border-b pb-4">
-            <div className="flex items-center justify-between">
-              <AccordionTrigger className="text-xl font-semibold hover:no-underline">
-                Traditional Search vs. AI Search Queries
-              </AccordionTrigger>
-              <button 
-                onClick={() => setIsOpen(!isOpen)} 
-                className="rounded-full p-1 hover:bg-muted/50"
-              >
-                <ChevronUp className={`h-5 w-5 transition-transform duration-200 ${isOpen ? "" : "rotate-180"}`} />
-              </button>
-            </div>
+            <AccordionTrigger className="text-xl font-semibold hover:no-underline text-left justify-start">
+              Traditional Search vs. AI Search Queries
+            </AccordionTrigger>
             
             {isOpen && (
               <div className="space-y-6 pt-4">
@@ -73,7 +66,7 @@ export const ExperimentDesignSection = () => {
           </AccordionItem>
 
           <AccordionItem value="why-ai-query-types">
-            <AccordionTrigger className="text-xl font-semibold">
+            <AccordionTrigger className="text-xl font-semibold text-left justify-start">
               Why We Use AI-Specific Query Types
             </AccordionTrigger>
             <AccordionContent className="space-y-2 pt-4">
@@ -81,7 +74,7 @@ export const ExperimentDesignSection = () => {
               
               <Accordion type="single" collapsible className="space-y-2">
                 <AccordionItem value="general-query">
-                  <AccordionTrigger>General Query (Baseline)</AccordionTrigger>
+                  <AccordionTrigger className="text-left justify-start">General Query (Baseline)</AccordionTrigger>
                   <AccordionContent className="space-y-2 pt-2">
                     <ul className="list-disc pl-6 space-y-2">
                       <li><strong>Google:</strong> Shows ranked informational pages (Wikipedia, news, blogs).</li>
@@ -97,7 +90,7 @@ export const ExperimentDesignSection = () => {
                 </AccordionItem>
 
                 <AccordionItem value="comparison-query">
-                  <AccordionTrigger>Comparison Query</AccordionTrigger>
+                  <AccordionTrigger className="text-left justify-start">Comparison Query</AccordionTrigger>
                   <AccordionContent className="space-y-2 pt-2">
                     <ul className="list-disc pl-6 space-y-2">
                       <li><strong>Google:</strong> Shows articles comparing brands (e.g., "Best travel sites ranked").</li>
@@ -113,7 +106,7 @@ export const ExperimentDesignSection = () => {
                 </AccordionItem>
 
                 <AccordionItem value="negative-sentiment">
-                  <AccordionTrigger>Negative Sentiment Query (Reputation Risk)</AccordionTrigger>
+                  <AccordionTrigger className="text-left justify-start">Negative Sentiment Query (Reputation Risk)</AccordionTrigger>
                   <AccordionContent className="space-y-2 pt-2">
                     <ul className="list-disc pl-6 space-y-2">
                       <li><strong>Google:</strong> Often surfaces PR-managed content or forum discussions.</li>
@@ -129,7 +122,7 @@ export const ExperimentDesignSection = () => {
                 </AccordionItem>
 
                 <AccordionItem value="review-based">
-                  <AccordionTrigger>Review-Based Query</AccordionTrigger>
+                  <AccordionTrigger className="text-left justify-start">Review-Based Query</AccordionTrigger>
                   <AccordionContent className="space-y-2 pt-2">
                     <ul className="list-disc pl-6 space-y-2">
                       <li><strong>Google:</strong> Prioritizes review sites (Yelp, Trustpilot, Reddit).</li>
@@ -145,7 +138,7 @@ export const ExperimentDesignSection = () => {
                 </AccordionItem>
 
                 <AccordionItem value="ai-assistant">
-                  <AccordionTrigger>AI Assistant Query (Conversational Search)</AccordionTrigger>
+                  <AccordionTrigger className="text-left justify-start">AI Assistant Query (Conversational Search)</AccordionTrigger>
                   <AccordionContent className="space-y-2 pt-2">
                     <ul className="list-disc pl-6 space-y-2">
                       <li><strong>Google:</strong> Suggests related searches or FAQ pages.</li>
@@ -164,7 +157,7 @@ export const ExperimentDesignSection = () => {
           </AccordionItem>
 
           <AccordionItem value="implications">
-            <AccordionTrigger className="text-xl font-semibold">
+            <AccordionTrigger className="text-xl font-semibold text-left justify-start">
               What This Means for Brands
             </AccordionTrigger>
             <AccordionContent className="pt-4">
