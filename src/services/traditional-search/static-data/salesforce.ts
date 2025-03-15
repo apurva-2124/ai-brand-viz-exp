@@ -53,6 +53,52 @@ export function getSalesforceResults(query: string): SearchResult[] {
     ];
   }
   
+  // Salesforce vs HubSpot specific results
+  if (lowerQuery === "salesforce vs hubspot") {
+    return [
+      {
+        rank: 1,
+        url: "https://www.reddit.com/r/salesforce/comments/136slim/salesforce_vs_hubspot/",
+        title: "Salesforce vs. HubSpot : r/salesforce",
+        description: "Reddit discussion comparing Salesforce and HubSpot CRM platforms, with users sharing their experiences with both systems.",
+        hasBrandMention: true,
+        resultType: "organic"
+      },
+      {
+        rank: 2,
+        url: "https://www.hubspot.com/comparisons/salesforce-vs-hubspot",
+        title: "Salesforce Sales Cloud vs HubSpot | Why HubSpot is the Best ...",
+        description: "HubSpot's comparison page highlighting the differences between their platform and Salesforce, focusing on usability and pricing.",
+        hasBrandMention: true,
+        resultType: "organic"
+      },
+      {
+        rank: 3,
+        url: "https://www.reddit.com/r/salesforce/comments/15r9drw/probably_an_age_old_question_hubspot_vs/",
+        title: "Probably an age old question… Hubspot vs Salesforce. Why wouldn ...",
+        description: "Another Reddit discussion where users debate the merits of choosing between HubSpot and Salesforce for different business needs.",
+        hasBrandMention: true,
+        resultType: "organic"
+      },
+      {
+        rank: 4,
+        url: "https://www.revopscoop.com/post/hubspot-v-salesforce-admin",
+        title: "HubSpot vs. Salesforce from an Admin's ... - RevOps Co-op Blog",
+        description: "Blog post comparing the administration experience between HubSpot and Salesforce from an administrator's perspective.",
+        hasBrandMention: true,
+        resultType: "organic"
+      },
+      {
+        rank: 5,
+        url: "https://zapier.com/blog/hubspot-vs-salesforce/",
+        title: "HubSpot vs. Salesforce: Which is right for you? [2025]",
+        description: "Zapier's in-depth comparison of HubSpot and Salesforce, analyzing features, pricing, and use cases to help businesses choose the right platform.",
+        hasBrandMention: true,
+        resultType: "organic"
+      }
+    ];
+  }
+  
   // Return empty array if no specific match found
   return [];
 }
