@@ -30,7 +30,7 @@ export const initGA = (measurementId: string): void => {
 // Track a page view
 export const pageview = (url: string): void => {
   if (typeof window !== 'undefined' && window.gtag) {
-    window.gtag('config', 'G-349289130', {
+    window.gtag('config', 'G-KE0SC41J9W', {
       page_path: url,
     });
   }
