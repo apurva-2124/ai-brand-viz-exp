@@ -30,7 +30,18 @@ export async function fetchFromProviders(
       // Return the error results without using mock fallbacks
       return openAIResults.map(result => ({
         ...result,
-        provider: "OpenAI (Unavailable)"
+        provider: "OpenAI (Unavailable)",
+        visibilityScore: {
+          level: "not_found",
+          label: "Not Found",
+          score: 0,
+          context: null
+        },
+        competitorAnalysis: {
+          competitorsFound: [],
+          competitorOutranking: false,
+          riskLevel: "low"
+        }
       }));
     }
     
@@ -55,7 +66,9 @@ export async function fetchFromProviders(
       isProminent: false,
       visibilityScore: {
         score: 0,
-        level: "not_found"
+        level: "not_found",
+        label: "Not Found",
+        context: null
       },
       competitorAnalysis: {
         competitorsFound: [],
