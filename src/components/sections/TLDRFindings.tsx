@@ -26,20 +26,25 @@ export const TLDRFindings = () => {
               <span>Examples of brands that lost visibility in AI search despite ranking high on Google:</span>
             </p>
             <ul className="list-disc pl-10 space-y-2">
-              <li>A top DTC skincare brand that ranks #1 for "best vitamin C serum" on Google but is missing entirely from AI-generated recommendations.</li>
-              <li>A travel booking site with dominant organic rankings for "best hotels in NYC" but gets overlooked in favor of aggregated reviews in AI search.</li>
+              <li><strong>Airtable</strong>: Ranks well in Google for productivity and database tool searches, but AI responses typically mention it as a secondary option after more prominent names like Notion or Monday.com.</li>
+              <li><strong>Vrbo</strong>: Has strong Google search rankings for vacation rentals (often appearing in top 3 results), but is frequently overshadowed by Airbnb in AI responses, leading to lower AI visibility.</li>
+              <li><strong>Scott's Cheap Flights</strong>: Has strong Google rankings for flight deals searches but moderate AI visibility, as AI mentions it along competitor newsletters and doesn't recommend it directly.</li>
             </ul>
           </div>
           
           <p className="text-lg mt-8">
-            Even strong, well-known brands may not be explicitly recommended in AI search. Instead of clear endorsements, AI often presents them neutrally or in diluted mentions, reducing their impact.
+            Even brands that appear in AI search may not be explicitly recommended in AI search. Instead of clear endorsements, AI often presents them alongside competitors in an undifferentiated way or with negative sentiment.
           </p>
           
           <div>
             <p className="mb-2 flex items-start gap-2">
               <span className="text-primary"><ArrowRight className="h-5 w-5 flex-shrink-0 mt-0.5" /></span>
-              <span>Example: A leading fitness app ranks top 3 on Google for "best weight loss apps" but appears in AI responses as just one option, while a lesser-known competitor gets an AI-powered recommendation.</span>
+              <span>Examples of brands that appear in AI search but may not be recommended or positioned in an ideal way:</span>
             </p>
+            <ul className="list-disc pl-10 space-y-2">
+              <li><strong>Roman (Ro Health)</strong>: Has high visibility in AI responses but is often presented as one option among many without explicit recommendation, especially when compared to competitors like Hims.</li>
+              <li><strong>Turo</strong>: Appears in AI search but often with cautionary notes about potential issues compared to traditional rental agencies.</li>
+            </ul>
           </div>
           
           {/* Collapsible sections */}
@@ -63,7 +68,7 @@ export const TLDRFindings = () => {
               <AccordionContent className="px-4 pb-4">
                 <p className="mb-2">Want to see how AI search presents brands compared to traditional search rankings?</p>
                 <p className="mb-2 font-medium flex items-center">
-                  <span className="mr-2">🔍</span> Try it in the Brand Explorer
+                  <span className="mr-2">🔍</span> <a href="#brand-explorer">Try it in the Brand Explorer</a>
                 </p>
                 <ul className="list-disc pl-8 mb-4 space-y-1">
                   <li>Select your industry & brand</li>
