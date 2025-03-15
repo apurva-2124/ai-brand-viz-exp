@@ -1,7 +1,5 @@
-
 import { TraditionalSearchResults } from "./types";
 import { fetchSerpApiResults } from "./serpApiService";
-import { generateMockTraditionalResults } from "./mockService";
 import { getStaticTraditionalResults } from "./staticData";
 
 /**
