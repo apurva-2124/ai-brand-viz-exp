@@ -23,6 +23,7 @@ export function getBrandSpecificResults(query: string, brandName: string): Searc
     case "airbnb":
       return getAirbnbResults(query);
     default:
+      // Return empty array if brand not found - don't use fallbacks
       return [];
   }
 }

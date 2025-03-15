@@ -22,7 +22,7 @@ export function getStaticTraditionalResults(
     second: 'numeric'
   });
 
-  // First, try to get brand-specific results based on the brand and query
+  // Try to get brand-specific results based on the brand and query
   const brandSpecificResults = getBrandSpecificResults(query, brandName);
   if (brandSpecificResults.length > 0) {
     return {
@@ -35,15 +35,14 @@ export function getStaticTraditionalResults(
     };
   }
 
-  // Fallback to generic query results
-  const genericResults = getGenericQueryResults(query, brandName);
-  
+  // Instead of using generic fallbacks, return no results with an error message
   return {
     searchEngine: "Google",
     query: query,
     source: "static",
-    brandMentions: genericResults.filter(r => r.hasBrandMention).length,
+    brandMentions: 0,
     retrievalDate: timestamp,
-    topResults: genericResults
+    topResults: [],
+    error: "NO_RESULTS" // Set the error to indicate no results were found
   };
 }

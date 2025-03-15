@@ -2,7 +2,6 @@
 // OpenAI API integration for querying brand visibility using proxy
 import { BrandData } from "@/components/BrandTracker";
 import { toast } from "sonner";
-import { generateMockData } from "@/lib/mockData";
 
 interface OpenAIResponse {
   content?: string;
@@ -83,11 +82,11 @@ export async function queryOpenAI(keyword: string, query: string, brand: string)
     console.error('OpenAI API Error:', error);
     // Check for specific error types to provide better error messages
     if (error instanceof TypeError && error.message === 'Failed to fetch') {
-      toast.error("Proxy server connection failed. Using fallback data.");
+      toast.error("Proxy server connection failed.");
       return "Proxy server unreachable. Please check your internet connection or try again later.";
     }
     if (error instanceof DOMException && error.name === 'AbortError') {
-      toast.error("Request timed out. Using fallback data.");
+      toast.error("Request timed out.");
       return "Request timed out. The proxy server is taking too long to respond.";
     }
     

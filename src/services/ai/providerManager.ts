@@ -3,7 +3,6 @@ import * as openAI from "../openai";
 import { BrandData } from "@/components/BrandTracker";
 import { processAIResponse } from "./responseProcessor";
 import { AIProvider, VisibilityResult } from "./types";
-import { generateMockData } from "@/lib/mockData";
 import { toast } from "sonner";
 
 export async function fetchFromProviders(
@@ -26,16 +25,12 @@ export async function fetchFromProviders(
     
     if (allProxyErrors) {
       // If all requests failed, add a toast notification
-      toast.error("Proxy server unavailable. Using mock data for display purposes.");
+      toast.error("Proxy server unavailable. Please try again later.");
       
-      // Get mock data as fallback
-      const mockData = generateMockData(brandData);
-      
-      // Return the mock results but mark them as from a fallback
-      return mockData.results.map(result => ({
+      // Return the error results without using mock fallbacks
+      return openAIResults.map(result => ({
         ...result,
-        response: `[USING MOCK DATA] ${result.response}`,
-        provider: "Mock (OpenAI Unavailable)"
+        provider: "OpenAI (Unavailable)"
       }));
     }
     
@@ -48,14 +43,26 @@ export async function fetchFromProviders(
     return results;
   } catch (error) {
     console.error("Error fetching from providers:", error);
-    toast.error("Error connecting to AI services. Using mock data.");
+    toast.error("Error connecting to AI services. Please try again later.");
     
-    // Fallback to mock data in case of complete failure
-    const mockData = generateMockData(brandData);
-    return mockData.results.map(result => ({
-      ...result,
-      provider: "Mock (Error Recovery)"
-    }));
+    // Return error information instead of mock data
+    return [{
+      keyword: queries[0]?.keyword || "Unknown",
+      query: queries[0]?.query || "Unknown",
+      response: "Error connecting to AI services. Please try again later.",
+      provider: "Error",
+      hasBrandMention: false,
+      isProminent: false,
+      visibilityScore: {
+        score: 0,
+        level: "not_found"
+      },
+      competitorAnalysis: {
+        competitorsFound: [],
+        competitorOutranking: false,
+        riskLevel: "low"
+      }
+    }];
   }
 }
 
