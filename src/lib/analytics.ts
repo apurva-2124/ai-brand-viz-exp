@@ -24,6 +24,9 @@ declare global {
 export const initGA = (measurementId: string): void => {
   if (typeof window !== 'undefined' && window.gtag) {
     window.gtag('config', measurementId);
+    console.log('Google Analytics initialized with ID:', measurementId);
+  } else {
+    console.warn('Google Analytics not available');
   }
 };
 
@@ -33,6 +36,9 @@ export const pageview = (url: string): void => {
     window.gtag('config', 'G-KE0SC41J9W', {
       page_path: url,
     });
+    console.log('Pageview tracked:', url);
+  } else {
+    console.warn('Unable to track pageview - gtag not available');
   }
 };
 
@@ -45,5 +51,8 @@ export const event = ({ action, category, label, value, ...params }: GTagEvent):
       value,
       ...params,
     });
+    console.log('Event tracked:', { action, category, label, value, ...params });
+  } else {
+    console.warn('Unable to track event - gtag not available');
   }
 };

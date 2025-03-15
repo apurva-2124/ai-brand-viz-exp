@@ -7,7 +7,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import { pageview } from "./lib/analytics";
+import { pageview, initGA } from "./lib/analytics";
 
 const queryClient = new QueryClient();
 
@@ -16,6 +16,9 @@ const RouteChangeTracker = () => {
   const location = useLocation();
   
   useEffect(() => {
+    // Initialize GA on first load
+    initGA('G-KE0SC41J9W');
+    
     // Track pageview on route change
     pageview(location.pathname + location.search);
   }, [location]);
