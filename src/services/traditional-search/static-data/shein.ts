@@ -72,6 +72,14 @@ export function getSheinResults(query: string): SearchResult[] {
     return [
       {
         rank: 1,
+        url: "https://www.shein.com/women-apparel-c-2030.html",
+        title: "SHEIN Women's Clothing | Affordable Fashion | SHEIN USA",
+        description: "Shop SHEIN's collection of affordable women's clothing, featuring trendy styles at budget-friendly prices.",
+        hasBrandMention: true,
+        resultType: "organic"
+      },
+      {
+        rank: 2,
         url: "https://www.reddit.com/r/femalefashionadvice/comments/1b956dg/what_are_your_favorite_places_to_get_affordable/",
         title: "What are your favorite places to get affordable clothing from? : r...",
         description: "Reddit discussion about affordable women's clothing stores and brands.",
@@ -79,18 +87,10 @@ export function getSheinResults(query: string): SearchResult[] {
         resultType: "organic"
       },
       {
-        rank: 2,
+        rank: 3,
         url: "https://www.fashionnova.com/",
         title: "Fashion Nova | Fashion Online For Women | Affordable Women's...",
         description: "Fashion Nova's online store for affordable women's clothing, dresses, jeans, and accessories.",
-        hasBrandMention: false,
-        resultType: "organic"
-      },
-      {
-        rank: 3,
-        url: "https://www.forever21.com/us/shop/catalog/category/f21/app-main",
-        title: "Online Women's Clothing | Trendy & Affordable Fashion | Forever 21",
-        description: "Forever 21's collection of trendy and affordable women's clothing and accessories.",
         hasBrandMention: false,
         resultType: "organic"
       }

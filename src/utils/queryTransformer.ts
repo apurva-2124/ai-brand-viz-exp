@@ -48,11 +48,23 @@ export const scoreVisibility = (response: string, brandName: string) => {
   }
 
   const lowerResponse = response.toLowerCase();
-  const lowerBrand = brandName.toLowerCase();
   
-  // Use word boundary regex for more accurate detection
-  const regex = new RegExp('\\b' + lowerBrand + '\\b', 'i');
-  if (!regex.test(lowerResponse)) {
+  // Split brand name into parts to handle multi-word brands
+  const brandParts = brandName.toLowerCase().split(/\s+/);
+  const mainBrandTerm = brandParts[0]; // Get the first part of the brand name
+  
+  // Check for the full brand name
+  const fullBrandRegex = new RegExp('\\b' + brandName.toLowerCase().replace(/\s+/g, '\\s+') + '\\b', 'i');
+  const mainBrandRegex = new RegExp('\\b' + mainBrandTerm + '\\b', 'i');
+  
+  // First check if the full brand name is mentioned
+  const fullBrandMatch = fullBrandRegex.test(lowerResponse);
+  
+  // If full brand isn't found, check if the main part is mentioned
+  const mainBrandMatch = !fullBrandMatch && mainBrandRegex.test(lowerResponse);
+  
+  // Return not found if neither the full brand nor main part is mentioned
+  if (!fullBrandMatch && !mainBrandMatch) {
     return {
       level: "not_found",
       label: "Not Found",
@@ -61,15 +73,19 @@ export const scoreVisibility = (response: string, brandName: string) => {
     };
   }
 
+  // Use the matched brand term for further analysis
+  const matchedBrandTerm = fullBrandMatch ? brandName.toLowerCase() : mainBrandTerm;
+  
   // Check for prominent mentions (brand name near the beginning or with positive context)
-  const firstOccurrence = lowerResponse.indexOf(lowerBrand);
+  const firstOccurrence = lowerResponse.indexOf(matchedBrandTerm);
   const isProminent = 
     (firstOccurrence >= 0 && firstOccurrence < response.length / 3) || 
-    lowerResponse.includes(`${lowerBrand} is leading`) ||
-    lowerResponse.includes(`${lowerBrand} is a top`) ||
-    lowerResponse.includes(`best ${lowerBrand}`) ||
-    lowerResponse.includes(`popular ${lowerBrand}`) ||
-    lowerResponse.includes(`such as ${lowerBrand}`);
+    lowerResponse.includes(`${matchedBrandTerm} is leading`) ||
+    lowerResponse.includes(`${matchedBrandTerm} is a top`) ||
+    lowerResponse.includes(`best ${matchedBrandTerm}`) ||
+    lowerResponse.includes(`popular ${matchedBrandTerm}`) ||
+    lowerResponse.includes(`such as ${matchedBrandTerm}`) ||
+    lowerResponse.includes(`${matchedBrandTerm}'s`);
 
   if (isProminent) {
     return {

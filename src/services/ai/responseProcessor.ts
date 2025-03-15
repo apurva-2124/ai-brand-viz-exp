@@ -25,24 +25,44 @@ export function processAIResponse(
   let isProminent = false;
   
   if (result.response && brandName) {
-    const regex = new RegExp('\\b' + brandName + '\\b', 'gi');
-    const matches = result.response.match(regex);
-    brandMentionCount = matches ? matches.length : 0;
+    // Split brand name into parts to handle multi-word brands
+    const brandParts = brandName.split(/\s+/);
+    const mainBrandTerm = brandParts[0]; // Get the first part of the brand name
     
-    // Only mark as having a brand mention if the brand name actually appears in the text
+    // Check for the complete brand name first
+    const fullBrandRegex = new RegExp('\\b' + brandName.replace(/\s+/g, '\\s+') + '\\b', 'gi');
+    const fullMatches = result.response.match(fullBrandRegex);
+    let fullMatchCount = fullMatches ? fullMatches.length : 0;
+    
+    // Then check for the main part of the brand name (for cases like "Beis Travel" → "Beis")
+    const mainBrandRegex = new RegExp('\\b' + mainBrandTerm + '\\b', 'gi');
+    const mainMatches = result.response.match(mainBrandRegex);
+    let mainMatchCount = mainMatches ? mainMatches.length : 0;
+    
+    // Total count and determine if brand is mentioned
+    brandMentionCount = fullMatchCount + (fullMatchCount > 0 ? 0 : mainMatchCount);
     hasBrandMention = brandMentionCount > 0;
     
     // Check prominence - only if brand is actually mentioned
     if (hasBrandMention) {
       const responseLower = result.response.toLowerCase();
-      const brandLower = brandName.toLowerCase();
-      const firstOccurrence = responseLower.indexOf(brandLower);
       
-      // Consider it prominent if mentioned in first third of the text or if it appears in a key position
+      // Try with full brand name first
+      let brandLower = brandName.toLowerCase();
+      let firstOccurrence = responseLower.indexOf(brandLower);
+      
+      // If not found with full name, try with the main brand term
+      if (firstOccurrence < 0 && mainMatchCount > 0) {
+        brandLower = mainBrandTerm.toLowerCase();
+        firstOccurrence = responseLower.indexOf(brandLower);
+      }
+      
+      // Consider it prominent based on position or context
       isProminent = (firstOccurrence >= 0 && firstOccurrence < result.response.length / 3) ||
         responseLower.includes(`${brandLower} is a leading`) ||
         responseLower.includes(`${brandLower} is one of the top`) ||
-        responseLower.includes(`such as ${brandLower}`);
+        responseLower.includes(`such as ${brandLower}`) ||
+        responseLower.includes(`${brandLower}'s`);
     }
   }
   

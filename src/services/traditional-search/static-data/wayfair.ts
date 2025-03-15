@@ -45,6 +45,36 @@ export function getWayfairResults(query: string): SearchResult[] {
     ];
   }
   
+  // Online furniture store specific results
+  if (lowerQuery === "online furniture store") {
+    return [
+      {
+        rank: 1,
+        url: "https://www.wayfair.com/",
+        title: "Wayfair - Furniture, Home Decor, & More | Up to 70% Off",
+        description: "Shop Wayfair for furniture, décor, home basics, and more. Free shipping on many items. Fast delivery and exceptional customer service.",
+        hasBrandMention: true,
+        resultType: "organic"
+      },
+      {
+        rank: 2,
+        url: "https://www.overstock.com/",
+        title: "Overstock | The Best Deals Online: Furniture, Bedding, Rugs...",
+        description: "Overstock's online furniture store offering quality home furniture for living rooms, bedrooms, and more at affordable prices.",
+        hasBrandMention: false,
+        resultType: "organic"
+      },
+      {
+        rank: 3,
+        url: "https://www.ikea.com/us/en/",
+        title: "IKEA: Affordable Home Furniture, Décor, & Storage Solutions | IKEA",
+        description: "IKEA offers affordable furniture and home accessories for modern living spaces.",
+        hasBrandMention: false,
+        resultType: "organic"
+      }
+    ];
+  }
+  
   // Return empty array if no specific match found
   return [];
 }

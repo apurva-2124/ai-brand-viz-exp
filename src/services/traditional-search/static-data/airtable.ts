@@ -88,10 +88,10 @@ export function getAirtableResults(query: string): SearchResult[] {
       },
       {
         rank: 3,
-        url: "https://www.reddit.com/r/projectmanagement/comments/11pifio/looking_for_the_right_pm_toolsapps/",
-        title: "Looking for the right PM tools/apps : r/projectmanagement",
-        description: "Discussion about finding the right project management tools for different needs.",
-        hasBrandMention: false,
+        url: "https://www.airtable.com/product/project-management",
+        title: "Airtable Project Management | Streamline Your Projects",
+        description: "Airtable's project management solution helps teams streamline work and collaborate efficiently.",
+        hasBrandMention: true,
         resultType: "organic"
       }
     ];
